@@ -88,5 +88,3 @@ Releasing this project
 
 Credits
 -------------
-
-This package was created by Kathrin Doerfler <doerfler@tum.de> `@Kathrin3010 <https://github.com/Kathrin3010>`_ at `@gramaziokohler <https://github.com/gramaziokohler>`_
