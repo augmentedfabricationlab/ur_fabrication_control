@@ -28,6 +28,14 @@ Main features
 
 **ur_fabrication_control** runs on Python x.x and x.x.
 
+Useful hints
+-------------
+
+* after building, don't foget to source the bash file:
+::
+    catkin_make
+    source devel/setup.bash
+
 Use
 -------------
 
