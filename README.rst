@@ -34,9 +34,10 @@ Use
 ROS:
 
 ::
-roslaunch ur_modern_driver urXX_bringup.launch robot_ip:=ROBOT_IP_ADDRESS
-roslaunch urXX_moveit_config ur5_moveit_planning_execution.launch
-roslaunch urXX_moveit_config moveit_rviz.launch config:=true
+
+    roslaunch ur_modern_driver urXX_bringup.launch robot_ip:=ROBOT_IP_ADDRESS
+    roslaunch urXX_moveit_config ur5_moveit_planning_execution.launch
+    roslaunch urXX_moveit_config moveit_rviz.launch config:=true
 
 
 Documentation
