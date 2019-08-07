@@ -28,6 +28,26 @@ Main features
 
 **ur_fabrication_control** runs on Python x.x and x.x.
 
+Useful hints
+-------------
+
+* after building, don't forget to source the bash file:
+::
+
+   catkin_make
+   source devel/setup.bash
+
+Use
+-------------
+
+ROS:
+
+::
+
+    roslaunch ur_modern_driver urXX_bringup.launch robot_ip:=ROBOT_IP_ADDRESS
+    roslaunch urXX_moveit_config ur5_moveit_planning_execution.launch
+    roslaunch urXX_moveit_config moveit_rviz.launch config:=true
+
 
 Documentation
 -------------
