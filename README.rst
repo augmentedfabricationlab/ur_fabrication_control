@@ -31,11 +31,11 @@ Main features
 Useful hints
 -------------
 
-* after building, don't foget to source the bash file:
+* after building, don't forget to source the bash file:
 ::
 
    catkin_make
-    source devel/setup.bash
+   source devel/setup.bash
 
 Use
 -------------
