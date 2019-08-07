@@ -33,7 +33,8 @@ Useful hints
 
 * after building, don't foget to source the bash file:
 ::
-    catkin_make
+
+   catkin_make
     source devel/setup.bash
 
 Use
