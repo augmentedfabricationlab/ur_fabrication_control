@@ -20,7 +20,7 @@ Add conda-forge to the list of channels where conda looks for packages.
 
 Execute the commands below in Anaconda Prompt (run as Administrator):
 
-    conda create -n urfab python=3.6 python.app COMPAS=0.10 --yes
+    conda create -n urfab python=3.6 COMPAS=0.10 --yes
 
 Then continue with activating the environment:
 
