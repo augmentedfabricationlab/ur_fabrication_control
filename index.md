@@ -20,7 +20,7 @@ Add conda-forge to the list of channels where conda looks for packages.
 
 Execute the commands below in Anaconda Prompt (run as Administrator):
 
-    conda create -n urfab python=3.6 COMPAS=0.10 --yes
+    conda create -n urfab python=3.6 COMPAS=0.10 matplotlib=3.0 --yes
 
 Then continue with activating the environment:
 
@@ -37,19 +37,10 @@ Additional depenencies:
 
 ### 2. Setting up the Rhino/Grasshopper Environment
 
-see also this [link](https://compas-dev.github.io/main/gettingstarted/cad/rhino.html)
-
 Run the following commands on Anaconda prompt:
     
     python -m compas_rhino.install
     python -m compas_rhino.install -p compas_fab
-
-If you run into problems with the PIL library, run:
-
-	conda install matplotlib=3.0
-
-and try installing again.
-
 
 ### 2. Setting up jupyter and extensions
 
