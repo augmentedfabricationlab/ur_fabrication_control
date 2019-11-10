@@ -20,7 +20,7 @@ ur_fabrication_control: ur_fabrication_control
 
 # Installation
 
-Please follow `these instuctions <index.md>`_.for setting up your environment.
+Please follow `these instuctions <index.md>`_ for setting up your environment.
 
 
 Main features
