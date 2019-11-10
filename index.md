@@ -40,7 +40,7 @@ Additional depenencies:
 Run the following commands on Anaconda prompt:
     
     python -m compas_rhino.install
-    python -m compas_rhino.install -p compas_fab
+    python -m compas_fab.rhino.install
 
 ### 2. Setting up jupyter and extensions
 
