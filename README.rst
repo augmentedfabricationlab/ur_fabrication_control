@@ -18,6 +18,10 @@ ur_fabrication_control: ur_fabrication_control
 
 **A short description of the project** ...
 
+# Installation
+
+Please follow `these instuctions<index.md>`_.for setting up your environment.
+
 
 Main features
 -------------
