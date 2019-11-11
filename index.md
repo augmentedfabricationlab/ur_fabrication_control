@@ -68,6 +68,7 @@ open Anaconda prompt and type one after the other:
     
     python
     import compas
+    import compas_fab
     compas .__version__
     compas_fab .__version__
     
