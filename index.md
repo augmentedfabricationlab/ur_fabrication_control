@@ -20,7 +20,7 @@ Add conda-forge to the list of channels where conda looks for packages.
 
 Execute the commands below in Anaconda Prompt (run as Administrator):
 
-    conda create -n urfab python=3.6 COMPAS=0.10 matplotlib=3.0 --yes
+    conda create -n urfab python=3.6 COMPAS=0.11 matplotlib=3.0 --yes
 
 Then continue with activating the environment:
 
@@ -28,7 +28,7 @@ Then continue with activating the environment:
     
 And install COMPAS_fab with:
 
-    conda install -c conda-forge compas_fab=0.8
+    conda install -c conda-forge compas_fab=0.9
 
 Additional depenencies:
 
