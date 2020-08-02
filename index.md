@@ -18,22 +18,14 @@ Add conda-forge to the list of channels where conda looks for packages.
 
 	conda config --add channels conda-forge
 
-Execute the commands below in Anaconda Prompt (run as Administrator):
+Execute the commands below in Anaconda Prompt (in case of issues, run as Administrator):
 
-    conda create -n urfab python=3.6 COMPAS=0.11 matplotlib=3.0 --yes
-
-Then continue with activating the environment:
-
+    conda create -n urfab python=3.7 compas=0.15 compas_fab=0.11 --yes
     conda activate urfab
-    
-And install COMPAS_fab with:
-
-    conda install -c conda-forge compas_fab=0.9
 
 Additional depenencies:
 
     conda install -c conda-forge pythreejs
-
 
 ### 2. Setting up the Rhino/Grasshopper Environment
 
