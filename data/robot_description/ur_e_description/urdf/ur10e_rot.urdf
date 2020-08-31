@@ -16,7 +16,7 @@
       <timeout>5</timeout>
       <powerStateTopic>power_state</powerStateTopic>
       <powerStateRate>10.0</powerStateRate>
-      <fullChargeCapacity>87.78</fullChargeCapacity>     
+      <fullChargeCapacity>87.78</fullChargeCapacity>
       <dischargeRate>-474</dischargeRate>
       <chargeRate>525</chargeRate>
       <dischargeVoltage>15.52</dischargeVoltage>
@@ -219,7 +219,6 @@
   <joint name="ee_fixed_joint" type="fixed">
     <parent link="wrist_3_link"/>
     <child link="ee_link"/>
-    <!-- <origin rpy="0.0 0.0 1.57079632679" xyz="0.0 0.117 0.0"/> -->
     <origin rpy="-1.57079632679 0.0 0.0" xyz="0.0 0.117 0.0"/>
   </joint>
   <link name="ee_link">
@@ -312,7 +311,6 @@
                  not corrected wrt the real robot (ie: rotated over 180
                  degrees)
       -->
-    <!-- <origin rpy="0 0 -3.14159265359" xyz="0 0 0"/>-->
     <origin rpy="0 0 -3.14159265359" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="base"/>
