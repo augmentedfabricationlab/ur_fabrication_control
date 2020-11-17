@@ -41,8 +41,8 @@ def generate_ur_program():
     main_str = "\t".join(main_list)
     
     # globals
-    msg_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in msg_identifier_dict.iteritems()])
-    command_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in command_identifier_dict.iteritems()])
+    msg_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in msg_identifier_dict.items()])
+    command_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in command_identifier_dict.items()])
     
     globals_str = globals_str.replace("{MESSAGE_IDENTIFIERS}", msg_identifier_str)
     globals_str = globals_str.replace("{COMMAND_IDENTIFIERS}", command_identifier_str)
@@ -63,10 +63,10 @@ def send_script(ur_ip, script):
     try:
         s = socket.create_connection((ur_ip, UR_SERVER_PORT), timeout=2) 
         s.send(script)
-        print "Script sent to %s on port %i" % (ur_ip, UR_SERVER_PORT)
+        print("Script sent to %s on port %i" % (ur_ip, UR_SERVER_PORT))
         s.close()
     except socket.timeout:
-        print "UR with ip %s not available on port %i" % (ur_ip, UR_SERVER_PORT)
+        print("UR with ip %s not available on port %i" % (ur_ip, UR_SERVER_PORT))
         raise
 
 class URDriver(object):
@@ -101,10 +101,10 @@ class URDriver(object):
 
 if __name__ == "__main__":
     
-    script = generate_ur_program()
-    print script
+    #script = generate_ur_program()
+    #print(script)
+
     
-    """
     server_ip = "192.168.10.12"
     server_port = 30003
     tool_angle_axis = [0.0, 0.0, 115.6, 0.234, 1.57, 0.0]
@@ -112,9 +112,10 @@ if __name__ == "__main__":
     ur_ip = "192.168.10.11"
     
     ur_driver = URDriver(server_ip, server_port, tool_angle_axis, ur_ip, "UR10")
-    print ur_driver
+    
+    #print(ur_driver)
     ur_driver.send()
-    """
+    
 
     
 
