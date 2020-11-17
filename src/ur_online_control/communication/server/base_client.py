@@ -142,6 +142,11 @@ class BaseClient(object):
             msg_snd_len = struct.calcsize(str(len(msg)) + "f") + 4 # float array: length of message in bytes: len*4
             params = [msg_snd_len, msg_id] + msg
             buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "f", *params)
+        
+        elif msg_id == MSG_CURRENT_POSE_JOINT: #for testing with UR simulator
+            msg_snd_len = struct.calcsize(str(len(msg)) + "f") + 4 # float array: length of message in bytes: len*4
+            params = [msg_snd_len, msg_id] + msg
+            buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "f", *params)
 
         elif msg_id == MSG_IDENTIFIER:
             msg = msg.encode('utf-8')

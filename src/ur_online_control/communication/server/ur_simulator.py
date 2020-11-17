@@ -7,6 +7,7 @@ from base_client import BaseClient
 from ur_online_control.communication.msg_identifiers import *
 import time
 import struct
+import random
 
 class URClient(BaseClient):
     
@@ -22,6 +23,11 @@ class URClient(BaseClient):
             
     def send_command_executed(self, counter):
         self._send(MSG_COMMAND_EXECUTED, counter)
+    
+    def send_joint_state(self, counter):
+        joints = [random.random() for i in range(6)]
+        print(joints)
+        self._send(MSG_CURRENT_POSE_JOINT, joints)
         
     def _format_other_messages(self, msg_id, msg = None):
         if msg_id == MSG_COMMAND_RECEIVED or msg_id == MSG_COMMAND_EXECUTED:
@@ -52,8 +58,10 @@ class URClient(BaseClient):
             print("msg: ", msg[2:])
 
             self.send_command_received(counter)
-            time.sleep(2)
+            time.sleep(1)
             self.send_command_executed(counter)
+            time.sleep(1)
+            self.send_joint_state(counter)
         else:
             self.stdout("Message identifier unknown: %d, message: %s" % (msg_id, raw_msg))
 

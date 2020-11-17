@@ -18,6 +18,7 @@ import ur_online_control.communication.container as container
 from ur_online_control.communication.server import Server
 from ur_online_control.communication.client_wrapper import ClientWrapper
 from ur_online_control.communication.formatting import format_commands
+from ur_online_control.communication.msg_identifiers import *
 
 if len(sys.argv) > 1:
     server_address = sys.argv[1]
@@ -57,10 +58,14 @@ def main():
         time.sleep(1)
         ur.send_command_airpick(False) #send vac grip off
 
-        ur.send_command_movel([0.5.+counter, 0.5, 0.5, 0., 0., 0.], v=10., a=10.) # move to a location
+        ur.send_command_movel([0.5+counter, 0.5, 0.5, 0., 0., 0.], v=10., a=10.) # move to a location
         ur.wait_for_ready()
 
         counter += 0.01
+
+        current_pose_joints_queue = ur.rcv_queues[MSG_CURRENT_POSE_JOINT]
+        current_pose_joint = current_pose_joints_queue.get_nowait()
+        print(current_pose_joint)
 
         print("============================================================")
         

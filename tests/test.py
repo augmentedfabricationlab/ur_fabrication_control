@@ -3,6 +3,7 @@ import socket
 import struct
 import time
 import sys
+import random
 
 byteorder = "!"
 msg = "UR"
@@ -19,7 +20,10 @@ pose_cartesian = [1,2,3,4,5,6]
 a, v, r, t = [7,8,9,10]
 cmd = pose_cartesian + [a, v, r, t]
 msg_command_length = 4 * (len(cmd) + 1 + 1 + 1) # + msg_id, command_id, command_counter
-cmd = [c * MULT for c in cmd]
+cmd = [int(c * MULT) for c in cmd]
 params = [msg_command_length, 2, 1, 0] + cmd
 buf = struct.pack(byteorder + "%ii" % len(params), *params)
 print(buf)
+
+joints = [random.random() for i in range(6)]
+print(joints)
