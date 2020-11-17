@@ -35,6 +35,8 @@ def generate_ur_program():
     globals_str = "\t".join(globals_list)
     methods_list = read_file_to_list(methods_file)
     methods_str = "\t".join(methods_list)
+    airpick_methods_list = read_file_to_list(airpick_methods_file)
+    airpick_methods_str = "\t".join(airpick_methods_list)
     main_list = read_file_to_list(main_file)
     main_str = "\t".join(main_list)
     
@@ -49,6 +51,7 @@ def generate_ur_program():
     program_str = read_file_to_string(program_file)
     program_str = program_str.replace("{GLOBALS}", globals_str)
     program_str = program_str.replace("{METHODS}", methods_str)
+    program_str = program_str.replace("{AIRPICK_METHODS}", airpick_methods_str)
     program_str = program_str.replace("{MAIN}", main_str)
     
     # strings that still have to be replaced
@@ -98,6 +101,10 @@ class URDriver(object):
 
 if __name__ == "__main__":
     
+    script = generate_ur_program()
+    print script
+    
+    """
     server_ip = "192.168.10.12"
     server_port = 30003
     tool_angle_axis = [0.0, 0.0, 115.6, 0.234, 1.57, 0.0]
@@ -107,6 +114,7 @@ if __name__ == "__main__":
     ur_driver = URDriver(server_ip, server_port, tool_angle_axis, ur_ip, "UR10")
     print ur_driver
     ur_driver.send()
+    """
 
     
 

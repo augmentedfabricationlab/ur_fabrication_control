@@ -68,7 +68,7 @@ command_identifier_dict = {'COMMAND_ID_MOVEL': 1,
                            'COMMAND_ID_DIGITAL_OUT': 5,
                            'COMMAND_ID_WAIT': 6,
                            'COMMAND_ID_TCP': 7,
-                           'COMMAND_ID_POPUP': 8
+                           'COMMAND_ID_POPUP': 8,
                            'COMMAND_ID_AIRPICK': 9
                            }
 

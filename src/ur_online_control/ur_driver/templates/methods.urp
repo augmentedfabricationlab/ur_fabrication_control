@@ -125,7 +125,7 @@ def read_and_identify():
 				BUFFER_JOINT[WRITE_PTR] = p[params[1]/(MULT), params[2]/(MULT), params[3]/(MULT), params[4]/MULT, params[5]/MULT, params[6]/MULT]
 				BUFFER_PARAMS[WRITE_PTR] = p[params[7]/(MM2M*MULT), params[8]/(MM2M*MULT), params[9]/(MM2M*MULT), params[10]/MULT, 0, 0]
 			elif msg_command_id == COMMAND_ID_DIGITAL_OUT:
-				params = socket_read_binary_integer(1)
+				params = socket_read_binary_integer(1+1)
 				BUFFER_PARAMS[WRITE_PTR] = p[params[1], params[2], 0, 0, 0, 0] # number, boolean
 			elif msg_command_id == COMMAND_ID_AIRPICK:
 				params = socket_read_binary_integer(1)
@@ -253,9 +253,10 @@ def execute_from_buffer():
 		params = BUFFER_PARAMS[READ_PTR]
 		value = params[0]
 		if value == 1:
-			set_airpick_on(True)
+			rq_vacuum_grip(advanced_mode=True, maximum_vacuum=75, minimum_vacuum=25, timeout_ms=10, wait_for_object_detected=True, gripper_socket="1")
 		else:
-			set_airpick_off(False)
+			rq_vacuum_release(advanced_mode=True, shutoff_distance_cm=1, wait_for_object_released=True, gripper_socket="1", pressure = 255, timeout = 255)
+			sleep(0.1)
 		end
 	elif msg_command_id == COMMAND_ID_WAIT:
 		params = BUFFER_PARAMS[READ_PTR]

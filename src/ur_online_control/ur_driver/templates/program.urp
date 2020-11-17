@@ -7,6 +7,9 @@ def program():
 	# --> METHODS
 	{METHODS}
 	
+	# --> METHODS
+	{AIRPICK_METHODS}
+	
 	# --> MAIN
 	{MAIN}
 
