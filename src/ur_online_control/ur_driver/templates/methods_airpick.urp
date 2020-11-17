@@ -1,4 +1,4 @@
-    set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+    # set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
     set_payload(0.0)
     set_gravity([0.0, 0.0, 9.82])
     set_tool_communication(True, 115200, 0, 1, 1.5, 3.5)
