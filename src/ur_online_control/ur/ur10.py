@@ -1,8 +1,13 @@
-from __future__ import absolute_import
+from __future__ import print_function
 
 import math
 
-from ur_online_control.ur.ur import UR
+from ur_online_control import get_data
+
+
+
+from .robot import BaseConfiguration
+from .ur import UR
 
 
 class UR10(UR):
@@ -11,27 +16,30 @@ class UR10(UR):
     Manual link:
     #define UR10_PARAMS
     https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp
-    in meters
+    but in mm, not in m
     """
 
     # define UR10_PARAMS
-    d1 =  0.1273
-    a2 = -0.612
-    a3 = -0.5723
-    d4 =  0.163941
-    d5 =  0.1157
-    d6 =  0.0922
+    d1 = 127.3
+    a2 = -612.0
+    a3 = -572.3
+    d4 = 163.941
+    d5 = 115.7
+    d6 = 92.2
 
-    shoulder_offset = 0.220941
-    elbow_offset = -0.1719
+    shoulder_offset = 220.941
+    elbow_offset = -171.9
 
     # The UR has a very simple workspace: is is s sphere with a cylinder in the
     # center cuff off. The axis of this cylinder is j0. For more info: UR manual.
-    working_area_sphere_diameter = 2.65  # max. working area diameter, recommended 2.6
-    working_area_cylinder_diameter = 0.190
+    working_area_sphere_diameter = 2650.  # max. working area diameter, recommended 2600
+    working_area_cylinder_diameter = 190.
 
     def __init__(self):
         super(UR10, self).__init__()
+
+    def get_model_path(self):
+        return get_data("robots/ur/ur10")
 
     def forward_kinematics(self, configuration):
         q = configuration.joint_values[:]
@@ -43,7 +51,7 @@ class UR10(UR):
         for q in configurations:
             print(q)
         for i in range(len(configurations)):
-            configurations[i].values[5] -= math.pi
+            configurations[i].joint_values[5] -= math.pi
         return configurations
 
 
@@ -64,9 +72,9 @@ if __name__ == "__main__":
     ur = UR10()
 
     q = [4.6733, -3.39529, 1.5404, -2.90962, -1.58137, 1.59137]
-    pose = [-0.206258, -0.865946, 0.60626, 0.037001, -0.044931, 1.55344]
+    pose = [-206.258, -865.946, 606.26, 0.037001, -0.044931, 1.55344]
 
-    pose = [-0.576673, -0.717359, 0.419691, -1.41669, -0.88598900000000003, 0.96527600000000002]
+    pose = [-576.673, -717.359, 419.691, -1.41669, -0.88598900000000003, 0.96527600000000002]
     q = [4.32717, -3.57284, 1.62216, -2.58119, -0.00038495899999999998, 1.45664]
     print("q: {0}".format(smallest_joint_pose(q)))
     f = Frame.from_pose_axis_angle_vector(pose)

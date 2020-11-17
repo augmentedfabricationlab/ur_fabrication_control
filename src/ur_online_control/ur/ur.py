@@ -3,22 +3,19 @@ from __future__ import absolute_import
 import math
 import os
 
-from compas.datastructures import Mesh
+from compas.datastructures.mesh import Mesh
 from compas.geometry import Frame
 from compas.geometry import multiply_matrices
 from compas.geometry import multiply_matrix_vector
 from compas.geometry import subtract_vectors
 from compas.geometry import transform_points
-from compas.geometry import Rotation
-from compas.geometry import Transformation
+from compas.geometry.xforms import Rotation
+from compas.geometry.xforms import Transformation
 
-#from compas_ghpython.geometry.xforms import xform_from_transformation
-from compas_ghpython.geometry.xforms import xtransformed
-from ur_online_control.ur.configuration import Configuration
-
-from ur_online_control.ur.kinematics import forward_kinematics
-from ur_online_control.ur.kinematics import inverse_kinematics
-from ur_online_control.ur.tool import Tool
+from .kinematics import forward_kinematics
+from .kinematics import inverse_kinematics
+from compas_fab.robots import Configuration
+from .tool import Tool
 
 class UR(object):
     """The UR robot class.
@@ -38,7 +35,6 @@ class UR(object):
         super(UR, self).__init__()
 
         self.model = []  # a list of meshes
-        self.model_breps = []
         self.basis_frame = None
         # move to UR !!!!
         self.transformation_RCS_WCS = None
@@ -91,15 +87,15 @@ class UR(object):
         """Transform the frame in world coordinate system (WCS) into a frame in
         robot coordinate system (RCS), which is defined by the robots' basis frame.
         """
-        frame_RCS = frame_WCS.transformed(self.transformation_RCS_WCS)
-        #frame_RCS = frame_WCS.transform(self.transformation_WCS_RCS)
+        frame_RCS = frame_WCS.transformed(self.transformation_WCS_RCS)
+        #frame_RCS = frame_WCS.transform(self.transformation_RCS_WCS)
         return frame_RCS
 
     def get_frame_in_WCS(self, frame_RCS):
         """Transform the frame in robot coordinate system (RCS) into a frame in
         world coordinate system (WCS), which is defined by the robots' basis frame.
         """
-        frame_WCS = frame_RCS.transformed(self.transformation_WCS_RCS)
+        frame_WCS = frame_RCS.transformed(self.transformation_RCS_WCS)
         return frame_WCS
 
     def get_tool0_frame_from_tcp_frame(self, frame_tcp):
@@ -180,12 +176,12 @@ class UR(object):
         T5 = Rotation.from_axis_and_angle(subtract_vectors(j5[1], j5[0]), q5, j5[1]) * T4
 
         # now apply the transformation to the base
-        T0 = self.transformation_WCS_RCS * T0
-        T1 = self.transformation_WCS_RCS * T1
-        T2 = self.transformation_WCS_RCS * T2
-        T3 = self.transformation_WCS_RCS * T3
-        T4 = self.transformation_WCS_RCS * T4
-        T5 = self.transformation_WCS_RCS * T5
+        T0 = self.transformation_RCS_WCS * T0
+        T1 = self.transformation_RCS_WCS * T1
+        T2 = self.transformation_RCS_WCS * T2
+        T3 = self.transformation_RCS_WCS * T3
+        T4 = self.transformation_RCS_WCS * T4
+        T5 = self.transformation_RCS_WCS * T5
 
         return T0, T1, T2, T3, T4, T5
 
@@ -200,124 +196,7 @@ class UR(object):
         tcp_frame = Frame.from_transformation(T * self.transformation_tcp_tool0)
         return tool0_frame, tcp_frame
 
-    def get_transformed_model(self, transformations):
-        """Get the transformed meshes of the robot model.
-        Args:
-            transformations (:obj:`list` of :class:`Transformation`): A list of
-                transformations to apply on each of the links
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-        """
-        tmodel = []
-        for m, T in zip(self.model, transformations):
-            tmodel.append(xtransformed(m, T))
-        return tmodel
-
-    def get_transformed_tool_model(self, T5, xtransform_function=None):
-        """Get the transformed meshes of the tool model.
-
-        Args:
-            T5 (:class:`Transformation`): The transformation of the robot's
-                last joint.
-            xtransform_function (function name, ): the name of the function
-                used to transform the model. Defaults to None.
-
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-        """
-        T = self.get_tool0_transformation(T5)
-        return self.tool.get_transformed_model(T)
-
-    def xdraw(self, configuration):
-        """Get the transformed meshes of the robot and the tool model.
-
-    	Args:
-            configuration (:class:`Configuration`): the 6 joint angles in radians
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-    	"""
-        transformations = self.get_forward_transformations(configuration)
-        tmodel = self.get_transformed_model(transformations)
-        if self.tool:
-        	tmodel.append(self.get_transformed_tool_model(transformations[5]))
-        return tmodel
-
-    def get_transformed_model_brep(self, transformations):
-        """Get the transformed meshes of the robot model.
-        Args:
-            transformations (:obj:`list` of :class:`Transformation`): A list of
-                transformations to apply on each of the links
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-        """
-        tmodel = []
-        for m, T in zip(self.model_breps, transformations):
-            tmodel.append(xtransformed(m, T))
-        return tmodel
-
-    def get_transformed_tool_model_brep(self, T5, xtransform_function=None):
-        """Get the transformed meshes of the tool model.
-
-        Args:
-            T5 (:class:`Transformation`): The transformation of the robot's
-                last joint.
-            xtransform_function (function name, ): the name of the function
-                used to transform the model. Defaults to None.
-
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-        """
-        T = self.get_tool0_transformation(T5)
-        return self.tool.get_transformed_model_brep(T)
-
-    def xdraw_brep(self, configuration):
-        """Get the transformed meshes of the robot and the tool model.
-
-    	Args:
-            configuration (:class:`Configuration`): the 6 joint angles in radians
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-    	"""
-        transformations = self.get_forward_transformations(configuration)
-        tmodel = self.get_transformed_model_brep(transformations)
-        if self.tool:
-        	tmodel.append(self.get_transformed_tool_model_brep(transformations[5]))
-        return tmodel
-
-    def forward_kinematics(self, configuration):
-        """Forward kinematics function.
-
-        Args:
-            configuration (:class:`Configuration`): the 6 joint angles in radians
-        Returns:
-            frame (:class:`Frame`): The tool0 frame in robot coordinate system (RCS).
-        """
-
-        return forward_kinematics(configuration.values, self.params)
-
-    def inverse_kinematics(self, tool0_frame_RCS):
-        """Inverse kinematics function.
-        Args:
-            tool0_frame_RCS (:class:`Frame`): The tool0 frame to reach in robot
-                coordinate system (RCS).
-        Returns:
-            configurations (:obj:`list` of :class:`Configuration`): A list
-            of possible configurations.
-        """
-        solutions = inverse_kinematics(tool0_frame_RCS, self.params)
-        configurations = []
-        for joint_values in solutions:
-            configurations.append(Configuration.from_revolute_values(joint_values))
-        return configurations
-
-    '''
-    def _get_transformed_model(self, transformations, xtransform_function=None):
+    def get_transformed_model(self, transformations, xtransform_function=None):
         """Get the transformed meshes of the robot model.
 
         Args:
@@ -341,24 +220,7 @@ class UR(object):
                 tmodel.append(Mesh.from_vertices_and_faces(mtxyz, faces))
         return tmodel
 
-    def _get_transformed_tool_model(self, T5, xtransform_function=None):
-        """Get the transformed meshes of the tool model.
-
-        Args:
-            T5 (:class:`Transformation`): The transformation of the robot's
-                last joint.
-            xtransform_function (function name, ): the name of the function
-                used to transform the model. Defaults to None.
-
-        Returns:
-            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
-                respective class of the CAD environment
-        """
-        T = self.get_tool0_transformation(T5)
-        return self.tool.get_transformed_model(T, xtransform_function)
-
-
-    def _xdraw(self, configuration, xtransform_function=None):
+    def xdraw(self, configuration, xtransform_function=None):
     	"""Get the transformed meshes of the robot and the tool model.
 
     	Args:
@@ -375,4 +237,48 @@ class UR(object):
         if self.tool:
         	tmodel += self.get_transformed_tool_model(transformations[5], xtransform_function)
         return tmodel
-    '''
+
+
+    def get_transformed_tool_model(self, T5, xtransform_function=None):
+        """Get the transformed meshes of the tool model.
+
+        Args:
+            T5 (:class:`Transformation`): The transformation of the robot's
+                last joint.
+            xtransform_function (function name, ): the name of the function
+                used to transform the model. Defaults to None.
+
+        Returns:
+            model (:obj:`list` of :class:`Mesh`): The list of meshes in the
+                respective class of the CAD environment
+        """
+        T = self.get_tool0_transformation(T5)
+        return self.tool.get_transformed_model(T, xtransform_function)
+
+    def forward_kinematics(self, configuration):
+        """Forward kinematics function.
+
+        Args:
+            configuration (:class:`Configuration`): the 6 joint angles in radians
+
+        Returns:
+            frame (:class:`Frame`): The tool0 frame in robot coordinate system (RCS).
+        """
+
+        return forward_kinematics(configuration.values, self.params)
+
+    def inverse_kinematics(self, tool0_frame_RCS):
+        """Inverse kinematics function.
+        Args:
+            tool0_frame_RCS (:class:`Frame`): The tool0 frame to reach in robot
+                coordinate system (RCS).
+
+        Returns:
+            configurations (:obj:`list` of :class:`Configuration`): A list
+                of possible configurations.
+        """
+        solutions = inverse_kinematics(tool0_frame_RCS, self.params)
+        configurations = []
+        for joint_values in solutions:
+            configurations.append(Configuration.from_revolute_values(joint_values))
+        return configurations

@@ -1,9 +1,11 @@
-from __future__ import absolute_import
+from __future__ import print_function
 
 import math
 
-from ur_online_control.ur.configuration import Configuration
-from ur_online_control.ur.ur import UR
+from ur_online_control import get_data
+
+from compas_fab.robots import Configuration
+from .ur import UR
 
 
 class UR5(UR):
@@ -12,28 +14,32 @@ class UR5(UR):
     Manual link:
     #define UR5_PARAMS
     https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp
-    in meters
+    but in mm, not in m
     """
 
     # define UR5_PARAMS
-    d1 = 0.089159
-    a2 = -0.425
-    a3 = -0.39225
-    d4 = 0.10915
-    d5 = 0.09465
-    d6 = 0.0823
+    d1 = 89.159
+    a2 = -425.0
+    a3 = -392.25
+    d4 = 109.15
+    d5 = 94.65
+    d6 = 82.3
 
-    shoulder_offset = 0.13585
-    elbow_offset = -0.1197
+    shoulder_offset = 135.85
+    elbow_offset = -119.7
 
     # The UR has a very simple workspace definition: it is s sphere with a
     # cylinder in the center cut off. The axis of this cylinder is j0, the
     # diameter is defined below. For more info: UR manual.
-    working_area_sphere_diameter = 1.85  # max. working area diameter, recommended 1.7
-    working_area_cylinder_diameter = 0.149
+    working_area_sphere_diameter = 1850.  # max. working area diameter, recommended 1700
+    working_area_cylinder_diameter = 149.
 
     def __init__(self):
         super(UR5, self).__init__()
+
+    def get_model_path(self):
+        print(get_data("robots/ur/ur5"))
+        return get_data("robots/ur/ur5")
 
     def forward_kinematics(self, configuration):
         q = configuration.values[:]

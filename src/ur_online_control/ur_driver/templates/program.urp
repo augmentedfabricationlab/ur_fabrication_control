@@ -1,0 +1,18 @@
+def program():
+	textmsg(">> Entering program.")
+	
+	# --> GLOBALS
+	{GLOBALS}
+
+	# --> METHODS
+	{METHODS}
+	
+	# --> MAIN
+	{MAIN}
+
+	textmsg("<< Exiting program.")
+end
+program()
+
+
+

@@ -1,0 +1,37 @@
+# set the tool
+set_tcp({TOOL})
+
+# globals for online communication
+SERVER_ADDRESS = "{SERVER_ADDRESS}"
+PORT = {PORT}
+RUNNING = False # is set to True when id message is send
+
+ID_MESSAGE = "{NAME}"
+ID_MESSAGE_LENGTH = {NAME_LENGTH}
+
+MM2M = 1000.0 # mm to m
+MULT = 100000.0
+
+# message identifiers
+{MESSAGE_IDENTIFIERS}
+# command identifiers
+{COMMAND_IDENTIFIERS}
+
+# buffer
+MAX_BUFFER_SIZE = 5
+LOCK = 0 # lock for writing / reading into the buffer
+BUFFER_LENGTH = 0
+WRITE_PTR = 0
+READ_PTR = 0
+
+BUFFER_COMMAND = [0,0,0,0,0] # filled with COMMAND_ID_MOVEL, etc.
+BUFFER_COMMAND_COUNTER = [0,0,0,0,0]
+
+GLOBAL_SPEED = 1.0
+
+# unfortunately URScript does not allow 2D arrays, however does allow pose-types within a array
+BUFFER_POSE = [p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0]]
+BUFFER_JOINT = [p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0]]
+# parameters for the commands
+# movel and movej use 0: acc, 1: vel, 2: rad, 3: time, digital_out uses 0: number, 1: value
+BUFFER_PARAMS = [p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0], p[0,0,0,0,0,0]]

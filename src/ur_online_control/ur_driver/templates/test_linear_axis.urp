@@ -1,0 +1,36 @@
+def program():
+	textmsg(">> Entering program.")
+
+	SERVER_ADDRESS = "192.168.10.10"
+	PORT = 2000
+	siemens_socket = "socket0"
+	server_socket = "socket1"
+	timeout_value = 2
+
+	def linear_axis_get_x(siemens_socket):
+		socket_send_string("POS_X\n", siemens_socket)
+		#xvalue = socket_read_string(siemens_socket, prefix="", suffix="\n", interpret_escape=True, timeout=timeout_value)
+		sleep(1)
+		#xvalue = socket_read_string(siemens_socket, prefix="", suffix="\n")
+		xvalue = socket_read_string(siemens_socket, prefix="POS_X ")
+		textmsg(xvalue[0])
+		#intval = 0
+		#intval = intval + int(xvalue)
+		#textmsg(intval)
+		return xvalue
+	end
+
+	success = socket_open(SERVER_ADDRESS, PORT, siemens_socket)
+	textmsg(success)
+	linear_axis_get_x(siemens_socket)
+	#linear_axis_get_z(siemens_socket)
+
+	socket_close(siemens_socket)
+
+	
+	textmsg("<< Exiting program.")
+end
+program()
+
+
+

@@ -1,0 +1,29 @@
+# connect to server
+success = socket_open(SERVER_ADDRESS, PORT)
+if success:
+	send_id_message()
+	textmsg("Successfully established connection to the server.")
+
+	# start the threads
+	thread_execute = run thread_execute_from_buffer()
+	thread_publish = run thread_publish_state()
+
+
+	# the main loop
+	while RUNNING == True:
+		if BUFFER_LENGTH < MAX_BUFFER_SIZE:
+			leave = read_and_identify()
+			if leave:
+				RUNNING = False
+				break
+			end
+		end
+		sync()
+	end
+
+	kill thread_execute
+	kill thread_publish
+	socket_close()
+else:
+	textmsg("Cannot connect to the server.")
+end
