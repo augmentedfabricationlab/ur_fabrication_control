@@ -57,7 +57,7 @@ def main():
         time.sleep(1)
         ur.send_command_airpick(False) #send vac grip off
 
-        ur.send_command_movel([100.+counter,100.,100.,0.,0.,0.], v=10., a=10.)
+        ur.send_command_movel([0.5.+counter, 0.5, 0.5, 0., 0., 0.], v=10., a=10.) # move to a location
         ur.wait_for_ready()
 
         counter += 0.01
