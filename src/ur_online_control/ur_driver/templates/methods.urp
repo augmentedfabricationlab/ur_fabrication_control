@@ -125,8 +125,11 @@ def read_and_identify():
 				BUFFER_JOINT[WRITE_PTR] = p[params[1]/(MULT), params[2]/(MULT), params[3]/(MULT), params[4]/MULT, params[5]/MULT, params[6]/MULT]
 				BUFFER_PARAMS[WRITE_PTR] = p[params[7]/(MM2M*MULT), params[8]/(MM2M*MULT), params[9]/(MM2M*MULT), params[10]/MULT, 0, 0]
 			elif msg_command_id == COMMAND_ID_DIGITAL_OUT:
-				params = socket_read_binary_integer(1 + 1)
+				params = socket_read_binary_integer(1)
 				BUFFER_PARAMS[WRITE_PTR] = p[params[1], params[2], 0, 0, 0, 0] # number, boolean
+			elif msg_command_id == COMMAND_ID_AIRPICK:
+				params = socket_read_binary_integer(1)
+				BUFFER_PARAMS[WRITE_PTR] = p[params[1], 0, 0, 0, 0, 0] # boolean
 			elif msg_command_id == COMMAND_ID_WAIT:
 				params = socket_read_binary_integer(1)
 				#textmsg(params[1])
@@ -245,6 +248,14 @@ def execute_from_buffer():
 			set_digital_out(number, True)
 		else:
 			set_digital_out(number, False)
+		end
+	elif msg_command_id == COMMAND_ID_AIRPICK:
+		params = BUFFER_PARAMS[READ_PTR]
+		value = params[0]
+		if value == 1:
+			set_airpick_on(True)
+		else:
+			set_airpick_off(False)
 		end
 	elif msg_command_id == COMMAND_ID_WAIT:
 		params = BUFFER_PARAMS[READ_PTR]

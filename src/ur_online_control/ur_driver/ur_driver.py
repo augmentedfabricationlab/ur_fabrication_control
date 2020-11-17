@@ -26,6 +26,7 @@ def generate_ur_program():
     
     globals_file = os.path.join(path, "globals.urp")
     methods_file = os.path.join(path, "methods.urp")
+    airpick_methods_file = os.path.join(path, "airpick_methods.urp")
     main_file = os.path.join(path, "main.urp")
     program_file = os.path.join(path, "program.urp")
        
