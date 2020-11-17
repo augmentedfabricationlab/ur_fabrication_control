@@ -63,7 +63,7 @@ class BaseClientSocket(object):
         if len(self.msg_rcv) < 4:
             return
         msg_length = struct.unpack_from(self.byteorder + "i", self.msg_rcv, 0)[0]
-        print("msg_length: ", msg_length)
+        #print("msg_length: ", msg_length)
 
         # TODO: how to check this better?
         if not self.byteorder_isset:

@@ -55,6 +55,10 @@ def main():
         time.sleep(1)
         ur.wait_for_ready()
 
+        x, y, z, ax, ay, az, speed, acc = [1,2,3,4,5,6,7,8]
+        ur.send_command_movel([x, y, z, ax, ay, az], v=speed, a=acc)
+        ur.wait_for_ready()
+
         print("============================================================")
         
     ur.quit()

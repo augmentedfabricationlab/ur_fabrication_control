@@ -47,9 +47,10 @@ class URClient(BaseClient):
             msg = struct.unpack_from(self.byteorder + "%ii" % int((msg_len-4)/4), raw_msg)
             cmd_id = msg[0]
             counter = msg[1]
-            print(counter)
+            print("cmd_id: ", cmd_id)
+            print("counter: ", counter)
             self.send_command_received(counter)
-            time.sleep(0.5)
+            time.sleep(1)
             self.send_command_executed(counter)
         else:
             self.stdout("Message identifier unknown: %d, message: %s" % (msg_id, raw_msg))
