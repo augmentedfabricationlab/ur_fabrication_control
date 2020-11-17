@@ -46,13 +46,21 @@ def main():
     ur.wait_for_connected()
 
     # now enter fabrication loop
+    counter = 0
     while True: # and ur and gh connected
 
-        # send test cmd
-        ur.send_command_digital_out(2, True) # open tool
-        ur.send_command_digital_out(2, False) # close tool
-        ur.send_command_movel([100,100,100,0,0,0], v=10, a=20)
+        # send test cmds
+        # ur.send_command_digital_out(2, True) # open tool
+        # ur.send_command_digital_out(2, False) # close tool
+
+        ur.send_command_airpick(True) #send vac grip on
+        time.sleep(1)
+        ur.send_command_airpick(False) #send vac grip off
+
+        ur.send_command_movel([100.+counter,100.,100.,0.,0.,0.], v=10., a=10.)
         ur.wait_for_ready()
+
+        counter += 0.01
 
         print("============================================================")
         

@@ -252,8 +252,8 @@ class ActuatorSocket(BaseClientSocket):
 
 class URSocket(ActuatorSocket):
 
-    #MULT = 100000.0 # for converting the integers to floats #py2.7
-    MULT = 100000 # for converting the integers to floats 
+    MULT = 100000.0 # for converting the integers to floats
+    
 
     def __init__(self, socket, ip, parent):
         super(URSocket, self).__init__(socket, ip, parent)
@@ -278,7 +278,7 @@ class URSocket(ActuatorSocket):
 
         if command_id in [COMMAND_ID_MOVEL, COMMAND_ID_MOVEJ]:
             msg_command_length = 4 * (len(cmd) + 1 + 1 + 1) # + msg_id, command_id, command_counter
-            cmd = [c * self.MULT for c in cmd]
+            cmd = [int(c * self.MULT) for c in cmd]
             params = [msg_command_length, msg_id, command_id, self.command_counter] + cmd
         
         elif command_id == COMMAND_ID_MOVEC:
@@ -290,15 +290,19 @@ class URSocket(ActuatorSocket):
         elif command_id == COMMAND_ID_DIGITAL_OUT:
             msg_command_length = 4 * (len(cmd) + 1 + 1 + 1) # + msg_id, command_id, command_counter
             params = [msg_command_length, msg_id, command_id, self.command_counter] + cmd
+        
+        elif command_id == COMMAND_ID_AIRPICK:
+            msg_command_length = 4 * (len(cmd) + 1 + 1 + 1) # + msg_id, command_id, command_counter
+            params = [msg_command_length, msg_id, command_id, self.command_counter] + cmd
 
         elif command_id == COMMAND_ID_WAIT:
             msg_command_length = 4 * (len(cmd) + 1 + 1 + 1)
-            cmd = [c * self.MULT for c in cmd]
+            cmd = [int(c * self.MULT) for c in cmd]
             params = [msg_command_length, msg_id, command_id, self.command_counter] + cmd
         
         elif command_id == COMMAND_ID_TCP:
             msg_command_length = 4 * (len(cmd) + 1 + 1 + 1)
-            cmd = [c * self.MULT for c in cmd]
+            cmd = [int(c * self.MULT) for c in cmd]
             params = [msg_command_length, msg_id, command_id, self.command_counter] + cmd
             
         elif command_id == COMMAND_ID_POPUP:
@@ -320,7 +324,7 @@ class URSocket(ActuatorSocket):
     
     def _format_tcp(self, msg_id, msg):
         msg_command_length = 4 * (len(msg) + 1)
-        msg = [c * self.MULT for c in msg]
+        msg = [int(c * self.MULT) for c in msg]
         params = [msg_command_length, msg_id] + msg
         buf = struct.pack(self.byteorder + "%ii" % len(params), *params)
         return buf

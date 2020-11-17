@@ -118,6 +118,9 @@ class ClientWrapper(object):
 
     def send_command_digital_out(self, number, boolean):
         self.send_command(COMMAND_ID_DIGITAL_OUT, [number, int(boolean)])
+    
+    def send_command_airpick(self, boolean):
+        self.send_command(COMMAND_ID_AIRPICK, [int(boolean)])
 
     def send_command_wait(self, time_to_wait_in_seconds):
         self.send_command(COMMAND_ID_WAIT, [time_to_wait_in_seconds])
