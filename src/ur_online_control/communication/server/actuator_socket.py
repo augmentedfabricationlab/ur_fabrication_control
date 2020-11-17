@@ -252,7 +252,8 @@ class ActuatorSocket(BaseClientSocket):
 
 class URSocket(ActuatorSocket):
 
-    MULT = 100000.0 # for converting the integers to floats
+    #MULT = 100000.0 # for converting the integers to floats #py2.7
+    MULT = 100000 # for converting the integers to floats 
 
     def __init__(self, socket, ip, parent):
         super(URSocket, self).__init__(socket, ip, parent)

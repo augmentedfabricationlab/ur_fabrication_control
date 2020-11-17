@@ -50,13 +50,8 @@ def main():
 
         # send test cmd
         ur.send_command_digital_out(2, True) # open tool
-        time.sleep(1)
         ur.send_command_digital_out(2, False) # close tool
-        time.sleep(1)
-        ur.wait_for_ready()
-
-        x, y, z, ax, ay, az, speed, acc = [1,2,3,4,5,6,7,8]
-        ur.send_command_movel([x, y, z, ax, ay, az], v=speed, a=acc)
+        ur.send_command_movel([100,100,100,0,0,0], v=10, a=20)
         ur.wait_for_ready()
 
         print("============================================================")

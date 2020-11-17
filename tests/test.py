@@ -13,3 +13,13 @@ order = byteorder + "2i" + str(len(msg)) +  "s"
 print(order)
 buf = struct.pack(order, *params)
 print(buf)
+
+MULT = 100000.
+pose_cartesian = [1,2,3,4,5,6] 
+a, v, r, t = [7,8,9,10]
+cmd = pose_cartesian + [a, v, r, t]
+msg_command_length = 4 * (len(cmd) + 1 + 1 + 1) # + msg_id, command_id, command_counter
+cmd = [c * MULT for c in cmd]
+params = [msg_command_length, 2, 1, 0] + cmd
+buf = struct.pack(byteorder + "%ii" % len(params), *params)
+print(buf)
