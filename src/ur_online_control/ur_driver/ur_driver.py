@@ -5,8 +5,15 @@ Created on 22.11.2016
 '''
 import os
 import socket
+import sys
 from ur_online_control.communication import msg_identifier_dict, command_identifier_dict
 from ur_online_control.utilities import read_file_to_string, read_file_to_list
+
+if (sys.version_info > (3, 0)):
+    python_version = 3
+else:
+    python_version = 2
+
 
 # https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/
 UR_SERVER_PORT = 30002
@@ -41,8 +48,12 @@ def generate_ur_program():
     main_str = "\t".join(main_list)
     
     # globals
-    msg_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in msg_identifier_dict.items()])
-    command_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in command_identifier_dict.items()])
+    if python_version == 2:
+        msg_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in msg_identifier_dict.iteritems()])
+        command_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in command_identifier_dict.iteritems()])
+    else:
+        msg_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in msg_identifier_dict.items()])
+        command_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in command_identifier_dict.items()])
     
     globals_str = globals_str.replace("{MESSAGE_IDENTIFIERS}", msg_identifier_str)
     globals_str = globals_str.replace("{COMMAND_IDENTIFIERS}", command_identifier_str)

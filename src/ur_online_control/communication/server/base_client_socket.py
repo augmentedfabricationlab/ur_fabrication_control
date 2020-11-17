@@ -26,8 +26,9 @@ class BaseClientSocket(object):
         self.ip = ip
         self.parent = parent
 
-        #self.msg_rcv = b""
-        self.msg_rcv = ""
+        # self.msg_rcv = "" #py2.7
+        self.msg_rcv = b''
+
         self.byteorder = "!" # "!" network, ">" big-endian, "<" for little-endian, see http://docs.python.org/2/library/struct.html
         #self.byteorder = "<"
 
@@ -57,11 +58,12 @@ class BaseClientSocket(object):
         [length msg in bytes] [msg identifier] [other bytes which will be read out according to msg identifier] '''
 
         # 1. read msg length
-        self.msg_rcv += self.socket.recv(4)
+        self.msg_rcv += self.socket.recv(4)#.decode('utf-8') #msg = msg.decode('utf-8')
 
         if len(self.msg_rcv) < 4:
             return
         msg_length = struct.unpack_from(self.byteorder + "i", self.msg_rcv, 0)[0]
+        print("msg_length: ", msg_length)
 
         # TODO: how to check this better?
         if not self.byteorder_isset:
@@ -72,7 +74,7 @@ class BaseClientSocket(object):
             self.byteorder_isset = True
 
         # 2. read msg according to msg_length
-        self.msg_rcv += self.socket.recv(msg_length)
+        self.msg_rcv += self.socket.recv(msg_length)#.decode('utf-8')
         if len(self.msg_rcv) < (msg_length + 4):
             return
 
@@ -118,8 +120,8 @@ class BaseClientSocket(object):
 
         if msg_id == MSG_IDENTIFIER:
             #message_ids = str(raw_msg).split(" ")
-            #identifier = raw_msg.decode(encoding='UTF-8')
-            self.identifier = str(raw_msg)
+            #self.identifier = str(raw_msg) #py2.7
+            self.identifier = raw_msg.decode(encoding='UTF-8')
             self.stdout("Received identifier.")
             self.publish_queues()
             self.publish_client()
@@ -129,7 +131,8 @@ class BaseClientSocket(object):
             self._process_msg_float_list(msg_float_list)
 
         elif msg_id == MSG_STRING:
-            msg = str(raw_msg)
+            #msg = str(raw_msg) #py2.7
+            msg = raw_msg.decode(encoding='UTF-8')
             self._process_msg_string(msg)
 
         elif msg_id == MSG_INT:

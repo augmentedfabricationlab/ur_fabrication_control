@@ -29,7 +29,8 @@ class BaseClient(object):
         self.port = port
         self.byteorder = "!" # "!" network, ">" big-endian, "<" for little-endian, see http://docs.python.org/2/library/struct.html
 
-        self.msg_rcv = ""
+        # self.msg_rcv = "" #py2.7
+        self.msg_rcv = b''
 
         self.snd_queue = Queue()
         self.rcv_queue = Queue()
@@ -136,17 +137,20 @@ class BaseClient(object):
 
         buf = None
 
+
         if msg_id == MSG_FLOAT_LIST:
             msg_snd_len = struct.calcsize(str(len(msg)) + "f") + 4 # float array: length of message in bytes: len*4
             params = [msg_snd_len, msg_id] + msg
             buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "f", *params)
 
         elif msg_id == MSG_IDENTIFIER:
+            msg = msg.encode('utf-8')
             msg_snd_len = len(msg) + 4
             params = [msg_snd_len, msg_id, msg]
             buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "s", *params)
 
         elif msg_id == MSG_STRING:
+            msg = msg.encode('utf-8')
             msg_snd_len = len(msg) + 4
             params = [msg_snd_len, msg_id, msg]
             buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "s", *params)
@@ -193,7 +197,8 @@ class BaseClient(object):
         raw_msg = self.msg_rcv[4:]
 
         # reset msg_rcv
-        self.msg_rcv = ""
+        # self.msg_rcv = "" #py2.7
+        self.msg_rcv = b''
 
         # 4. pass message id and raw message to process method
         self.process(msg_length, msg_id, raw_msg)

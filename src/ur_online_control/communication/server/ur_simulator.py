@@ -56,7 +56,7 @@ class URClient(BaseClient):
 
                 
 if __name__ == "__main__":
-    server_address = "192.168.10.12"
+    #server_address = "192.168.10.12"
     server_address = "127.0.0.1"
     server_port = 30003
     client = URClient(server_address, server_port)
