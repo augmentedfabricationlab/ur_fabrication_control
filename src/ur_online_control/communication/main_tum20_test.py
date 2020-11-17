@@ -55,17 +55,20 @@ def main():
         # ur.send_command_digital_out(2, False) # close tool
 
         ur.send_command_airpick(True) #send vac grip on
-        time.sleep(1)
+        ur.wait_for_ready()
+        
         ur.send_command_airpick(False) #send vac grip off
-
-        ur.send_command_movel([0.5+counter, 0.5, 0.5, 0., 0., 0.], v=10., a=10.) # move to a location
         ur.wait_for_ready()
 
         counter += 0.01
+        ur.send_command_movel([0.5+counter, 0.5, 0.5, 0., 0., 0.], v=10., a=10.) # move to a location
+        ur.wait_for_ready()
 
+        
+        # read out joint values from the rcv_queue
         current_pose_joints_queue = ur.rcv_queues[MSG_CURRENT_POSE_JOINT]
         current_pose_joint = current_pose_joints_queue.get_nowait()
-        print(current_pose_joint)
+        print("current pose joint: ", current_pose_joint)
 
         print("============================================================")
         

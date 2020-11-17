@@ -14,6 +14,7 @@ class URClient(BaseClient):
     def __init__(self, host = '127.0.0.1', port = 30003): 
         super(URClient, self).__init__("UR", host, port)
         self.ghenv = None
+        self.num = 0
     
     def stdout(self, msg):
         print(msg)
@@ -25,8 +26,10 @@ class URClient(BaseClient):
         self._send(MSG_COMMAND_EXECUTED, counter)
     
     def send_joint_state(self, counter):
-        joints = [random.random() for i in range(6)]
-        print(joints)
+        self.num += 0.01
+        MULT=100000.
+        #joints = [int(random.random()*MULT) for i in range(6)]
+        joints = [int(self.num*MULT) for i in range(6)]
         self._send(MSG_CURRENT_POSE_JOINT, joints)
         
     def _format_other_messages(self, msg_id, msg = None):
@@ -38,29 +41,20 @@ class URClient(BaseClient):
     
     def _process_other_messages(self, msg_len, msg_id, raw_msg):
         if msg_id == MSG_COMMAND:
-            
-            """
-            msg_length = rcv[1]
-            msg_id = rcv[2]
-            if msg_id == MSG_COMMAND:
-            rcv2 = socket_read_binary_integer(2)
-            msg_command_id = rcv2[1]
-            command_counter = rcv2[2]
-            
-            msg_float_tuple = struct.unpack_from(self.byteorder + str((msg_len-4)/4) + "f", raw_msg)
-            """
+        
             self.stdout("Received MSG_COMMAND")
             msg = struct.unpack_from(self.byteorder + "%ii" % int((msg_len-4)/4), raw_msg)
             cmd_id = msg[0]
             counter = msg[1]
+            rmsg = msg[2:]
+            
             print("cmd_id: ", cmd_id)
             print("counter: ", counter)
-            print("msg: ", msg[2:])
+            print("msg: ", rmsg)
 
             self.send_command_received(counter)
             time.sleep(1)
             self.send_command_executed(counter)
-            time.sleep(1)
             self.send_joint_state(counter)
         else:
             self.stdout("Message identifier unknown: %d, message: %s" % (msg_id, raw_msg))

@@ -144,9 +144,9 @@ class BaseClient(object):
             buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "f", *params)
         
         elif msg_id == MSG_CURRENT_POSE_JOINT: #for testing with UR simulator
-            msg_snd_len = struct.calcsize(str(len(msg)) + "f") + 4 # float array: length of message in bytes: len*4
+            msg_snd_len = struct.calcsize(str(len(msg)) + "i") + 4 # float array: length of message in bytes: len*4
             params = [msg_snd_len, msg_id] + msg
-            buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "f", *params)
+            buf = struct.pack(self.byteorder + "2i" + str(len(msg)) +  "i", *params)
 
         elif msg_id == MSG_IDENTIFIER:
             msg = msg.encode('utf-8')
@@ -177,7 +177,8 @@ class BaseClient(object):
                 return
 
         self.socket.send(buf)
-        self.stdout("Sent message %i with length %i." % (msg_id, len(buf)))
+        self.stdout("Sent message ID %i with length %i." % (msg_id, len(buf)))
+        self.stdout("Message: %s" % (msg))
 
 
     def read(self):
