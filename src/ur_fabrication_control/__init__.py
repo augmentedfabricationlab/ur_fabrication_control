@@ -22,7 +22,6 @@ Describe typical classes found in project
 
 from .communication import *
 from .fabrication_process import*
-from .ur import *
 from .ur_direct import *
 from .utilities import *
 

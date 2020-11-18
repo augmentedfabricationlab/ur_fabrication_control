@@ -4,8 +4,8 @@ import math
 
 #from compas_fab.utilities import sign
 #from compas_fab.robots import Configuration #from ..robot import BaseConfiguration
-from ur_online_control.ur.kinematics.utilities import sign
-from ur_online_control.ur.configuration import Configuration
+from ur_fabrication_control.ur.kinematics.utilities import sign
+from ur_fabrication_control.ur.configuration import Configuration
 
 
 def format_joint_positions(joint_positions_a, joint_positions_b = [0,0,0,0,0,0]):

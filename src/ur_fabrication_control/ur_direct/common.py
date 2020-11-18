@@ -2,8 +2,8 @@ from __future__ import absolute_import
 import os
 import socket
 import time
-from ur_online_control.ur_direct.structure import URCommandScript
-from ur_online_control.communication import TCPFeedbackServer
+from ur_fabrication_control.ur_direct.structure import URCommandScript
+from ur_fabrication_control.communication import TCPFeedbackServer
 
 __all__ = [
     'is_available',

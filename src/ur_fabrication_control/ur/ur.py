@@ -14,11 +14,11 @@ from compas.geometry import Transformation
 
 #from compas_ghpython.geometry.xforms import xform_from_transformation
 from compas_ghpython.geometry.xforms import xtransformed
-from ur_online_control.ur.configuration import Configuration
+from ur_fabrication_control.ur.configuration import Configuration
 
-from ur_online_control.ur.kinematics import forward_kinematics
-from ur_online_control.ur.kinematics import inverse_kinematics
-from ur_online_control.ur.tool import Tool
+from ur_fabrication_control.ur.kinematics import forward_kinematics
+from ur_fabrication_control.ur.kinematics import inverse_kinematics
+from ur_fabrication_control.ur.tool import Tool
 
 class UR(object):
     """The UR robot class.

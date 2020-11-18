@@ -2,8 +2,8 @@ from __future__ import absolute_import
 
 import math
 
-from ur_online_control.ur.configuration import Configuration
-from ur_online_control.ur.ur import UR
+from ur_fabrication_control.ur.configuration import Configuration
+from ur_fabrication_control.ur.ur import UR
 
 
 class UR10e(UR):

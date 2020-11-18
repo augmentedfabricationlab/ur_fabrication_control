@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 import os
-from ur_online_control.utilities import read_file_to_string
+from ur_fabrication_control.utilities import read_file_to_string
 
 
 class AirpickMixins:
