@@ -54,7 +54,7 @@ def generate_ur_program():
     else:
         msg_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in msg_identifier_dict.items()])
         command_identifier_str = "\n\t".join(["%s = %i" % (k, v) for k, v in command_identifier_dict.items()])
-    
+
     globals_str = globals_str.replace("{MESSAGE_IDENTIFIERS}", msg_identifier_str)
     globals_str = globals_str.replace("{COMMAND_IDENTIFIERS}", command_identifier_str)
 
@@ -120,11 +120,11 @@ if __name__ == "__main__":
 
     server_ip = "192.168.10.11"
     server_port = 30003
-    tool_angle_axis = [0.0, 0.0, 115.6, 0.234, 1.57, 0.0]
-    name = "UR10"
+    tool_angle_axis = [0.0, 0.0, 0.109, 0.0, 0.0, 0.0]
+    name = "UR"
     ur_ip = "192.168.10.20"
 
-    ur_driver = URDriver(server_ip, server_port, tool_angle_axis, ur_ip, "UR10")
+    ur_driver = URDriver(server_ip, server_port, tool_angle_axis, ur_ip, name)
 
 
     #print(ur_driver)
