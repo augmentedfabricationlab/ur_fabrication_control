@@ -9,7 +9,8 @@ RUNNING = False # is set to True when id message is send
 ID_MESSAGE = "{NAME}"
 ID_MESSAGE_LENGTH = {NAME_LENGTH}
 
-MM2M = 1000.0 # mm to m
+# MM2M = 1000.0 # mm to m
+MM2M = 1.0 # mm to m
 MULT = 100000.0
 
 # message identifiers
