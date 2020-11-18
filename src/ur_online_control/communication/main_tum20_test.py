@@ -27,10 +27,10 @@ if len(sys.argv) > 1:
     print(sys.argv)
 else:
     #server_address = "192.168.10.12"
-    server_address = "127.0.0.1"
+    server_address = "192.168.10.11"
     server_port = 30003
     #ur_ip = "192.168.10.11"
-    ur_ip = "127.0.0.1"
+    ur_ip = "192.168.10.20"
 
 
 def main():
@@ -51,27 +51,36 @@ def main():
     while True: # and ur and gh connected
 
         # send test cmds
-        # ur.send_command_digital_out(2, True) # open tool
-        # ur.send_command_digital_out(2, False) # close tool
+        ur.send_command_digital_out(2, True) # open tool
+        ur.wait_for_ready()
+        ur.send_command_digital_out(2, False) # close tool
+        ur.wait_for_ready()
 
+        """
         ur.send_command_airpick(True) #send vac grip on
         ur.wait_for_ready()
-        
+
         ur.send_command_airpick(False) #send vac grip off
         ur.wait_for_ready()
 
         counter += 0.01
-        ur.send_command_movel([0.5+counter, 0.5, 0.5, 0., 0., 0.], v=10., a=10.) # move to a location
+        ur.send_command_movel([-0.78012+counter, 0.1214, 0.13928, 0.97972, -1.06629, 1.18038], v=0.1, a=1.2) # move to a location
         ur.wait_for_ready()
+        """
 
-        
         # read out joint values from the rcv_queue
         current_pose_joints_queue = ur.rcv_queues[MSG_CURRENT_POSE_JOINT]
         current_pose_joint = current_pose_joints_queue.get_nowait()
         print("current pose joint: ", current_pose_joint)
 
+        # read out pose cartesian from the rcv_queue
+        current_pose_cartesian_queue = ur.rcv_queues[MSG_CURRENT_POSE_CARTESIAN]
+        current_pose_cartesian = current_pose_cartesian_queue.get_nowait()
+        print("current pose cartesian: ", current_pose_cartesian)
+
+
         print("============================================================")
-        
+
     ur.quit()
     server.close()
 
