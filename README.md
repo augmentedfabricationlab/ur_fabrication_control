@@ -71,13 +71,7 @@ and set accordingly:
  
  then you can configure a new moveit package via
  
-    roslaunch moveit_setup_assistant setup_assistant.launch
-    
- Careful: Moveit Collision Matrix for ABB lacks closeness of link 4 and 6, therefore these lines have to be added manually to the srdf file:
- 
-     <disable_collisions link1="robotA_link_4" link2="robotA_link_6" reason="User"/>
-     <disable_collisions link1="robotB_link_4" link2="robotB_link_6" reason="User"/>
- 
+    roslaunch moveit_setup_assistant setup_assistant.launch 
  
  Then run again `catkin_make` and `source devel/setup.bash` and run your moveit demo pacakge:
  
