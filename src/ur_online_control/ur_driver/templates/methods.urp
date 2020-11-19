@@ -233,7 +233,9 @@ def execute_from_buffer():
 		my_movel(pose, acc, vel, rad, time)
 	elif msg_command_id == COMMAND_ID_MOVEJ:
 		jp = BUFFER_JOINT[READ_PTR]
+		textmsg(jp)
 		joints = [jp[0], jp[1], jp[2], jp[3], jp[4], jp[5]]
+		textmsg(joints)
 		params = BUFFER_PARAMS[READ_PTR]
 		acc = params[0]
 		vel = params[1] * GLOBAL_SPEED
