@@ -12,7 +12,7 @@ import random
 class URClient(BaseClient):
     
     def __init__(self, host = '127.0.0.1', port = 30003): 
-        super(URClient, self).__init__("UR10", host, port)
+        super(URClient, self).__init__("UR", host, port)
         self.ghenv = None
         self.num = 0
     

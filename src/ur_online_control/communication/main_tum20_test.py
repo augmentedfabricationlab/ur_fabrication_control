@@ -62,11 +62,12 @@ def main():
 
         ur.send_command_airpick(False) #send vac grip off
         ur.wait_for_ready()
-
+        """
+        
         counter += 0.01
         ur.send_command_movel([-0.78012+counter, 0.1214, 0.13928, 0.97972, -1.06629, 1.18038], v=0.1, a=1.2) # move to a location
         ur.wait_for_ready()
-        """
+        
 
         # read out joint values from the rcv_queue
         current_pose_joints_queue = ur.rcv_queues[MSG_CURRENT_POSE_JOINT]

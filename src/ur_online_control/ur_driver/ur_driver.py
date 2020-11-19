@@ -101,7 +101,8 @@ class URDriver(object):
 
 
     def _format_pose(self, pose):
-        mm2m = 1000.
+        #mm2m = 1000.
+        mm2m = 1.0
         x, y, z, ax, ay, az = pose
         return "p[%.6f, %.6f, %.6f, %.4f, %.4f, %.4f]" % (x/mm2m, y/mm2m, z/mm2m, ax, ay, az)
 
