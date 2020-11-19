@@ -201,12 +201,18 @@ def my_movel(pose, acc, vel, rad, time):
 end
 
 def my_movej(joints, acc, vel, rad, time):
+
+	textmsg(acc)
+	textmsg(vel)
+	textmsg(rad)
+	textmsg(time)
+	
 	if vel != 0:
 		if rad != 0:
 			movej(joints, v=vel, r=rad)
 		else:
 			if acc != 0:
-				movej(joints, v=vel, a=acc)
+				movej(joints, a=acc, v=vel)
 			else:
 				movej(joints, v=vel)
 			end

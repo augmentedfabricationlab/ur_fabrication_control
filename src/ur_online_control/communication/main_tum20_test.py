@@ -63,9 +63,11 @@ def main():
         ur.send_command_airpick(False) #send vac grip off
         ur.wait_for_ready()
         """
-        
+
         counter += 0.01
-        ur.send_command_movel([-0.78012+counter, 0.1214, 0.13928, 0.97972, -1.06629, 1.18038], v=0.1, a=1.2) # move to a location
+        #ur.send_command_movel([-0.78012+counter, 0.1214, 0.13928, 0.97972, -1.06629, 1.18038], v=0.1, a=1.2) # move to a location
+        ur.send_command_movej([-1.765, -1.268, 2.373, 3.608, -1.571, -3.336], v=.1, a=.1)
+        
         ur.wait_for_ready()
         
 
