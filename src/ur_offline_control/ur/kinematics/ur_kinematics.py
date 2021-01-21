@@ -5,8 +5,8 @@ from compas.geometry import Frame
 #from compas_fab.utilities import argsort
 #from compas_fab.utilities import sign
 
-from ur_fabrication_control.ur.kinematics.ur_kin_ros import forward_ros
-from ur_fabrication_control.ur.kinematics.ur_kin_ros import inverse_ros
+from ur_offline_control.ur.kinematics.ur_kin_ros import forward_ros
+from ur_offline_control.ur.kinematics.ur_kin_ros import inverse_ros
 
 def inverse_kinematics(frame, ur_params, q6_des=0.0):
     """Inverse kinematics function.

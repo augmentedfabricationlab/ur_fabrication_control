@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import math
 
-from ur_fabrication_control.ur.ur import UR
+from ur_offline_control.ur.ur import UR
 
 
 class UR10(UR):
