@@ -21,8 +21,8 @@ Describe typical classes found in project
 """
 
 from .communication import *
-from .fabrication_process import*
-from .ur_direct import *
-from .utilities import *
+from .mixins import*
+from .common import *
+from .urscript import *
 
 __all__ = []

@@ -1,18 +1,29 @@
-'''
-Created on 09.10.2017
+"""
 
-@author: rustr
-'''
-import os
-
-HERE = os.path.dirname(__file__)
-DATA = os.path.abspath(os.path.join(HERE, 'data'))
+Intro to project ...
 
 
-def _find_resource(filename):
-    filename = filename.strip('/')
-    return os.path.abspath(os.path.join(DATA, filename))
+Setup
+=====
+
+In order to use this library, ...
 
 
-def get_data(filename):
-    return _find_resource(filename)
+Main concepts
+=============
+
+Describe typical classes found in project
+
+.. autoclass:: SampleClassName
+   :members:
+
+
+"""
+
+from .communication import *
+from .fabrication_process import*
+from .ur import *
+from .ur_direct import *
+from .ur_driver import *
+
+__all__ = []

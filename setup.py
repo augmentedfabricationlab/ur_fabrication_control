@@ -25,7 +25,7 @@ def read(*names, **kwargs):
 
 
 about = {}
-exec(read('src', 'ur_fabrication_control', '__version__.py'), about)
+exec(read('src', '__version__.py'), about)
 
 setup(
     name=about['__title__'],

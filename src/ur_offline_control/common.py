@@ -2,17 +2,17 @@ from __future__ import absolute_import
 import os
 import socket
 import time
-from ur_offline_control.ur_direct.structure import URCommandScript
-from ur_offline_control.communication import TCPFeedbackServer
+from .urscript import URScript
+from .communication import TCPFeedbackServer
 
 __all__ = [
     'is_available',
     'send_script',
-    'stop',
+    'send_stop',
     'generate_moves_linear',
     'generate_script_pick_and_place_block',
-    'airpick_toggle',
-    'areagrip_toggle',
+    'generate_airpick_toggle',
+    'generate_areagrip_toggle',
     'get_current_pose_cartesian',
     'get_current_pose_joints'
 ]
@@ -42,7 +42,7 @@ def send_script(script, ip, port=30002):
         s.close()
 
 
-def stop(ip, port):
+def send_stop(ip, port):
     ur_cmds = URCommandScript(ur_ip=ip, ur_port=port)
     ur_cmds.start()
     ur_cmds.add_line("\tstopl(0.5)")
@@ -51,25 +51,24 @@ def stop(ip, port):
     ur_cmds.send_script()
 
 
-def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, feedback=None, server_ip=None, server_port=None):
+def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None):
     """Script for a linear movement(s)"""
     ur_cmds = URCommandScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
     if type(move_commands[0]) == list:
-        [ur_cmds.add_move_linear(move_command, feedback) for move_command in move_commands]
+        [ur_cmds.add_move_linear(move_command) for move_command in move_commands]
     else:
-        ur_cmds.add_move_linear(move_commands, feedback)
+        ur_cmds.add_move_linear(move_commands)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
 
 
-def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, feedback=None, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
+def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
     """Script for multiple linear movements and airpick on and off commands"""
     ur_cmds = URCommandScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
-    ur_cmds.feedback = True
     ur_cmds.add_airpick_commands()
     ur_cmds.set_tcp(tcp)
     for i, command in enumerate(move_commands):
@@ -79,13 +78,13 @@ def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, fee
             ur_cmds.airpick_off()
         else:
             pass
-        ur_cmds.add_move_linear(command, feedback)
+        ur_cmds.add_move_linear(command)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
 
 
-def airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, detect=True, pressure=55, timeout=55):
+def generate_airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, detect=True, pressure=55, timeout=55):
     """Script to toggle the airpick on/off"""
     ur_cmds = URCommandScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
@@ -98,7 +97,7 @@ def airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, detect=True, 
     ur_cmds.generate()
     return ur_cmds
 
-def areagrip_toggle(toggle, ur_ip, ur_port, sleep):
+def generate_areagrip_toggle(toggle, ur_ip, ur_port, sleep):
     """Script to toggle the airpick on/off"""
     ur_cmds = URCommandScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()

@@ -1,4 +1,4 @@
-__title__ = 'ur_offline_control'
+__title__ = 'ur_fabrication_control'
 __description__ = 'A short description of the project'
 __url__ = 'https://github.com/augmentedfabricationlab/ur_fabrication_control'
 __version__ = '0.1.0'

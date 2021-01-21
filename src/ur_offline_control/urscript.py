@@ -1,14 +1,14 @@
 from __future__ import absolute_import
 import os
 import socket
-from ur_offline_control.ur_direct.mixins.airpick_mixins import AirpickMixins
+from mixins.airpick_mixins import AirpickMixins
 
 __all__ = [
-    'URCommandScript'
+    'URScript'
 ]
 
 
-class URCommandScript(AirpickMixins):
+class URScript():
     """Class containing commands for the UR Robot system"""
     def __init__(self, server_ip=None, server_port=None, ur_ip=None, ur_port=None):
         self.commands_dict = {}
@@ -78,6 +78,7 @@ class URCommandScript(AirpickMixins):
                         "\ttextmsg(current_pose)"])
         if send:
             self.socket_send_line('current_pose')
+            self.feedback = True
             #self.add_line("\ttextmsg('sending done')")
             
     # Connectivity
@@ -90,7 +91,12 @@ class URCommandScript(AirpickMixins):
         else:
             return False
 
-    def send_script(self):
+    def send_script_feedback(self):
+        #opens server
+        self.send_script()
+        #closes server
+
+    def send_script(self, feedback=False):
         try:
             s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
         except socket.timeout:
@@ -109,27 +115,30 @@ class URCommandScript(AirpickMixins):
         tcp = [tcp[i] for i in range(len(tcp))]
         self.add_line("\tset_tcp(p{})".format(tcp))
 
-    def add_move_linear(self, move_command, feedback=None):
+    def move_linear(self, move_command):
         """Add a move command to the script"""
         #move = [cmd / 1000 if c not in [3, 4, 5] else cmd for c, cmd in zip(range(len(move_command)), move_command)]
         move = [cmd for c, cmd in zip(range(len(move_command)), move_command)]
         [x, y, z, dx, dy, dz, v, r] = move
         self.add_line("\tmovel(p[{}, {}, {}, {}, {}, {}], v={}, r={})".format(x, y, z, dx, dy, dz, v, r))
-        if feedback == "Full":
-            self.get_current_pose_cartesian(True)
-        elif feedback == "UR_only":
-            self.get_current_pose_cartesian(False)
-        else:
-            pass
 
-    def add_digital_out(self, number, value):
+    def move_joints():
+        pass
+
+    def move_process():
+        pass
+
+    def move_circular():
+        pass
+
+    def digital_out(self, number, value):
         self.add_line("\tset_digital_out({}, {})".format(number, value))
 
-    def add_areagrip_on(self, sleep = 1.):
+    def areagrip_on(self, sleep = 1.):
         self.add_digital_out(7, True)
         self.add_line("\tsleep({})".format(sleep))
 
-    def add_areagrip_off(self, sleep = 0.1):
+    def areagrip_off(self, sleep = 0.1):
         self.add_digital_out(7, False)
         self.add_line("\tsleep({})".format(sleep))
 
