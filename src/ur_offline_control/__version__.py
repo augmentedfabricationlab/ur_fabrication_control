@@ -1,6 +1,6 @@
-__title__ = 'ur_online_control'
+__title__ = 'ur_offline_control'
 __description__ = 'A short description of the project'
-__url__ = 'https://github.com/augmentedfabricationlab/ur_online_control'
+__url__ = 'https://github.com/augmentedfabricationlab/ur_fabrication_control'
 __version__ = '0.1.0'
 __author__ = 'Augmented Fabrication Lab'
 __author_email__ = 'gido.dielemans@tum.de'
