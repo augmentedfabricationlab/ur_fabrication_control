@@ -20,7 +20,24 @@ __all__ = [
 
 
 def is_available(ip):
-    """Ping the network, to check for availability"""
+    """Ping the UR network to check for availability.
+
+    Parameters
+    ----------
+    ip : string
+        IP of the UR Robot to check for availibility.
+
+    Returns
+    -------
+    boolean
+        "True" if available.
+        "False" if unavailable.
+
+    Examples
+    --------
+    >>> is_available("127.0.0.1")
+
+    """
     system_call = "ping -r 1 -n 1 {}".format(ip)
     response = os.system(system_call)
     if response == 0:
@@ -30,7 +47,29 @@ def is_available(ip):
 
 
 def send_script(script, ip, port=30002):
-    """Send the script to the UR"""
+    """Send a script to the UR Robot.
+
+    Parameters
+    ----------
+    script : string
+        A script to send to robot.
+
+    ip : string
+        IP of the UR Robot to connect.
+
+    port : integer
+        Port number of the UR Robot to connect.
+        Default is set to "30002".
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> send_script()
+
+    """
     try:
         s = socket.create_connection((ip, port), timeout=2)
     except socket.timeout:

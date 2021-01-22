@@ -13,15 +13,31 @@ class URScript():
 
     Parameters
     ----------
+    server_ip : string (None)
+        IP of the server. e.g.
+    server_port : string (None)
+        Port of the server. e.g.
+    ur_ip : string (None)
+        IP of the UR Robot. e.g.
+    ur_port : string (None)
+        Port of the UR Robot. e.g.
 
-    server_ip : NoneType (None)
+    Attributes
+    ----------
+    commands_dict (read-only) : dictionary
+        A dictionary to store the command lines.
+    server_ip : string
         IP of the server.
-    server_port : NoneType (None)
+    server_port : string
         Port of the server.
-    ur_ip : NoneType (None)
+    ur_ip : string
         IP of the UR Robot.
-    ur_port : NoneType (None)
+    ur_port : string
         Port of the UR Robot.
+    script (read-only) : string
+        A string generated from the commands_dict to be sent to the UR Robot.
+    exit_message (read-only) : string
+        "Done"
 
     """
     def __init__(self, server_ip=None, server_port=None, ur_ip=None, ur_port=None):
@@ -73,7 +89,7 @@ class URScript():
                         "program()\n\n\n"])
 
     def generate(self):
-        """Translate the script dictionary to a long string.
+        """Translate the script from a dictionary to a long string.
 
         Parameters
         ----------
@@ -81,7 +97,7 @@ class URScript():
 
         Returns
         -------
-        string
+        script : string
             A long string generated from the command dictionary.
 
         """
@@ -89,17 +105,16 @@ class URScript():
         return self.script
 
     def socket_send_line(self, line):
-        """Send the line to the socket.
+        """Send a single line to the socket.
 
         Parameters
         ----------
         line : string
-            .
+            A single line to send to the socket.
 
         Returns
         -------
         None
-            .
 
         """
         self.add_lines(['\tsocket_open("{}", {})'.format(self.server_ip, self.server_port),
@@ -151,8 +166,8 @@ class URScript():
         Parameters
         ----------
         send : boolean
-            Set to "True" to also send the current pose to the UR Robot.
-            Default is "False".
+            Set to "True" to also send the current pose from the UR Robot to the server.
+            Default is "False" to only print out on the UR Robot's display.
 
         Returns
         -------
@@ -167,8 +182,8 @@ class URScript():
         Parameters
         ----------
         send : boolean
-            Set to "True" to also send the current pose to the UR Robot.
-            Default is "False".
+            Set to "True" to also send the current pose from the UR Robot to the server.
+            Default is "False" to only print out on the UR Robot's display.
 
         Returns
         -------
@@ -179,19 +194,6 @@ class URScript():
 
     def get_current_pose(self, get_type, send):
         """Create get pose code.
-
-        Parameters
-        ----------
-        get_type : string
-            If "cartesian" get the current cartesian pose.
-            If "joints" get the current joints pose.
-        send : boolean
-            Set to "True" to also send the current pose to the UR Robot.
-            Default is "False".
-
-        Returns
-        -------
-        None
 
         """
         pose_type = {
@@ -235,7 +237,15 @@ class URScript():
         #closes server
 
     def send_script(self, feedback=False):
-        """
+        """Send the generated script to the UR Robot.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
 
         """
         try:
@@ -251,12 +261,12 @@ class URScript():
 
     # Geometric effects
     def set_tcp(self, tcp):
-        """Set the tcp (Transmission Control Protocol) in the script.
+        """Set the tcp (tool center point) in the script.
 
         Parameters
         ----------
         tcp :
-            .
+            Tool center point.
 
         Returns
         -------
@@ -287,7 +297,7 @@ class URScript():
         self.add_line("\tmovel(p[{}, {}, {}, {}, {}, {}], v={}, r={})".format(x, y, z, dx, dy, dz, v, r))
 
     def move_joints():
-        """Add a move joint command to the script.
+        """Add a move joints command to the script.
 
         Parameters
         ----------
@@ -301,7 +311,7 @@ class URScript():
         pass
 
     def move_process():
-        """Add a move joint command to the script.
+        """Add a move process command to the script.
 
         Parameters
         ----------
@@ -315,7 +325,16 @@ class URScript():
         pass
 
     def move_circular():
-        """
+        """Add a move circular command to the script.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
         """
         pass
 
