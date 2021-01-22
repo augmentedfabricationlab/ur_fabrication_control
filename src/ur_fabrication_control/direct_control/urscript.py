@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import os
 import socket
-from mixins.airpick_mixins import AirpickMixins
+from .mixins.airpick_mixins import AirpickMixins
 
 __all__ = [
     'URScript'
