@@ -286,19 +286,20 @@ class URScript():
         [x, y, z, dx, dy, dz, v, r] = move
         self.add_line("\tmovel(p[{}, {}, {}, {}, {}, {}], v={}, r={})".format(x, y, z, dx, dy, dz, v, r))
 
-    def move_joints():
+    def move_joint(self, joint_configuration, velocity):
         """Add a move joint command to the script.
 
         Parameters
         ----------
-        None
+        joint_configurations : Configuration
+        velocity : float
 
         Returns
         -------
         None
 
         """
-        pass
+        self.add_line("\tmovej({}, v={})".format(joint_configuration.values, velocity))
 
     def move_process():
         """Add a move joint command to the script.
