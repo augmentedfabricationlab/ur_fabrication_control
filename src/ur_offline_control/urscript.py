@@ -9,7 +9,21 @@ __all__ = [
 
 
 class URScript():
-    """Class containing commands for the UR Robot system"""
+    """Class to build a script of commands for the UR Robot system.
+
+    Parameters
+    ----------
+
+    server_ip : NoneType (None)
+        IP of the server.
+    server_port : NoneType (None)
+        Port of the server.
+    ur_ip : NoneType (None)
+        IP of the UR Robot.
+    ur_port : NoneType (None)
+        Port of the UR Robot.
+
+    """
     def __init__(self, server_ip=None, server_port=None, ur_ip=None, ur_port=None):
         self.commands_dict = {}
         self.server_ip = server_ip
@@ -22,13 +36,36 @@ class URScript():
 
         # Functionality
     def start(self):
-        """To build the start of the script"""
+        """Build the start of the script.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+            The start line is added to the command dictionary.
+
+        """
         self.add_lines(["def program():",
                         "\ttextmsg(\">> Entering program.\")",
                         "\t# open line for airpick commands"])
 
     def end(self, feedback=None):
-        """To build the end of the script"""
+        """Build the end of the script.
+
+        Parameters
+        ----------
+        feedback : boolean (None)
+            Set to "True" if feedback is desired.
+
+        Returns
+        -------
+        None
+            The end line is added to the command dictionary.
+
+        """
         if feedback:
             self.socket_send_line('"Done"')
         self.add_lines(["\ttextmsg(\"<< Exiting program.\")",
@@ -36,18 +73,54 @@ class URScript():
                         "program()\n\n\n"])
 
     def generate(self):
-        """Translate the dictionary to a long string"""
+        """Translate the script dictionary to a long string.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        string
+            A long string generated from the command dictionary.
+
+        """
         self.script = '\n'.join(self.commands_dict.values())
         return self.script
 
     def socket_send_line(self, line):
+        """Send the line to the socket.
+
+        Parameters
+        ----------
+        line : string
+            .
+
+        Returns
+        -------
+        None
+            .
+
+        """
         self.add_lines(['\tsocket_open("{}", {})'.format(self.server_ip, self.server_port),
                         '\tsocket_send_line({})'.format(line),
                         "\tsocket_close()"])
 
     # Dictionary building
     def add_line(self, line, i=None):
-        """Add a single line to the script"""
+        """Add a single line to the script.
+
+        Parameters
+        ----------
+        line : string
+            A single command line.
+
+        Returns
+        -------
+        None
+            A single line added to the command dictionary.
+
+        """
         if i is None:
             i = len(self.commands_dict)
         else:
@@ -55,21 +128,72 @@ class URScript():
         self.commands_dict[i] = line
 
     def add_lines(self, lines):
-        """Add a multiple lines to the script"""
+        """Add multiple lines to the script.
+
+        Parameters
+        ----------
+        lines : sequence of string
+            A list of command lines.
+
+        Returns
+        -------
+        None
+            Multiple lines added to the command dictionary.
+
+        """
         i = len(self.commands_dict)
         [self.add_line(line, i+line_nr) for (line_nr, line) in zip(range(len(lines)), lines)]
 
     # Feedback functionality
     def get_current_pose_cartesian(self, send=False):
-        """Get the current cartesian pose"""
+        """Get the current cartesian pose.
+
+        Parameters
+        ----------
+        send : boolean
+            Set to "True" to also send the current pose to the UR Robot.
+            Default is "False".
+
+        Returns
+        -------
+        None
+
+        """
         self.get_current_pose("cartesian", send)
 
     def get_current_pose_joints(self, send=False):
-        """Get the current joints pose"""
+        """Get the current joints pose.
+
+        Parameters
+        ----------
+        send : boolean
+            Set to "True" to also send the current pose to the UR Robot.
+            Default is "False".
+
+        Returns
+        -------
+        None
+
+        """
         self.get_current_pose("joints", send)
 
     def get_current_pose(self, get_type, send):
-        """Create get pose code"""
+        """Create get pose code.
+
+        Parameters
+        ----------
+        get_type : string
+            If "cartesian" get the current cartesian pose.
+            If "joints" get the current joints pose.
+        send : boolean
+            Set to "True" to also send the current pose to the UR Robot.
+            Default is "False".
+
+        Returns
+        -------
+        None
+
+        """
         pose_type = {
             "cartesian": "get_forward_kin()",
             "joints": "get_actual_joint_positions()"
@@ -80,10 +204,22 @@ class URScript():
             self.socket_send_line('current_pose')
             self.feedback = True
             #self.add_line("\ttextmsg('sending done')")
-            
+
     # Connectivity
     def is_available(self):
-        """Ping the network, to check for availability"""
+        """Ping the UR network to check for availability.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        boolean
+            "True" if available.
+            "False" if unavailable.
+
+        """
         system_call = "ping -r 1 -n 1 {}".format(self.ur_ip)
         response = os.system(system_call)
         if response == 0:
@@ -92,11 +228,16 @@ class URScript():
             return False
 
     def send_script_feedback(self):
+        """
+        """
         #opens server
         self.send_script()
         #closes server
 
     def send_script(self, feedback=False):
+        """
+
+        """
         try:
             s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
         except socket.timeout:
@@ -110,35 +251,88 @@ class URScript():
 
     # Geometric effects
     def set_tcp(self, tcp):
-        """Set the tcp"""
+        """Set the tcp (Transmission Control Protocol) in the script.
+
+        Parameters
+        ----------
+        tcp :
+            .
+
+        Returns
+        -------
+        None
+            The tcp is set in the command dictionary.
+
+        """
         #tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
         self.add_line("\tset_tcp(p{})".format(tcp))
 
     def move_linear(self, move_command):
-        """Add a move command to the script"""
+        """Add a move linear command to the script.
+
+        Parameters
+        ----------
+        move_command :
+
+        Returns
+        -------
+        None
+            A move linear command is added to the command dictionary.
+
+        """
         #move = [cmd / 1000 if c not in [3, 4, 5] else cmd for c, cmd in zip(range(len(move_command)), move_command)]
         move = [cmd for c, cmd in zip(range(len(move_command)), move_command)]
         [x, y, z, dx, dy, dz, v, r] = move
         self.add_line("\tmovel(p[{}, {}, {}, {}, {}, {}], v={}, r={})".format(x, y, z, dx, dy, dz, v, r))
 
     def move_joints():
+        """Add a move joint command to the script.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        """
         pass
 
     def move_process():
+        """Add a move joint command to the script.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        """
         pass
 
     def move_circular():
+        """
+        """
         pass
 
     def digital_out(self, number, value):
+        """
+        """
         self.add_line("\tset_digital_out({}, {})".format(number, value))
 
     def areagrip_on(self, sleep = 1.):
+        """
+        """
         self.add_digital_out(7, True)
         self.add_line("\tsleep({})".format(sleep))
 
     def areagrip_off(self, sleep = 0.1):
+        """
+        """
         self.add_digital_out(7, False)
         self.add_line("\tsleep({})".format(sleep))
 
