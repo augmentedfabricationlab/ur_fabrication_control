@@ -82,7 +82,7 @@ def send_script(script, ip, port=30002):
 
 
 def send_stop(ip, port):
-    ur_cmds = URCommandScript(ur_ip=ip, ur_port=port)
+    ur_cmds = URScript(ur_ip=ip, ur_port=port)
     ur_cmds.start()
     ur_cmds.add_line("\tstopl(0.5)")
     ur_cmds.end()
@@ -92,7 +92,7 @@ def send_stop(ip, port):
 
 def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None):
     """Script for a linear movement(s)"""
-    ur_cmds = URCommandScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
     if type(move_commands[0]) == list:
@@ -106,7 +106,7 @@ def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, server_ip=None, se
 
 def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
     """Script for multiple linear movements and airpick on and off commands"""
-    ur_cmds = URCommandScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.add_airpick_commands()
     ur_cmds.set_tcp(tcp)
@@ -125,7 +125,7 @@ def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, ser
 
 def generate_airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, detect=True, pressure=55, timeout=55):
     """Script to toggle the airpick on/off"""
-    ur_cmds = URCommandScript(ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.add_airpick_commands()
     if toggle:
@@ -138,7 +138,7 @@ def generate_airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, dete
 
 def generate_areagrip_toggle(toggle, ur_ip, ur_port, sleep):
     """Script to toggle the airpick on/off"""
-    ur_cmds = URCommandScript(ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     if toggle:
         ur_cmds.add_areagrip_on(sleep = sleep)
@@ -161,7 +161,7 @@ def get_current_pose_joints(tcp, server_ip, server_port, ur_ip, ur_port, send=Fa
 
 def _get_current_pose(pose_type, tcp, server_ip, server_port, ur_ip, ur_port, send):
     """Script to obtain position"""
-    ur_cmds = URCommandScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
     pose_type_map = {"cartesian": ur_cmds.get_current_pose_cartesian,
