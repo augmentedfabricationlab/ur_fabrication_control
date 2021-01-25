@@ -25,17 +25,13 @@ def is_available(ip):
     Parameters
     ----------
     ip : string
-        IP of the UR Robot to check for availibility.
+        IP of the UR Robot.
 
     Returns
     -------
     boolean
         "True" if available.
         "False" if unavailable.
-
-    Examples
-    --------
-    >>> is_available("127.0.0.1")
 
     """
     system_call = "ping -r 1 -n 1 {}".format(ip)
@@ -55,19 +51,15 @@ def send_script(script, ip, port=30002):
         A script to send to robot.
 
     ip : string
-        IP of the UR Robot to connect.
+        IP of the UR Robot.
 
     port : integer
-        Port number of the UR Robot to connect.
-        Default is set to "30002".
+        Port number of the UR Robot.
+        Default set to "30002".
 
     Returns
     -------
     None
-
-    Examples
-    --------
-    >>> send_script()
 
     """
     try:
@@ -82,6 +74,21 @@ def send_script(script, ip, port=30002):
 
 
 def send_stop(ip, port):
+    """Send stop script to the UR Robot.
+
+    Parameters
+    ----------
+    ip : string
+        IP of the UR Robot.
+
+    port : integer
+        Port number of the UR Robot.
+
+    Returns
+    -------
+    None
+
+    """
     ur_cmds = URScript(ur_ip=ip, ur_port=port)
     ur_cmds.start()
     ur_cmds.add_line("\tstopl(0.5)")
@@ -91,21 +98,87 @@ def send_stop(ip, port):
 
 
 def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None):
-    """Script for a linear movement(s)"""
+    """Generate linear movement.
+
+    Parameters
+    ----------
+    tcp : sequence of float
+        Tool center point in a form of list.
+        tcp = [x, y, z, dx, dy, dz]
+
+    move_commands : sequence of sequence of floats
+        List of move_command, which is a list of x, y, z position, dx, dy, dz axis, velocity and radius.
+        move_commands = [move_command_1, move_command_2, ...]
+        move_command = [x, y, z, dx, dy, dz, v, r]
+
+    ur_ip : string
+        IP of the UR Robot.
+
+    ur_port : integer
+        Port number of the UR Robot.
+
+    server_ip : string (None)
+        IP of the server.
+
+    server_port : integer (None)
+        Port number of the server.
+
+    Returns
+    -------
+    object
+        URScript
+
+    """
     ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
     if type(move_commands[0]) == list:
-        [ur_cmds.add_move_linear(move_command) for move_command in move_commands]
+        [ur_cmds.move_linear(move_command) for move_command in move_commands]
     else:
-        ur_cmds.add_move_linear(move_commands)
+        ur_cmds.move_linear(move_commands)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
 
 
 def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
-    """Script for multiple linear movements and airpick on and off commands"""
+    """Generate multiple linear movements and Airpick on/off commands.
+
+    Parameters
+    ----------
+    tcp : sequence of float
+        Tool center point in a form of list.
+        tcp = [x, y, z, dx, dy, dz]
+
+    move_commands : sequence of sequence of floats
+        List of move_command, which is a list of x, y, z position, dx, dy, dz axis, velocity and radius.
+        move_commands = [move_command_1, move_command_2, ...]
+        move_command = [x, y, z, dx, dy, dz, v, r]
+
+    ur_ip : string
+        IP of the UR Robot.
+
+    ur_port : integer
+        Port number of the UR Robot.
+
+    server_ip : string (None)
+        IP of the server.
+
+    server_port : integer (None)
+        Port number of the server.
+
+    vacuum_on : integer
+        Default set to 2.
+
+    vacuum_off : integer
+        Default set to 5.
+
+    Returns
+    -------
+    object
+        URScript
+
+    """
     ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.add_airpick_commands()
@@ -117,14 +190,53 @@ def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, ser
             ur_cmds.airpick_off()
         else:
             pass
-        ur_cmds.add_move_linear(command)
+        ur_cmds.move_linear(command)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
 
 
 def generate_airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, detect=True, pressure=55, timeout=55):
-    """Script to toggle the airpick on/off"""
+    """Toggle the Airpick on/off.
+
+    Parameters
+    ----------
+    toggle : boolean
+        Set to "True" for Airpick on.
+        Set to "False" for Airpick off.
+
+    ur_ip : string
+        IP of the UR Robot.
+
+    ur_port : integer
+        Port number of the UR Robot.
+
+    max_vac : integer
+        Maximum vacuum for Airpick on.
+        Default set to 75.
+
+    min_vac : integer
+        Minimum vacuum for Airpick off.
+        Default set to 25.
+
+    detect : boolean
+        Set to "True" to wait for object detected.
+        Default set to "True".
+
+    pressure : integer
+        Pressure for Airpick off.
+        Default set to 55.
+
+    timeout : integer
+        Set the timeout.
+        Default set to 55.
+
+    Returns
+    -------
+    object
+        URScript
+
+    """
     ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.add_airpick_commands()
@@ -137,30 +249,133 @@ def generate_airpick_toggle(toggle, ur_ip, ur_port, max_vac=75, min_vac=25, dete
     return ur_cmds
 
 def generate_areagrip_toggle(toggle, ur_ip, ur_port, sleep):
-    """Script to toggle the airpick on/off"""
+    """Toggle the Area Grip on/off.
+
+    Parameters
+    ----------
+    toggle : boolean
+        Set to "True" for Area Grip on.
+        Set to "False" for Area Grip off.
+
+    ur_ip : string
+        IP of the UR Robot.
+
+    ur_port : integer
+        Port number of the UR Robot.
+
+    sleep : float
+
+    Returns
+    -------
+    object
+        URScript
+
+    """
+
     ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     if toggle:
-        ur_cmds.add_areagrip_on(sleep = sleep)
+        ur_cmds.areagrip_on(sleep = sleep)
     elif not toggle:
-        ur_cmds.add_areagrip_off(sleep = sleep)
+        ur_cmds.areagrip_off(sleep = sleep)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
 
 
 def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send=False):
-    """Script to obtain the current cartesian coordinates"""
-    return _get_current_pose("cartesian", tcp, server_ip, server_port, ur_ip, ur_port, send)
+    """Get the current cartesian coordinates of the UR Robot.
+
+    Parameters
+    ----------
+    tcp : sequence of float
+        Tool center point in a form of list.
+        tcp = [x, y, z, dx, dy, dz]
+
+    server_ip : string
+        IP of the server.
+
+    server_port : integer
+        Port number of the server.
+
+    ur_ip : string
+        IP of the UR Robot.
+
+    ur_port : integer
+        Port number of the UR Robot.
+
+    send: boolean
+        Set to "True" to also send the current pose from the UR Robot to the server.
+        Default set to "False" to only print out on the UR Robot's display.
+
+    Returns
+    -------
+    msg : float
+
+    """
+    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds.start()
+    ur_cmds.set_tcp(tcp)
+    ur_cmds.get_current_pose_cartesian(send)
+    ur_cmds.end(feedback=True)
+    ur_cmds.generate()
+    server = TCPFeedbackServer(ip=server_ip, port=server_port)
+    server.start()
+    ur_cmds.send_script()
+    server.listen(timeout=5)
+    time.sleep(1)
+    server.close()
+    server.join()
+    return server.msgs[0]
+
+    #return _get_current_pose("cartesian", tcp, server_ip, server_port, ur_ip, ur_port, send)
 
 
-def get_current_pose_joints(tcp, server_ip, server_port, ur_ip, ur_port, send=False):
-    """Script to obtain the current joint positions"""
-    return _get_current_pose("joints", tcp, server_ip, server_port, ur_ip, ur_port, send)
+def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):
+    """Get the current joint positions of the UR Robot.
 
+    Parameters
+    ----------
+    server_ip : string
+        IP of the server.
 
+    server_port : integer
+        Port number of the server.
+
+    ur_ip : string
+        IP of the UR Robot.
+
+    ur_port : integer
+        Port number of the UR Robot.
+
+    send: boolean
+        Set to "True" to also send the current pose from the UR Robot to the server.
+        Default set to "False" to only print out on the UR Robot's display.
+
+    Returns
+    -------
+    msg : float
+
+    """
+    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds.start()
+    ur_cmds.get_current_pose_joints(send)
+    ur_cmds.end(feedback=True)
+    ur_cmds.generate()
+    server = TCPFeedbackServer(ip=server_ip, port=server_port)
+    server.start()
+    ur_cmds.send_script()
+    server.listen(timeout=5)
+    time.sleep(1)
+    server.close()
+    server.join()
+    return server.msgs[0]
+
+    #return _get_current_pose("joints", tcp, server_ip, server_port, ur_ip, ur_port, send)
+
+"""
 def _get_current_pose(pose_type, tcp, server_ip, server_port, ur_ip, ur_port, send):
-    """Script to obtain position"""
+
     ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
@@ -177,7 +392,7 @@ def _get_current_pose(pose_type, tcp, server_ip, server_port, ur_ip, ur_port, se
     server.close()
     server.join()
     return server.msgs[0]
-
+"""
 
 if __name__ == "__main__":
     server_port = 50002

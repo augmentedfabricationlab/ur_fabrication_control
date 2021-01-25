@@ -14,13 +14,13 @@ class URScript():
     Parameters
     ----------
     server_ip : string (None)
-        IP of the server. e.g.
-    server_port : string (None)
-        Port of the server. e.g.
+        IP of the server.
+    server_port : integer (None)
+        Port number of the server.
     ur_ip : string (None)
-        IP of the UR Robot. e.g.
-    ur_port : string (None)
-        Port of the UR Robot. e.g.
+        IP of the UR Robot.
+    ur_port : integer (None)
+        Port number of the UR Robot.
 
     Attributes
     ----------
@@ -28,12 +28,12 @@ class URScript():
         A dictionary to store the command lines.
     server_ip : string
         IP of the server.
-    server_port : string
-        Port of the server.
+    server_port : integer
+        Port number of the server.
     ur_ip : string
         IP of the UR Robot.
-    ur_port : string
-        Port of the UR Robot.
+    ur_port : integer
+        Port number of the UR Robot.
     script (read-only) : string
         A string generated from the commands_dict to be sent to the UR Robot.
     exit_message (read-only) : string
@@ -167,7 +167,7 @@ class URScript():
         ----------
         send : boolean
             Set to "True" to also send the current pose from the UR Robot to the server.
-            Default is "False" to only print out on the UR Robot's display.
+            Default set to "False" to only print out on the UR Robot's display.
 
         Returns
         -------
@@ -177,13 +177,13 @@ class URScript():
         self.get_current_pose("cartesian", send)
 
     def get_current_pose_joints(self, send=False):
-        """Get the current joints pose.
+        """Get the current joint positions.
 
         Parameters
         ----------
         send : boolean
             Set to "True" to also send the current pose from the UR Robot to the server.
-            Default is "False" to only print out on the UR Robot's display.
+            Default set to "False" to only print out on the UR Robot's display.
 
         Returns
         -------
@@ -241,7 +241,9 @@ class URScript():
 
         Parameters
         ----------
-        None
+        feedback : boolean
+            Set to "True" if feedback is desired.
+            Default set to "False".
 
         Returns
         -------
@@ -265,8 +267,9 @@ class URScript():
 
         Parameters
         ----------
-        tcp :
-            Tool center point.
+        tcp : sequence of float
+            Tool center point in a form of list.
+            tcp = [x, y, z, dx, dy, dz]
 
         Returns
         -------
@@ -283,7 +286,9 @@ class URScript():
 
         Parameters
         ----------
-        move_command :
+        move_command : sequence of float
+            List of x, y, z position, dx, dy, dz axis, velocity and radius.
+            move_command = [x, y, z, dx, dy, dz, v, r]
 
         Returns
         -------
@@ -301,41 +306,27 @@ class URScript():
 
         Parameters
         ----------
-        joint_configurations : Configuration
+        joint_configuration : object
+            compas_fab.robots.Configuration
+
         velocity : float
+            Velocity of the joint.
 
         Returns
         -------
         None
+            A move joint command is added to the command dictionary.
 
         """
         self.add_line("\tmovej({}, v={})".format(joint_configuration.values, velocity))
 
     def move_process():
-        """Add a move process command to the script.
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-
+        """
         """
         pass
 
     def move_circular():
-        """Add a move circular command to the script.
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-
+        """
         """
         pass
 
