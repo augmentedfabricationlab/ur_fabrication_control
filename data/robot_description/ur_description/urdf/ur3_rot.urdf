@@ -48,11 +48,12 @@
       <inertia ixx="0.0030531654454" ixy="0.0" ixz="0.0" iyy="0.0030531654454" iyz="0.0" izz="0.005625"/>
     </inertial>
   </link>
+
   <joint name="shoulder_pan_joint" type="revolute">
     <parent link="base_link"/>
     <child link="shoulder_link"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.1519"/>
-    <axis xyz="0 1 0"/>
+    <origin rpy="0.0 0.0 -3.14159265359" xyz="0.0 0.0 0.1519"/>
+    <axis xyz="0 0 1"/>
     <limit effort="330.0" lower="-6.28318530718" upper="6.28318530718" velocity="2.16"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
@@ -76,6 +77,7 @@
       <inertia ixx="0.0080931634294" ixy="0.0" ixz="0.0" iyy="0.0080931634294" iyz="0.0" izz="0.005625"/>
     </inertial>
   </link>
+
   <joint name="shoulder_lift_joint" type="revolute">
     <parent link="shoulder_link"/>
     <child link="upper_arm_link"/>
@@ -104,6 +106,7 @@
       <inertia ixx="0.0217284832211" ixy="0.0" ixz="0.0" iyy="0.0217284832211" iyz="0.0" izz="0.00961875"/>
     </inertial>
   </link>
+
   <joint name="elbow_joint" type="revolute">
     <parent link="upper_arm_link"/>
     <child link="forearm_link"/>
@@ -132,6 +135,7 @@
       <inertia ixx="0.00654680644378" ixy="0.0" ixz="0.0" iyy="0.00654680644378" iyz="0.0" izz="0.00354375"/>
     </inertial>
   </link>
+
   <joint name="wrist_1_joint" type="revolute">
     <parent link="forearm_link"/>
     <child link="wrist_1_link"/>
@@ -160,6 +164,7 @@
       <inertia ixx="0.002084999166" ixy="0.0" ixz="0.0" iyy="0.002084999166" iyz="0.0" izz="0.00225"/>
     </inertial>
   </link>
+
   <joint name="wrist_2_joint" type="revolute">
     <parent link="wrist_1_link"/>
     <child link="wrist_2_link"/>
@@ -188,6 +193,7 @@
       <inertia ixx="0.002084999166" ixy="0.0" ixz="0.0" iyy="0.002084999166" iyz="0.0" izz="0.00225"/>
     </inertial>
   </link>
+
   <joint name="wrist_3_joint" type="revolute">
     <parent link="wrist_2_link"/>
     <child link="wrist_3_link"/>
@@ -216,10 +222,11 @@
       <inertia ixx="0.000912187135125" ixy="0.0" ixz="0.0" iyy="0.000912187135125" iyz="0.0" izz="0.000984375"/>
     </inertial>
   </link>
+
   <joint name="ee_fixed_joint" type="fixed">
     <parent link="wrist_3_link"/>
     <child link="ee_link"/>
-    <origin rpy="0.0 0.0 1.57079632679" xyz="0.0 0.0819 0.0"/>
+    <origin rpy="-1.57079632679 0.0 0.0" xyz="0.0 0.0819 0.0"/>
   </joint>
   <link name="ee_link">
     <collision>
@@ -229,6 +236,9 @@
       <origin rpy="0 0 0" xyz="-0.01 0 0"/>
     </collision>
   </link>
+
+
+
   <transmission name="shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="shoulder_pan_joint">
