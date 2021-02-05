@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import os
 import socket
+from compas.geometry import Frame, Line
 from .mixins.airpick_mixins import AirpickMixins
 
 __all__ = [
@@ -36,8 +37,6 @@ class URScript():
         Port number of the UR Robot.
     script (read-only) : string
         A string generated from the commands_dict to be sent to the UR Robot.
-    exit_message (read-only) : string
-        "Done"
 
     """
     def __init__(self, server_ip=None, server_port=None, ur_ip=None, ur_port=None):
@@ -47,8 +46,6 @@ class URScript():
         self.ur_ip = ur_ip
         self.ur_port = ur_port
         self.script = None
-
-        self.exit_message = "Done"
 
         # Functionality
     def start(self):
@@ -281,7 +278,19 @@ class URScript():
         tcp = [tcp[i] for i in range(len(tcp))]
         self.add_line("\tset_tcp(p{})".format(tcp))
 
-    def move_linear(self, move_command):
+    def _radius_between_frames(self, from_frame, via_frame, to_frame, max_radius):
+        in_line = Line(from_frame.Point, via_frame.Point)
+        out_line = Line(via_frame.Point, to_frame.Point)
+        r = min(max_radius, in_line.length/2, out_line.length/2)
+        return r
+
+    def moves_linear(self, frames, velocity=0.05, radius=0):
+        #multiple moves, can calculate the radius
+        for i, frame in enumerate(frames):
+            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(len(frames)+1)], radius)
+            self.move_linear(frame, velocity, r)
+
+    def move_linear(self, frame, velocity=0.05, radius=0):
         """Add a move linear command to the script.
 
         Parameters
@@ -296,10 +305,13 @@ class URScript():
             A move linear command is added to the command dictionary.
 
         """
-        #move = [cmd / 1000 if c not in [3, 4, 5] else cmd for c, cmd in zip(range(len(move_command)), move_command)]
-        move = [cmd for c, cmd in zip(range(len(move_command)), move_command)]
-        [x, y, z, dx, dy, dz, v, r] = move
-        self.add_line("\tmovel(p[{}, {}, {}, {}, {}, {}], v={}, r={})".format(x, y, z, dx, dy, dz, v, r))
+        pose = frame.Point.data + frame.axis_angle_vector.data
+        self.add_line("\tmovel(p{}, v={}, r={})".format(pose, velocity, radius))
+
+    def moves_joint(self, joint_configurations, velocity):
+        #multiple joint positions
+        for joint_configuration in joint_configurations:
+            self.move_joint(joint_configuration, velocity)        
 
     def move_joint(self, joint_configuration, velocity):
         """Add a move joint command to the script.
@@ -320,15 +332,41 @@ class URScript():
         """
         self.add_line("\tmovej({}, v={})".format(joint_configuration.values, velocity))
 
-    def move_process():
-        """
-        """
-        pass
+    def moves_process(self, frames, velocity=0.05, radius=0):
+        #multiple moves, can calculate the radius
+        for i, frame in enumerate(frames):
+            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(len(frames)+1)], radius)
+            self.move_process(frame, velocity, r)
 
-    def move_circular():
+    def move_process(self, frame, velocity, radius):
+        """Add a move process command to the script.
+
+        Parameters
+        ----------
+        move_command : sequence of float
+            List of x, y, z position, dx, dy, dz axis, velocity and radius.
+            move_command = [x, y, z, dx, dy, dz, v, r]
+
+        Returns
+        -------
+        None
+            A move linear command is added to the command dictionary.
+
+        """
+        pose = frame.Point.data + frame.axis_angle_vector.data
+        self.add_line("\tmovep(p{}, v={}, r={})".format(pose, velocity, radius))
+
+    def moves_circular(self, frames_via, frames_to, velocity, radius):
+        for i, (frame_via, frame_to) in enumerate(zip(frames_via, frames_to)):
+            r = self._radius_between_frames(frames_to[max(0,i-1)], frame_via, frame_to, radius)
+            self.move_circular(frame_via, frame_to, velocity, r)
+
+    def move_circular(self, frame_via, frame_to, velocity, radius):
         """
         """
-        pass
+        pose_via = frame_via.Point.data + frame_via.axis_angle_vector.data
+        pose_to = frame_to.Point.data + frame_to.axis_angle_vector.data
+        self.add_line("\tmovec(p{}, p{} v={}, r={})".format(pose_via, pose_to, velocity, radius))
 
     def digital_out(self, number, value):
         """

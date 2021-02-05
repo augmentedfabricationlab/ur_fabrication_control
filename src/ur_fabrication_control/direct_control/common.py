@@ -97,7 +97,7 @@ def send_stop(ip, port):
     ur_cmds.send_script()
 
 
-def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None):
+def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0, server_ip=None, server_port=None):
     """Generate linear movement.
 
     Parameters
@@ -132,16 +132,16 @@ def generate_moves_linear(tcp, move_commands, ur_ip, ur_port, server_ip=None, se
     ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
-    if type(move_commands[0]) == list:
-        [ur_cmds.move_linear(move_command) for move_command in move_commands]
+    if type(frames) == list:
+        ur_cmds.moves_linear(frames, velocity, radius)
     else:
-        ur_cmds.move_linear(move_commands)
+        ur_cmds.move_linear(frames, velocity, radius)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
 
 
-def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
+def generate_script_pick_and_place_block(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
     """Generate multiple linear movements and Airpick on/off commands.
 
     Parameters
@@ -183,14 +183,14 @@ def generate_script_pick_and_place_block(tcp, move_commands, ur_ip, ur_port, ser
     ur_cmds.start()
     ur_cmds.add_airpick_commands()
     ur_cmds.set_tcp(tcp)
-    for i, command in enumerate(move_commands):
+    for i, frame in enumerate(frames):
         if i == vacuum_on:
             ur_cmds.airpick_on()
         elif i == vacuum_off:
             ur_cmds.airpick_off()
         else:
             pass
-        ur_cmds.move_linear(command)
+        ur_cmds.move_linear(frame, velocity, radius)
     ur_cmds.end()
     ur_cmds.generate()
     return ur_cmds
