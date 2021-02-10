@@ -279,15 +279,15 @@ class URScript():
         self.add_line("\tset_tcp(p{})".format(tcp))
 
     def _radius_between_frames(self, from_frame, via_frame, to_frame, max_radius):
-        in_line = Line(from_frame.Point, via_frame.Point)
-        out_line = Line(via_frame.Point, to_frame.Point)
+        in_line = Line(from_frame.point, via_frame.point)
+        out_line = Line(via_frame.point, to_frame.point)
         r = min(max_radius, in_line.length/2, out_line.length/2)
         return r
 
     def moves_linear(self, frames, velocity=0.05, radius=0):
         #multiple moves, can calculate the radius
         for i, frame in enumerate(frames):
-            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(len(frames)+1)], radius)
+            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(i+1, len(frames)-1)], radius)
             self.move_linear(frame, velocity, r)
 
     def move_linear(self, frame, velocity=0.05, radius=0):
