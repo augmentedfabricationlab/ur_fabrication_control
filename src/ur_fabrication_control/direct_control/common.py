@@ -324,8 +324,7 @@ def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send
     ur_cmds.send_script()
     server.listen(timeout=5)
     time.sleep(1)
-    server.close()
-    server.join()
+    server.shutdown()
     return server.msgs[0]
 
     #return _get_current_pose("cartesian", tcp, server_ip, server_port, ur_ip, ur_port, send)
@@ -367,8 +366,7 @@ def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):
     ur_cmds.send_script()
     server.listen(timeout=5)
     time.sleep(1)
-    server.close()
-    server.join()
+    server.shutdown()
     return server.msgs[0]
 
     #return _get_current_pose("joints", tcp, server_ip, server_port, ur_ip, ur_port, send)
