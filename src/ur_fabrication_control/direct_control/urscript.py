@@ -251,7 +251,7 @@ class URScript():
             s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
         except socket.timeout:
             print("UR with ip {} not available on port {}".format(self.ur_ip, self.ur_port))
-            raise
+            raise ConnectionError
         finally:
             enc_script = self.script.encode('utf-8') # encoding allows use of python 3.7
             s.send(enc_script)
@@ -284,10 +284,10 @@ class URScript():
         r = min(max_radius, in_line.length/2, out_line.length/2)
         return r
 
-    def moves_linear(self, frames, velocity=0.05, radius=0):
+    def moves_linear(self, frames, velocity=0.05, max_radius=0.1):
         #multiple moves, can calculate the radius
         for i, frame in enumerate(frames):
-            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(i+1, len(frames)-1)], radius)
+            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(i+1, len(frames)-1)], max_radius)
             self.move_linear(frame, velocity, r)
 
     def move_linear(self, frame, velocity=0.05, radius=0):
@@ -305,7 +305,7 @@ class URScript():
             A move linear command is added to the command dictionary.
 
         """
-        pose = frame.Point.data + frame.axis_angle_vector.data
+        pose = frame.point.data + frame.axis_angle_vector.data
         self.add_line("\tmovel(p{}, v={}, r={})".format(pose, velocity, radius))
 
     def moves_joint(self, joint_configurations, velocity):
@@ -332,10 +332,10 @@ class URScript():
         """
         self.add_line("\tmovej({}, v={})".format(joint_configuration.values, velocity))
 
-    def moves_process(self, frames, velocity=0.05, radius=0):
+    def moves_process(self, frames, velocity=0.05, max_radius=0):
         #multiple moves, can calculate the radius
         for i, frame in enumerate(frames):
-            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(len(frames)+1)], radius)
+            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(len(frames)+1)], max_radius)
             self.move_process(frame, velocity, r)
 
     def move_process(self, frame, velocity, radius):
@@ -353,19 +353,19 @@ class URScript():
             A move linear command is added to the command dictionary.
 
         """
-        pose = frame.Point.data + frame.axis_angle_vector.data
+        pose = frame.point.data + frame.axis_angle_vector.data
         self.add_line("\tmovep(p{}, v={}, r={})".format(pose, velocity, radius))
 
-    def moves_circular(self, frames_via, frames_to, velocity, radius):
+    def moves_circular(self, frames_via, frames_to, velocity, max_radius):
         for i, (frame_via, frame_to) in enumerate(zip(frames_via, frames_to)):
-            r = self._radius_between_frames(frames_to[max(0,i-1)], frame_via, frame_to, radius)
+            r = self._radius_between_frames(frames_to[max(0,i-1)], frame_via, frame_to, max_radius)
             self.move_circular(frame_via, frame_to, velocity, r)
 
     def move_circular(self, frame_via, frame_to, velocity, radius):
         """
         """
-        pose_via = frame_via.Point.data + frame_via.axis_angle_vector.data
-        pose_to = frame_to.Point.data + frame_to.axis_angle_vector.data
+        pose_via = frame_via.point.data + frame_via.axis_angle_vector.data
+        pose_to = frame_to.point.data + frame_to.axis_angle_vector.data
         self.add_line("\tmovec(p{}, p{} v={}, r={})".format(pose_via, pose_to, velocity, radius))
 
     def digital_out(self, number, value):
