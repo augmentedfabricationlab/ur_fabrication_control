@@ -26,7 +26,6 @@ class FeedbackHandler(ss.StreamRequestHandler):
                 break
             print("Data Received from client is: {}".format(data))
             self.server.rcv_msg.append(data)
-            print(self.server.rcv_msg)
             self.wfile.write(("Message from client: {}\n".format(data)).encode())
 
 class TCPServer(ss.TCPServer):
@@ -67,17 +66,15 @@ class TCPFeedbackServer:
         elif any(isinstance(msg, list) for msg in self.msgs.values()) and isinstance(exit_msg, list):
             c = []
             for i, msg in enumerate(self.msgs.values()):
-                print(msg)
                 if isinstance(msg,list) and len(msg) == len(exit_msg):
                     c.append(all(isclose(a, b, abs_tol=tol) for a,b in zip(msg, exit_msg)))
-                    print(c)
                 else:
                     c.append(False)
             return any(c)
         else:
             return False
 
-    def listen(self, exit_msg="Done", tolerance=0.01, timeout=60):
+    def listen(self, exit_msg="Closing socket communication", tolerance=0.01, timeout=60):
         tCurrent = time.time()
         while not self.check_exit(exit_msg, tolerance):
             if self.server.rcv_msg is []:
@@ -86,6 +83,7 @@ class TCPFeedbackServer:
                 self.add_message(self.server.rcv_msg[len(self.msgs)])
             elif time.time() >= tCurrent + timeout:
                 print("Listening to server timed out")
+                return self.msgs
                 break
         else:
             print("Exit message found: ", self.check_exit(exit_msg, tolerance))

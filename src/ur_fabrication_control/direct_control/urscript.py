@@ -14,10 +14,6 @@ class URScript():
 
     Parameters
     ----------
-    server_ip : string (None)
-        IP of the server.
-    server_port : integer (None)
-        Port number of the server.
     ur_ip : string (None)
         IP of the UR Robot.
     ur_port : integer (None)
@@ -27,10 +23,6 @@ class URScript():
     ----------
     commands_dict (read-only) : dictionary
         A dictionary to store the command lines.
-    server_ip : string
-        IP of the server.
-    server_port : integer
-        Port number of the server.
     ur_ip : string
         IP of the UR Robot.
     ur_port : integer
@@ -39,13 +31,12 @@ class URScript():
         A string generated from the commands_dict to be sent to the UR Robot.
 
     """
-    def __init__(self, server_ip=None, server_port=None, ur_ip=None, ur_port=None):
+    def __init__(self, ur_ip=None, ur_port=None):
         self.commands_dict = {}
-        self.server_ip = server_ip
-        self.server_port = server_port
         self.ur_ip = ur_ip
         self.ur_port = ur_port
         self.script = None
+        self.sockets = {}
 
         # Functionality
     def start(self):
@@ -65,13 +56,12 @@ class URScript():
                         "\ttextmsg(\">> Entering program.\")",
                         "\t# open line for airpick commands"])
 
-    def end(self, feedback=None):
+    def end(self):
         """Build the end of the script.
 
         Parameters
         ----------
-        feedback : boolean (None)
-            Set to "True" if feedback is desired.
+        None
 
         Returns
         -------
@@ -79,8 +69,10 @@ class URScript():
             The end line is added to the command dictionary.
 
         """
-        if feedback:
-            self.socket_send_line('"Done"')
+        if self.sockets != {}:
+            for socket_name in self.sockets.keys():
+                print("Socket with name: {} and address {} was not closed, has been closed automatically".format(socket_name, self.sockets[socket_name]))
+                self.socket_close(socket_name)
         self.add_lines(["\ttextmsg(\"<< Exiting program.\")",
                         "end",
                         "program()\n\n\n"])
@@ -101,7 +93,23 @@ class URScript():
         self.script = '\n'.join(self.commands_dict.values())
         return self.script
 
-    def socket_send_line(self, line):
+    def socket_open(self, ip= "192.168.10.11", port=50003, name="socket_0"):
+        """Open socket connection
+        """
+        self.add_lines(['\ttextmsg("Opening socket connection...")',
+                       '\tsocket_open("{}", {}, "{}")'.format(ip, port, name)])
+        self.sockets[name]=(ip, port)
+
+    def socket_close(self, name="socket_0"):
+        """Close socket connection
+        """
+        self.add_lines(['\ttextmsg("Closing socket connection...")',
+                        '\tsocket_send_line("Closing socket communication", socket_name={})'.format(name),
+                        '\tsocket_close(socket_name="{}")'.format(name)])
+        del self.sockets[name]
+
+
+    def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50003):
         """Send a single line to the socket.
 
         Parameters
@@ -114,9 +122,12 @@ class URScript():
         None
 
         """
-        self.add_lines(['\tsocket_open("{}", {})'.format(self.server_ip, self.server_port),
-                        '\tsocket_send_line({})'.format(line),
-                        "\tsocket_close()"])
+        if address!=("192.168.10.11", 50003) and address in self.sockets.values():
+            socket_name=self.sockets.keys()[self.sockets.values().index(address)]
+        if socket_name in self.sockets.keys():
+            self.add_line(['\tsocket_send_line({}, socket_name={})'.format(line, socket_name)])
+        else:
+            print("No open sockets available with this name or address! Please first open a socket with 'self.socket_open'.")
 
     # Dictionary building
     def add_line(self, line, i=None):
@@ -200,9 +211,7 @@ class URScript():
         self.add_lines(["\tcurrent_pose = {}".format(pose_type[get_type]),
                         "\ttextmsg(current_pose)"])
         if send:
-            self.socket_send_line('current_pose')
-            self.feedback = True
-            #self.add_line("\ttextmsg('sending done')")
+            self.socket_send_line('current_pose\n')
 
     # Connectivity
     def is_available(self):
@@ -233,14 +242,12 @@ class URScript():
         self.send_script()
         #closes server
 
-    def send_script(self, feedback=False):
+    def send_script(self):
         """Send the generated script to the UR Robot.
 
         Parameters
         ----------
-        feedback : boolean
-            Set to "True" if feedback is desired.
-            Default set to "False".
+        None
 
         Returns
         -------
@@ -335,7 +342,7 @@ class URScript():
     def moves_process(self, frames, velocity=0.05, max_radius=0):
         #multiple moves, can calculate the radius
         for i, frame in enumerate(frames):
-            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(len(frames)+1)], max_radius)
+            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(i+1, len(frames)-1)], max_radius)
             self.move_process(frame, velocity, r)
 
     def move_process(self, frame, velocity, radius):
@@ -366,7 +373,7 @@ class URScript():
         """
         pose_via = frame_via.point.data + frame_via.axis_angle_vector.data
         pose_to = frame_to.point.data + frame_to.axis_angle_vector.data
-        self.add_line("\tmovec(p{}, p{} v={}, r={})".format(pose_via, pose_to, velocity, radius))
+        self.add_line("\tmovec(p{}, p{}, v={}, r={})".format(pose_via, pose_to, velocity, radius))
 
     def digital_out(self, number, value):
         """

@@ -97,7 +97,7 @@ def send_stop(ip, port):
     ur_cmds.send_script()
 
 
-def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0, server_ip=None, server_port=None):
+def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0):
     """Generate linear movement.
 
     Parameters
@@ -129,7 +129,7 @@ def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius =
         URScript
 
     """
-    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
     if type(frames) == list:
@@ -141,7 +141,7 @@ def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius =
     return ur_cmds
 
 
-def generate_script_pick_and_place_block(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0, server_ip=None, server_port=None, vacuum_on=2, vacuum_off=5):
+def generate_script_pick_and_place_block(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0, vacuum_on=2, vacuum_off=5):
     """Generate multiple linear movements and Airpick on/off commands.
 
     Parameters
@@ -179,7 +179,7 @@ def generate_script_pick_and_place_block(tcp, frames, ur_ip, ur_port, velocity =
         URScript
 
     """
-    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.add_airpick_commands()
     ur_cmds.set_tcp(tcp)
@@ -313,17 +313,19 @@ def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send
     msg : float
 
     """
-    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
+    ur_cmds.socket_open(server_ip, server_port, "Feedbackserver")
     ur_cmds.get_current_pose_cartesian(send)
-    ur_cmds.end(feedback=True)
+    ur_cmds.socket_close(name="Feedbackserver")
+    ur_cmds.end()
     ur_cmds.generate()
     server = TCPFeedbackServer(ip=server_ip, port=server_port)
     server.start()
     ur_cmds.send_script()
     server.listen(timeout=5)
-    time.sleep(1)
+    # time.sleep(1)
     server.shutdown()
     return server.msgs[0]
 
@@ -356,15 +358,17 @@ def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):
     msg : float
 
     """
-    ur_cmds = URScript(server_ip=server_ip, server_port=server_port, ur_ip=ur_ip, ur_port=ur_port)
+    ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
+    ur_cmds.socket_open(ip=server_ip, port=server_port, name="Feedbackserver")
     ur_cmds.get_current_pose_joints(send)
-    ur_cmds.end(feedback=True)
+    ur_cmds.socket_close(name="Feedbackserver")
+    ur_cmds.end()
     ur_cmds.generate()
     server = TCPFeedbackServer(ip=server_ip, port=server_port)
     server.start()
     ur_cmds.send_script()
-    server.listen(timeout=5)
+    server.listen(timeout=30)
     time.sleep(1)
     server.shutdown()
     return server.msgs[0]
