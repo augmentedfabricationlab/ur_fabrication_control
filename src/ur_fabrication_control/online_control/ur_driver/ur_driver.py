@@ -6,8 +6,8 @@ Created on 22.11.2016
 import os
 import socket
 import sys
-from ur_online_control.communication import msg_identifier_dict, command_identifier_dict
-from utilities import read_file_to_string, read_file_to_list
+from ..communication import msg_identifier_dict, command_identifier_dict
+from ...direct_control.utilities import read_file_to_string, read_file_to_list
 
 if (sys.version_info > (3, 0)):
     python_version = 3

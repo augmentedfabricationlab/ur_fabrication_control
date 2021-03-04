@@ -1,7 +1,7 @@
 from compas.datastructures import Mesh
 from compas.geometry import Frame
 from compas.geometry import transform_points
-from compas.geometry.xforms import Transformation
+from compas.geometry import Transformation
 
 
 def transform_point(p, T):

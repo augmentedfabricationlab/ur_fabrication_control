@@ -2,9 +2,7 @@ from __future__ import print_function
 
 import math
 
-from ur_online_control import get_data
-
-
+from ...online_control import get_data
 
 from .robot import BaseConfiguration
 from .ur import UR

@@ -9,11 +9,11 @@ from compas.geometry import multiply_matrices
 from compas.geometry import multiply_matrix_vector
 from compas.geometry import subtract_vectors
 from compas.geometry import transform_points
-from compas.geometry.xforms import Rotation
-from compas.geometry.xforms import Transformation
+from compas.geometry import Rotation
+from compas.geometry import Transformation
 
-from .kinematics import forward_kinematics
-from .kinematics import inverse_kinematics
+from ...kinematics import forward_kinematics
+from ...kinematics import inverse_kinematics
 from compas_fab.robots import Configuration
 from .tool import Tool
 

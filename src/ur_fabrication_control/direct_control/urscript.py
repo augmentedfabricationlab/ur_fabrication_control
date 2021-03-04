@@ -3,13 +3,14 @@ import os
 import socket
 from compas.geometry import Frame, Line
 from .mixins.airpick_mixins import AirpickMixins
+from .utilities import convert_float_to_int
 
 __all__ = [
     'URScript'
 ]
 
 
-class URScript():
+class URScript(object):
     """Class to build a script of commands for the UR Robot system.
 
     Parameters
@@ -93,6 +94,12 @@ class URScript():
         self.script = '\n'.join(self.commands_dict.values())
         return self.script
 
+    def textmessage(self, message, string=False):
+        if string:
+            self.add_line['\ttextmsg("{}")'.format(message)]
+        else:
+            self.add_line['\ttextmsg({})'.format(message)]
+
     def socket_open(self, ip= "192.168.10.11", port=50003, name="socket_0"):
         """Open socket connection
         """
@@ -105,11 +112,18 @@ class URScript():
         """
         self.add_lines(['\ttextmsg("Closing socket connection...")',
                         '\tsocket_send_line("Closing socket communication", socket_name={})'.format(name),
-                        '\tsocket_close(socket_name="{}")'.format(name)])
+                        '\tsocket_close(socket_name="{}")'.format(self.__get_socket_name(name))])
         del self.sockets[name]
 
-
-    def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50003):
+    def __get_socket_name(self, name, address):
+        if name in self.sockets.keys():
+            return name
+        elif address!=("192.168.10.11", 50003) and address in self.sockets.values():
+            return self.sockets.keys()[self.sockets.values().index(address)]
+        else:
+            raise Exception("No open sockets available with this name or address!")
+            
+    def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50003)):
         """Send a single line to the socket.
 
         Parameters
@@ -122,12 +136,38 @@ class URScript():
         None
 
         """
-        if address!=("192.168.10.11", 50003) and address in self.sockets.values():
-            socket_name=self.sockets.keys()[self.sockets.values().index(address)]
-        if socket_name in self.sockets.keys():
-            self.add_line(['\tsocket_send_line({}, socket_name={})'.format(line, socket_name)])
-        else:
-            print("No open sockets available with this name or address! Please first open a socket with 'self.socket_open'.")
+        self.add_line('\tsocket_send_line({}, socket_name={})'.format(line, self.__get_socket_name(socket_name, address)))
+
+    def socket_send_int(self, integer, socket_name="socket_0", address=("192.168.10.11", 50003)):
+        self.add_line('\tsocket_send_int({}, socket_name={})'.format(integer, self.__get_socket_name(socket_name, address)))
+
+    def socket_send_float(self, float_value, socket_name="socket_0", address=("192.168.10.11", 50003)):
+        # self.socket_send_int(convert_float_to_int(float_value), socket_name, address)
+        raise NotImplementedError
+
+    def socket_send_bytes(self, bytes_list, socket_name="socket_0", address=("192.168.10.11", 50003)):
+        [self.socket_send_byte(byte, socket_name, address) for byte in bytes_list]
+
+    def socket_send_byte(self, byte, socket_name="socket_0", address=("192.168.10.11", 50003)):
+        """Send a single line to the socket.
+
+        Parameters
+        ----------
+        byte : bytes
+            Byte to send to the socket.
+
+        Returns
+        -------
+        None
+
+        """
+        self.add_line('\tsocket_send_byte("{}", socket_name={})'.format(byte, self.__get_socket_name(socket_name, address)))
+
+    def socket_read_binary_integer(self, var_name="msg_recv_0", number=1, socket_name="socket_0", address=("192.168.10.11", 50003), timeout=2):
+        self.add_lines([
+            '\t{} = socket_read_binary_integer({}, socket_name={}, timeout={})'.format(var_name, self.__get_socket_name(socket_name, address), timeout),
+            '\ttextmsg({})'.format(var_name)
+        ])
 
     # Dictionary building
     def add_line(self, line, i=None):
