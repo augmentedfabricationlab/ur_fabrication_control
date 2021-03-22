@@ -317,7 +317,7 @@ def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
     ur_cmds.socket_open(server_ip, server_port, "Feedbackserver")
-    ur_cmds.get_current_pose_cartesian(send)
+    ur_cmds.get_current_pose_cartesian(socket_name="Feedbackserver", send=send)
     ur_cmds.socket_close(name="Feedbackserver")
     ur_cmds.end()
     ur_cmds.generate()

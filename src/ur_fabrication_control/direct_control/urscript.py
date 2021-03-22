@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import os
 import socket
-#from compas.geometry import Frame, Line
+from compas.geometry import Frame, Line
 #from .mixins.airpick_mixins import AirpickMixins
 from ur_fabrication_control.direct_control.utilities import convert_float_to_int
 
@@ -100,7 +100,7 @@ class URScript(object):
         else:
             self.add_line['\ttextmsg({})'.format(message)]
 
-    def socket_open(self, ip= "192.168.10.11", port=50003, name="socket_0"):
+    def socket_open(self, ip= "192.168.10.11", port=50002, name="socket_0"):
         """Open socket connection
         """
         self.add_lines(['\ttextmsg("Opening socket connection...")',
@@ -117,12 +117,12 @@ class URScript(object):
     def __get_socket_name(self, name, address = None):
         if name in self.sockets.keys():
             return name
-        elif address!=("192.168.10.11", 50003) and address in self.sockets.values():
+        elif address!=("192.168.10.11", 50002) and address in self.sockets.values():
             return self.sockets.keys()[self.sockets.values().index(address)]
         else:
             raise Exception("No open sockets available with this name or address!")
             
-    def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50003)):
+    def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50002)):
         """Send a single line to the socket.
 
         Parameters
@@ -135,9 +135,10 @@ class URScript(object):
         None
 
         """
+        print(socket_name)
         self.add_line('\tsocket_send_line({}, socket_name="{}")'.format(line, self.__get_socket_name(socket_name, address)))
 
-    def socket_send_ints(self, integers, socket_name="socket_0", address=("192.168.10.11", 50003)):
+    def socket_send_ints(self, integers, socket_name="socket_0", address=("192.168.10.11", 50002)):
         self.add_lines([
             '\tints = {}'.format(integers),
             '\ti = 0',
@@ -151,7 +152,7 @@ class URScript(object):
             '\tend'
         ])
 
-    def socket_send_int(self, integer, socket_name="socket_0", address=("192.168.10.11", 50003)):
+    def socket_send_int(self, integer, socket_name="socket_0", address=("192.168.10.11", 50002)):
         self.add_lines([
             '\tsent = False',
             '\twhile sent == False:',
@@ -159,11 +160,11 @@ class URScript(object):
             '\tend'
         ])
 
-    def socket_send_float(self, float_value, socket_name="socket_0", address=("192.168.10.11", 50003)):
+    def socket_send_float(self, float_value, socket_name="socket_0", address=("192.168.10.11", 50002)):
         # self.socket_send_int(convert_float_to_int(float_value), socket_name, address)
         raise NotImplementedError
 
-    def socket_send_bytes(self, bytes_list, socket_name="socket_0", address=("192.168.10.11", 50003)):
+    def socket_send_bytes(self, bytes_list, socket_name="socket_0", address=("192.168.10.11", 50002)):
         self.add_lines([
             '\tfloat_bytes = {}'.format(bytes_list),
             '\ti = 0',
@@ -177,7 +178,7 @@ class URScript(object):
             '\tend'
         ])
 
-    def socket_send_byte(self, byte, socket_name="socket_0", address=("192.168.10.11", 50003)):
+    def socket_send_byte(self, byte, socket_name="socket_0", address=("192.168.10.11", 50002)):
         """Send a single line to the socket.
 
         Parameters
@@ -197,13 +198,13 @@ class URScript(object):
             '\tend'
         ])
 
-    def socket_read_binary_integer(self, var_name="msg_recv_0", number=1, socket_name="socket_0", address=("192.168.10.11", 50003), timeout=2):
+    def socket_read_binary_integer(self, var_name="msg_recv_0", number=1, socket_name="socket_0", address=("192.168.10.11", 50002), timeout=2):
         self.add_lines([
             '\t{} = socket_read_binary_integer({}, socket_name={}, timeout={})'.format(var_name, self.__get_socket_name(socket_name, address), timeout),
             '\ttextmsg({})'.format(var_name)
         ])
     
-    def socket_read_string(self, var_name="msg_recv_0", prefix = "", suffix = "", interpret_escape=False, socket_name="socket_0", address=("192.168.10.11", 50003), timeout=2):
+    def socket_read_string(self, var_name="msg_recv_0", prefix = "", suffix = "", interpret_escape=False, socket_name="socket_0", address=("192.168.10.11", 50002), timeout=2):
         self.add_lines([
             '\t{} = socket_read_string(socket_name="{}", prefix="{}", suffix="{}", interpret_escape={}, timeout={})'.format(var_name, self.__get_socket_name(socket_name, address), prefix, suffix, interpret_escape, timeout),
             '\ttextmsg({})'.format(var_name)
@@ -248,7 +249,7 @@ class URScript(object):
         [self.add_line(line, i+line_nr) for (line_nr, line) in zip(range(len(lines)), lines)]
 
     # Feedback functionality
-    def get_current_pose_cartesian(self, send=False):
+    def get_current_pose_cartesian(self, socket_name="socket_0", address=("192.168.10.11", 50002), send=False):
         """Get the current cartesian pose.
 
         Parameters
@@ -262,9 +263,9 @@ class URScript(object):
         None
 
         """
-        self.get_current_pose("cartesian", send)
+        self.get_current_pose("cartesian", socket_name, address, send)
 
-    def get_current_pose_joints(self, send=False):
+    def get_current_pose_joints(self, socket_name="socket_0", address=("192.168.10.11", 50002), send=False):
         """Get the current joint positions.
 
         Parameters
@@ -278,9 +279,9 @@ class URScript(object):
         None
 
         """
-        self.get_current_pose("joints", send)
+        self.get_current_pose("joints", socket_name, address, send)
 
-    def get_current_pose(self, get_type, send):
+    def get_current_pose(self, get_type, socket_name="socket_0", address=("192.168.10.11", 50002), send=False):
         """Create get pose code.
 
         """
@@ -291,7 +292,7 @@ class URScript(object):
         self.add_lines(["\tcurrent_pose = {}".format(pose_type[get_type]),
                         "\ttextmsg(current_pose)"])
         if send:
-            self.socket_send_line('current_pose\n')
+            self.socket_send_line('current_pose\n', socket_name, address)
 
     # Connectivity
     def is_available(self):
