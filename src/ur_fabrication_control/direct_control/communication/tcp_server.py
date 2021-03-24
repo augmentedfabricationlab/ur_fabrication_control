@@ -24,7 +24,6 @@ class FeedbackHandler(ss.StreamRequestHandler):
             data = self.rfile.readline().strip().decode('utf8')
             if not data:
                 break
-            print("Data Received from client is: {}".format(data))
             self.server.rcv_msg.append(data)
             self.wfile.write(("Message from client: {}\n".format(data)).encode())
 

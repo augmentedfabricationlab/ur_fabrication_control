@@ -121,7 +121,22 @@ class URScript(object):
             return self.sockets.keys()[self.sockets.values().index(address)]
         else:
             raise Exception("No open sockets available with this name or address!")
-            
+
+    def socket_send_line_string(self, line, socket_name="socket_0", address=("192.168.10.11", 50002)):
+        """Send a single line to the socket.
+
+        Parameters
+        ----------
+        line : string
+            A single line to send to the socket.
+
+        Returns
+        -------
+        None
+
+        """
+        self.add_line('\tsocket_send_line("{}", socket_name="{}")'.format(line, self.__get_socket_name(socket_name, address)))
+
     def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50002)):
         """Send a single line to the socket.
 
@@ -135,7 +150,6 @@ class URScript(object):
         None
 
         """
-        print(socket_name)
         self.add_line('\tsocket_send_line({}, socket_name="{}")'.format(line, self.__get_socket_name(socket_name, address)))
 
     def socket_send_ints(self, integers, socket_name="socket_0", address=("192.168.10.11", 50002)):
