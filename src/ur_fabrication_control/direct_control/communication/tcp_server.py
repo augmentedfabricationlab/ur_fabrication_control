@@ -30,34 +30,41 @@ class FeedbackHandler(ss.StreamRequestHandler):
 class TCPServer(ss.TCPServer):
     allow_reuse_address = True
 
-class TCPFeedbackServer:
+class TCPFeedbackServer(object):
     def __init__(self, ip="192.168.10.11", port=50002, handler=FeedbackHandler):
         self.ip = ip
         self.port = port
         self.handler = handler
+
         self.server = TCPServer((self.ip, self.port), self.handler)
         self.server.rcv_msg = []
-        self.t = threading.Thread(target=self.run)
-        self.t.daemon = True
-
         self.msgs = {}
 
     def clear(self):
         self.server.rcv_msg = []
+        self.msgs = {}
+
+    def _create_thread(self):
+        self.server_thread = threading.Thread(target=self.run)
+        self.server_thread.daemon = True
+    
+    def shutdown(self):
+        if hasattr(self, "server_thread"):
+            self.server.shutdown()
+            self.server_thread.join()
+            del self.server_thread
 
     def start(self):
-        self.t.start()
-        print("Server running in thread...")
+        self.shutdown()
+        self._create_thread()
+        self.server_thread.start()
+        print("Server started in thread...")
 
     def run(self):
         try:
             self.server.serve_forever()
         except:
             pass
-    
-    def shutdown(self):
-        self.server.shutdown()
-        self.t.join()
 
     def check_exit(self, exit_msg, tol=0.01):
         if exit_msg in self.msgs.values():

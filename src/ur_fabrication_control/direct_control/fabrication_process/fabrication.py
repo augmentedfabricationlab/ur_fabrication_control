@@ -1,8 +1,12 @@
 import sys, os
-from queue import Queue
 from threading import Thread
-sys.path.append("C:/Users/Gido/Documents/workspace/development/ur_fabrication_control/src")
-from ur_fabrication_control.direct_control.communication import TCPFeedbackServer, FeedbackHandler
+if sys.version_info[0] == 3:
+    sys.path.append("C:/Users/Gido/Documents/workspace/development/ur_fabrication_control/src")
+    from ur_fabrication_control.direct_control.communication import TCPFeedbackServer, FeedbackHandler
+    from queue import Queue
+else:
+    from ..communication import TCPFeedbackServer, FeedbackHandler
+    from Queue import Queue
 
 class FabricationFeedbackServer(TCPFeedbackServer):
     def listen(self, stop, q):
@@ -11,7 +15,7 @@ class FabricationFeedbackServer(TCPFeedbackServer):
             if stop():
                 break
             if task_exit_msg == None and not q.empty():
-                task_exit_msg = q.get(block=False)
+                task_exit_msg = q.get()
             elif task_exit_msg in self.msgs.values():
                 q.task_done()
                 task_exit_msg = None
@@ -27,15 +31,10 @@ class Fabrication(object):
         self.stop_task = None
         self._stop_thread = False
         self._performing_task = False
-
-        self.q = Queue()
-        self.task_thread = Thread(target = self.run, args=(lambda : self._stop_thread, self.q))
-        self.task_thread.daemon = True
+        self.current_task = None        
     
     def set_feedback_server(self, ip, port):
         self.server = FabricationFeedbackServer(ip, port)
-        self.server_thread = Thread(target = self.server.listen, args=(lambda : self._stop_thread, self.q))
-        self.server_thread.daemon = True
 
     def add_task(self, task, exit_msg, key=None):
         if key == None:
@@ -52,7 +51,7 @@ class Fabrication(object):
         return False
 
     def get_next_task(self):
-        keys = self.tasks.keys()
+        keys = [key for key in self.tasks.keys()]
         keys.sort()
         for key in keys:
             if self.tasks[key]["state"]=="waiting":
@@ -65,36 +64,54 @@ class Fabrication(object):
         self.tasks = {}
 
     def stop(self):
-        self._stop_thread=True
-        if self.task_thread.is_alive():
-            self.task_thread.join()
-        if self.server_thread.is_alive():
-            self.server_thread.join()
         self.perform_task(self.stop_task)
+        self._join_threads()
+        self.server.clear()
+        self.server.shutdown()
+    
+    def _join_threads(self):
+        self._stop_thread = True
+        if hasattr(self, "task_thread") and hasattr(self, "listen_thread"):
+            self.task_thread.join()
+            self.listen_thread.join()
+            del self.task_thread
+            del self.listen_thread
+
+    def _create_threads(self):
+        self._stop_thread=False
+        self.q = Queue()
+        self.task_thread = Thread(target = self.run, args=(lambda : self._stop_thread, self.q))
+        self.listen_thread = Thread(target = self.server.listen, args=(lambda : self._stop_thread, self.q))
+        self.task_thread.daemon = True
+        self.listen_thread.daemon = True
 
     def start(self):
+        self._join_threads()
         if self.tasks_available():
-            self._stop_thread=False
+            self.server.start()
+            self._create_threads()
+            self.listen_thread.start()
+            print("Started listening thread")
             self.task_thread.start()
-            self.server_thread.start()
+            print("Started task thread")
         else:
-            print("No tasks available")
+            print("No_tasks_available")
 
-    def run(self, stop, q):
+    def run(self, stop_thread, q):
         while self.tasks_available():
-            if stop():
+            if stop_thread():
+                self._performing_task = False
                 break
             elif not self._performing_task:
                 self.current_task = self.get_next_task()
                 q.put(self.tasks[self.current_task]["exit_message"])
-                self.perform_task(self.tasks[self.current_task]["task"])
+                self.perform_task(self.tasks[self.current_task]['task'])
                 self._performing_task = True
-            try:
+            elif self._performing_task and not q.unfinished_tasks:
                 q.join()
+                print("joined task {}".format(self.current_task))
                 self.tasks[self.current_task]["state"] = "completed"
                 self._performing_task = False
-            except:
-                pass
 
     def perform_task(self, task):
         task.send_script()
@@ -102,48 +119,70 @@ class Fabrication(object):
 
 if __name__ == '__main__':
     import socket
-                
-    address = ('localhost', 0) # let the kernel give us a port
-    server = FabricationFeedbackServer(ip=address[0], port=address[1], handler=FeedbackHandler)
-    ip, port = server.server.server_address # find out what port we were given
-    stop = False
-    server.start()
-    # Connect to the server
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((ip, port))
+    import time
 
-    # Send the data
-    message = 'Task_2_completed\n'
-    len_sent = s.send(message.encode())
-    print('Sending : "%s"' % message.strip())
-    # Receive a response
-    response = s.recv(1024).decode('utf8')
-    print('Received: "%s"' % response.strip())
+    ip, port = ('localhost', 67) # let the kernel give us a port
 
-    q = Queue()
-    q.put('Task_2_completed')
-    server_thread = Thread(target = server.listen, args=(lambda : stop, q))
-    server_thread.daemon = True
-    server_thread.start()
-    q.join()
-    print("Joined queue")
-    # Send the data
-    message = 'Task_2_completed\n'
-    len_sent = s.send(message.encode())
-    print('Sending : "%s"' % message.strip())
-    # Receive a response
-    response = s.recv(1024).decode('utf8')
-    print('Received: "%s"' % response.strip())
+    class TestFabrication(Fabrication):
+        def perform_task(self, task):
+            self.s.send(task.encode())
 
-    q.put('Task_2_completed')
-    q.join()
-    print("Joined queue AGAIN")
+    fab = TestFabrication()
+    fab.stop_task = "All_done"
+    fab.set_feedback_server(ip, port)
+    fab.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    fab.s.connect((ip, port))
 
-    stop = True
-    server_thread.join()
-    print("Joined server")
-    # Clean up
-    s.close()
-    print("socket closed")
-    server.shutdown()
-    print("Server is shut down")
+    tasks = [
+        "Task_1",
+        "Task_2",
+        "Task_3",
+    ]
+
+    [fab.add_task(task+"\n", task) for task in tasks]
+    print(fab.tasks)
+    fab_tasks_state = fab.tasks
+    fab.start()
+    time.sleep(2)
+    fab.stop()
+    print(fab.tasks)
+    print(fab.server.msgs)
+
+
+    
+
+    # # Send the data
+    # message = 'Task_2_completed\n'
+    # len_sent = s.send(message.encode())
+    # print('Sending : "%s"' % message.strip())
+    # # Receive a response
+    # response = s.recv(1024).decode('utf8')
+    # print('Received: "%s"' % response.strip())
+
+    # q = Queue()
+    # q.put('Task_2_completed')
+    # server_thread = Thread(target = server.listen, args=(lambda : stop, q))
+    # server_thread.daemon = True
+    # server_thread.start()
+    # q.join()
+    # print("Joined queue")
+    # # Send the data
+    # message = 'Task_2_completed\n'
+    # len_sent = s.send(message.encode())
+    # print('Sending : "%s"' % message.strip())
+    # # Receive a response
+    # response = s.recv(1024).decode('utf8')
+    # print('Received: "%s"' % response.strip())
+
+    # q.put('Task_2_completed')
+    # q.join()
+    # print("Joined queue AGAIN")
+
+    # stop = True
+    # server_thread.join()
+    # print("Joined server")
+    # # Clean up
+    # s.close()
+    # print("socket closed")
+    # server.shutdown()
+    # print("Server is shut down")
