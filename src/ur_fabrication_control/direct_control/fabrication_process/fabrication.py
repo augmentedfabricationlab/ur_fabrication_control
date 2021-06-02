@@ -65,10 +65,13 @@ class Fabrication(object):
 
     def stop(self):
         self.perform_task(self.stop_task)
+        self.close()
+    
+    def close(self):
         self._join_threads()
         self.server.clear()
         self.server.shutdown()
-    
+
     def _join_threads(self):
         self._stop_thread = True
         if hasattr(self, "task_thread") and hasattr(self, "listen_thread"):

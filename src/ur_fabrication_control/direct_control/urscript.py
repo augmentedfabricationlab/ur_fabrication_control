@@ -1,9 +1,8 @@
 from __future__ import absolute_import
 import os
 import socket
-from compas.geometry import Frame, Line
-#from .mixins.airpick_mixins import AirpickMixins
-from ur_fabrication_control.direct_control.utilities import convert_float_to_int
+from compas.geometry import Line
+# from .mixins.airpick_mixins import AirpickMixins
 
 __all__ = [
     'URScript'
@@ -72,8 +71,10 @@ class URScript(object):
         """
         if self.sockets != {}:
             for socket_name in self.sockets.keys():
-                print("Socket with name: {} and address {} was not closed, has been closed automatically".format(socket_name, self.sockets[socket_name]))
+                sock_msg = "Socket with name: {} and address {} was not closed"
+                print(sock_msg.format(socket_name, self.sockets[socket_name]))
                 self.socket_close(socket_name)
+                print("Socket has been closed at program end")
         self.add_lines(["\ttextmsg(\"<< Exiting program.\")",
                         "end",
                         "program()\n\n\n"])
@@ -100,29 +101,33 @@ class URScript(object):
         else:
             self.add_line['\ttextmsg({})'.format(message)]
 
-    def socket_open(self, ip= "192.168.10.11", port=50002, name="socket_0"):
+    def socket_open(self, ip="192.168.10.11", port=50002, name="socket_0"):
         """Open socket connection
         """
         self.add_lines(['\ttextmsg("Opening socket connection...")',
                        '\tsocket_open("{}", {}, "{}")'.format(ip, port, name)])
-        self.sockets[name]=(ip, port)
+        self.sockets[name] = (ip, port)
 
     def socket_close(self, name="socket_0"):
         """Close socket connection
         """
-        self.add_lines(['\ttextmsg("Closing socket connection with {}...")'.format(name),
-                        '\tsocket_close(socket_name="{}")'.format(self.__get_socket_name(name))])
+        self.add_lines(['\ttextmsg("Closing socket connection' +
+                        ' with {}...")'.format(name),
+                        '\tsocket_close(socket_name=' +
+                        '{}")'.format(self.__get_socket_name(name))])
         del self.sockets[name]
 
-    def __get_socket_name(self, name, address = None):
+    def __get_socket_name(self, name, address=None):
         if name in self.sockets.keys():
             return name
-        elif address!=("192.168.10.11", 50002) and address in self.sockets.values():
+        elif (address != ("192.168.10.11", 50002)
+              and address in self.sockets.values()):
             return self.sockets.keys()[self.sockets.values().index(address)]
         else:
-            raise Exception("No open sockets available with this name or address!")
+            raise Exception("No open sockets available with name or address!")
 
-    def socket_send_line_string(self, line, socket_name="socket_0", address=("192.168.10.11", 50002)):
+    def socket_send_line_string(self, line, socket_name="socket_0",
+                                address=("192.168.10.11", 50002)):
         """Send a single line to the socket.
 
         Parameters
@@ -135,9 +140,12 @@ class URScript(object):
         None
 
         """
-        self.add_line('\tsocket_send_line("{}", socket_name="{}")'.format(line, self.__get_socket_name(socket_name, address)))
+        sock_name = self.__get_socket_name(socket_name, address)
+        line = '\tsocket_send_line("{}", socket_name="{}")'
+        self.add_line(line.format(line, sock_name))
 
-    def socket_send_line(self, line, socket_name="socket_0", address=("192.168.10.11", 50002)):
+    def socket_send_line(self, line, socket_name="socket_0",
+                         address=("192.168.10.11", 50002)):
         """Send a single line to the socket.
 
         Parameters
@@ -150,14 +158,19 @@ class URScript(object):
         None
 
         """
-        self.add_line('\tsocket_send_line({}, socket_name="{}")'.format(line, self.__get_socket_name(socket_name, address)))
+        sock_name = self.__get_socket_name(socket_name, address)
+        line = '\tsocket_send_line({}, socket_name="{}")'
+        self.add_line(line.format(line, sock_name))
 
-    def socket_send_ints(self, integers, socket_name="socket_0", address=("192.168.10.11", 50002)):
+    def socket_send_ints(self, integers, socket_name="socket_0",
+                         address=("192.168.10.11", 50002)):
+        sock_name = self.__get_socket_name(socket_name, address)
         self.add_lines([
             '\tints = {}'.format(integers),
             '\ti = 0',
             '\twhile i < {}:'.format(len(integers)),
-            '\t\tsent = socket_send_int(ints[i], socket_name="{}")'.format(self.__get_socket_name(socket_name, address)),
+            '\t\tsent = socket_send_int(ints[i], ' +
+            'socket_name="{}")'.format(sock_name),
             '\t\tif sent == True:',
             '\t\t\ttextmsg("msg sent: ", ints[i])',
             '\t\t\ti = i + 1',
@@ -166,24 +179,30 @@ class URScript(object):
             '\tend'
         ])
 
-    def socket_send_int(self, integer, socket_name="socket_0", address=("192.168.10.11", 50002)):
+    def socket_send_int(self, integer, socket_name="socket_0",
+                        address=("192.168.10.11", 50002)):
+        sock_name = self.__get_socket_name(socket_name, address)
         self.add_lines([
             '\tsent = False',
             '\twhile sent == False:',
-            '\t\tsent = socket_send_int({}, socket_name="{}")'.format(integer, self.__get_socket_name(socket_name, address)),
+            '\t\tsent = socket_send_int' +
+            '({}, socket_name="{}")'.format(integer, sock_name),
             '\tend'
         ])
 
-    def socket_send_float(self, float_value, socket_name="socket_0", address=("192.168.10.11", 50002)):
-        # self.socket_send_int(convert_float_to_int(float_value), socket_name, address)
+    def socket_send_float(self, float_value, socket_name="socket_0",
+                          address=("192.168.10.11", 50002)):
         raise NotImplementedError
 
-    def socket_send_bytes(self, bytes_list, socket_name="socket_0", address=("192.168.10.11", 50002)):
+    def socket_send_bytes(self, bytes_list, socket_name="socket_0",
+                          address=("192.168.10.11", 50002)):
+        sock_name = self.__get_socket_name(socket_name, address)
         self.add_lines([
             '\tfloat_bytes = {}'.format(bytes_list),
             '\ti = 0',
             '\twhile i < {}:'.format(len(bytes_list)),
-            '\t\tsent = socket_send_byte(float_bytes[i], socket_name="{}")'.format(self.__get_socket_name(socket_name, address)),
+            '\t\tsent = socket_send_byte(float_bytes[i], ' +
+            'socket_name="{}")'.format(sock_name),
             '\t\tif sent == True:',
             '\t\t\ttextmsg("msg (byte) sent: ", float_bytes[i])',
             '\t\t\ti = i + 1',
@@ -192,7 +211,8 @@ class URScript(object):
             '\tend'
         ])
 
-    def socket_send_byte(self, byte, socket_name="socket_0", address=("192.168.10.11", 50002)):
+    def socket_send_byte(self, byte, socket_name="socket_0",
+                         address=("192.168.10.11", 50002)):
         """Send a single line to the socket.
 
         Parameters
@@ -205,22 +225,36 @@ class URScript(object):
         None
 
         """
+        sock_name = self.__get_socket_name(socket_name, address)
         self.add_lines([
             '\tsent = False',
             '\twhile sent == False:',
-            '\t\tsent = socket_send_byte({}, socket_name="{}")'.format(byte, self.__get_socket_name(socket_name, address)),
+            '\t\tsent = socket_send_byte' +
+            '({}, socket_name="{}")'.format(byte, sock_name),
             '\tend'
         ])
 
-    def socket_read_binary_integer(self, var_name="msg_recv_0", number=1, socket_name="socket_0", address=("192.168.10.11", 50002), timeout=2):
+    def socket_read_binary_integer(self, var_name="msg_recv_0", number=1,
+                                   socket_name="socket_0",
+                                   address=("192.168.10.11", 50002),
+                                   timeout=2):
+        sock_name = self.__get_socket_name(socket_name, address)
         self.add_lines([
-            '\t{} = socket_read_binary_integer({}, socket_name={}, timeout={})'.format(var_name, self.__get_socket_name(socket_name, address), timeout),
+            '\t{} = '.format(var_name) +
+            'socket_read_binary_integer({}, '.format(number) +
+            'socket_name={}, timeout={})'.format(sock_name, timeout),
             '\ttextmsg({})'.format(var_name)
         ])
-    
-    def socket_read_string(self, var_name="msg_recv_0", prefix = "", suffix = "", interpret_escape=False, socket_name="socket_0", address=("192.168.10.11", 50002), timeout=2):
+
+    def socket_read_string(self, var_name="msg_recv_0", prefix="", suffix="",
+                           int_escape=False, socket_name="socket_0",
+                           address=("192.168.10.11", 50002), timeout=2):
+        sock_name = self.__get_socket_name(socket_name, address)
         self.add_lines([
-            '\t{} = socket_read_string(socket_name="{}", prefix="{}", suffix="{}", interpret_escape={}, timeout={})'.format(var_name, self.__get_socket_name(socket_name, address), prefix, suffix, interpret_escape, timeout),
+            '\t{} = socket_read_string'.format(var_name) +
+            '(socket_name="{}", prefix="{}", '.format(sock_name, prefix) +
+            'suffix="{}", interpret_escape={}'.format(suffix, int_escape) +
+            ', timeout={})'.format(timeout),
             '\ttextmsg({})'.format(var_name)
         ])
 
@@ -260,17 +294,19 @@ class URScript(object):
 
         """
         i = len(self.commands_dict)
-        [self.add_line(line, i+line_nr) for (line_nr, line) in zip(range(len(lines)), lines)]
+        [self.add_line(line, i+ind) for (ind, line) in enumerate(lines)]
 
     # Feedback functionality
-    def get_current_pose_cartesian(self, socket_name="socket_0", address=("192.168.10.11", 50002), send=False):
+    def get_current_pose_cartesian(self, socket_name="socket_0",
+                                   address=("192.168.10.11", 50002),
+                                   send=False):
         """Get the current cartesian pose.
 
         Parameters
         ----------
         send : boolean
-            Set to "True" to also send the current pose from the UR Robot to the server.
-            Default set to "False" to only print out on the UR Robot's display.
+            Set to "True" to send current pose from UR Robot to server.
+            Default set to "False" to only print out on UR Robot display.
 
         Returns
         -------
@@ -279,14 +315,16 @@ class URScript(object):
         """
         self.get_current_pose("cartesian", socket_name, address, send)
 
-    def get_current_pose_joints(self, socket_name="socket_0", address=("192.168.10.11", 50002), send=False):
+    def get_current_pose_joints(self, socket_name="socket_0",
+                                address=("192.168.10.11", 50002),
+                                send=False):
         """Get the current joint positions.
 
         Parameters
         ----------
         send : boolean
-            Set to "True" to also send the current pose from the UR Robot to the server.
-            Default set to "False" to only print out on the UR Robot's display.
+            Set to "True" to send current pose from UR Robot to server.
+            Default set to "False" to only print out on UR Robot display.
 
         Returns
         -------
@@ -295,7 +333,8 @@ class URScript(object):
         """
         self.get_current_pose("joints", socket_name, address, send)
 
-    def get_current_pose(self, get_type, socket_name="socket_0", address=("192.168.10.11", 50002), send=False):
+    def get_current_pose(self, get_type, socket_name="socket_0",
+                         address=("192.168.10.11", 50002), send=False):
         """Create get pose code.
 
         """
@@ -330,13 +369,6 @@ class URScript(object):
         else:
             return False
 
-    def send_script_feedback(self):
-        """
-        """
-        #opens server
-        self.send_script()
-        #closes server
-
     def send_script(self):
         """Send the generated script to the UR Robot.
 
@@ -352,12 +384,15 @@ class URScript(object):
         try:
             s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
         except socket.timeout:
-            print("UR with ip {} not available on port {}".format(self.ur_ip, self.ur_port))
+            addr_msg = "UR with ip {} not available on port {}"
+            print(addr_msg.format(self.ur_ip, self.ur_port))
             raise ConnectionError
         finally:
-            enc_script = self.script.encode('utf-8') # encoding allows use of python 3.7
+            enc_script = self.script.encode('utf-8')
+            # encoding allows use of python 3.7
             s.send(enc_script)
-            print("Script sent to {} on port {}".format(self.ur_ip, self.ur_port))
+            sent_msg = "Script sent to {} on port {}"
+            print(sent_msg.format(self.ur_ip, self.ur_port))
             s.close()
 
     # Geometric effects
@@ -376,20 +411,24 @@ class URScript(object):
             The tcp is set in the command dictionary.
 
         """
-        #tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
+        # tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
         self.add_line("\tset_tcp(p{})".format(tcp))
 
-    def _radius_between_frames(self, from_frame, via_frame, to_frame, max_radius):
+    def _radius_between_frames(self, from_frame, via_frame,
+                               to_frame, max_radius):
         in_line = Line(from_frame.point, via_frame.point)
         out_line = Line(via_frame.point, to_frame.point)
         r = min(max_radius, in_line.length/2, out_line.length/2)
         return r
 
     def moves_linear(self, frames, velocity=0.05, max_radius=0.1):
-        #multiple moves, can calculate the radius
+        # Multiple moves, can calculate the radius
         for i, frame in enumerate(frames):
-            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(i+1, len(frames)-1)], max_radius)
+            from_frame = frames[max(0, i-1)]
+            to_frame = frames[min(i+1, len(frames)-1)]
+            r = self._radius_between_frames(from_frame, frame, to_frame,
+                                            max_radius)
             self.move_linear(frame, velocity, r)
 
     def move_linear(self, frame, velocity=0.05, radius=0):
@@ -408,12 +447,13 @@ class URScript(object):
 
         """
         pose = frame.point.data + frame.axis_angle_vector.data
-        self.add_line("\tmovel(p{}, v={}, r={})".format(pose, velocity, radius))
+        line = "\tmovel(p{}, v={}, r={})".format(pose, velocity, radius)
+        self.add_line(line)
 
     def moves_joint(self, joint_configurations, velocity):
-        #multiple joint positions
+        # multiple joint positions
         for joint_configuration in joint_configurations:
-            self.move_joint(joint_configuration, velocity)        
+            self.move_joint(joint_configuration, velocity)
 
     def move_joint(self, joint_configuration, velocity):
         """Add a move joint command to the script.
@@ -432,12 +472,16 @@ class URScript(object):
             A move joint command is added to the command dictionary.
 
         """
-        self.add_line("\tmovej({}, v={})".format(joint_configuration.values, velocity))
+        line = "\tmovej({}, v={})".format(joint_configuration.values, velocity)
+        self.add_line(line)
 
     def moves_process(self, frames, velocity=0.05, max_radius=0):
-        #multiple moves, can calculate the radius
+        # multiple moves, can calculate the radius
         for i, frame in enumerate(frames):
-            r = self._radius_between_frames(frames[max(0,i-1)], frame, frames[min(i+1, len(frames)-1)], max_radius)
+            from_frame = frames[max(0, i-1)]
+            to_frame = frames[min(i+1, len(frames)-1)]
+            r = self._radius_between_frames(from_frame, frame, to_frame,
+                                            max_radius)
             self.move_process(frame, velocity, r)
 
     def move_process(self, frame, velocity, radius):
@@ -456,11 +500,13 @@ class URScript(object):
 
         """
         pose = frame.point.data + frame.axis_angle_vector.data
-        self.add_line("\tmovep(p{}, v={}, r={})".format(pose, velocity, radius))
+        line = "\tmovep(p{}, v={}, r={})".format(pose, velocity, radius)
+        self.add_line(line)
 
     def moves_circular(self, frames_via, frames_to, velocity, max_radius):
         for i, (frame_via, frame_to) in enumerate(zip(frames_via, frames_to)):
-            r = self._radius_between_frames(frames_to[max(0,i-1)], frame_via, frame_to, max_radius)
+            r = self._radius_between_frames(frames_to[max(0, i-1)], frame_via,
+                                            frame_to, max_radius)
             self.move_circular(frame_via, frame_to, velocity, r)
 
     def move_circular(self, frame_via, frame_to, velocity, radius):
@@ -468,22 +514,22 @@ class URScript(object):
         """
         pose_via = frame_via.point.data + frame_via.axis_angle_vector.data
         pose_to = frame_to.point.data + frame_to.axis_angle_vector.data
-        self.add_line("\tmovec(p{}, p{}, v={}, r={})".format(pose_via, pose_to, velocity, radius))
+        line = "\tmovec(p{}, p{}, v={}, r={})"
+        self.add_line(line.format(pose_via, pose_to, velocity, radius))
 
     def digital_out(self, number, value):
         """
         """
         self.add_line("\tset_digital_out({}, {})".format(number, value))
 
-    def areagrip_on(self, sleep = 1.):
+    def areagrip_on(self, sleep=1.0):
         """
         """
         self.add_digital_out(7, True)
         self.add_line("\tsleep({})".format(sleep))
 
-    def areagrip_off(self, sleep = 0.1):
+    def areagrip_off(self, sleep=0.1):
         """
         """
         self.add_digital_out(7, False)
         self.add_line("\tsleep({})".format(sleep))
-
