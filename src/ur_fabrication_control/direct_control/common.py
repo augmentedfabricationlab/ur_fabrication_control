@@ -97,7 +97,7 @@ def send_stop(ip, port):
     ur_cmds.send_script()
 
 
-def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity = 0.05, radius = 0):
+def generate_moves_linear(tcp, frames, ur_ip, ur_port, velocity=0.05, radius=0):
     """Generate linear movement.
 
     Parameters
@@ -329,7 +329,7 @@ def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send
     server.shutdown()
     return server.msgs[0]
 
-    #return _get_current_pose("cartesian", tcp, server_ip, server_port, ur_ip, ur_port, send)
+    # return _get_current_pose("cartesian", tcp, server_ip, server_port, ur_ip, ur_port, send)
 
 
 def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):

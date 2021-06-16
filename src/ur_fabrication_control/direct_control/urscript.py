@@ -121,7 +121,7 @@ class URScript(object):
         if name in self.sockets.keys():
             return name
         elif (address != ("192.168.10.11", 50002)
-              and address in self.sockets.values()):
+              and (address in self.sockets.values())):
             return self.sockets.keys()[self.sockets.values().index(address)]
         else:
             raise Exception("No open sockets available with name or address!")
@@ -141,8 +141,8 @@ class URScript(object):
 
         """
         sock_name = self.__get_socket_name(socket_name, address)
-        line = '\tsocket_send_line("{}", socket_name="{}")'
-        self.add_line(line.format(line, sock_name))
+        str_line = '\tsocket_send_line("{}", socket_name="{}")'
+        self.add_line(str_line.format(line, sock_name))
 
     def socket_send_line(self, line, socket_name="socket_0",
                          address=("192.168.10.11", 50002)):
@@ -159,8 +159,8 @@ class URScript(object):
 
         """
         sock_name = self.__get_socket_name(socket_name, address)
-        line = '\tsocket_send_line({}, socket_name="{}")'
-        self.add_line(line.format(line, sock_name))
+        str_line = '\tsocket_send_line({}, socket_name="{}")'
+        self.add_line(str_line.format(line, sock_name))
 
     def socket_send_ints(self, integers, socket_name="socket_0",
                          address=("192.168.10.11", 50002)):
@@ -472,7 +472,7 @@ class URScript(object):
             A move joint command is added to the command dictionary.
 
         """
-        line = "\tmovej({}, v={})".format(joint_configuration.values, velocity)
+        line = "\tmovej({}, v={})".format(joint_configuration.values(), velocity)
         self.add_line(line)
 
     def moves_process(self, frames, velocity=0.05, max_radius=0):
