@@ -114,7 +114,7 @@ class URScript(object):
         self.add_lines(['\ttextmsg("Closing socket connection' +
                         ' with {}...")'.format(name),
                         '\tsocket_close(socket_name=' +
-                        '{}")'.format(self.__get_socket_name(name))])
+                        '"{}")'.format(self.__get_socket_name(name))])
         del self.sockets[name]
 
     def __get_socket_name(self, name, address=None):
