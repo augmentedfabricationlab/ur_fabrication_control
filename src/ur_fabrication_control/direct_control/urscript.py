@@ -102,18 +102,18 @@ class URScript(object):
         else:
             self.add_line['\ttextmsg({})'.format(message)]
 
-    def _get_var_name(self, var_name, i=0):
+    def _get_var_name(self, var_name, ind=0):
         if var_name in self.var_names:
-            new_var_name = var_name + str(i)
+            new_var_name = var_name + str(ind)
             if new_var_name in self.var_names:
-                self._get_var_name(var_name, i+1)
+                self._get_var_name(var_name, ind+1)
             else:
                 self.var_names.append(new_var_name)
                 return new_var_name
-        else: 
+        else:
             self.var_names.append(var_name)
             return var_name
-    
+
     def socket_open(self, ip="192.168.10.11", port=50002, name="socket_0"):
         """Open socket connection
         """
@@ -175,12 +175,13 @@ class URScript(object):
         str_line = '\tsocket_send_line({}, socket_name="{}")'
         self.add_line(str_line.format(line, sock_name))
 
-    def socket_send_ints(self, integers, var_name="ints", socket_name="socket_0",
+    def socket_send_ints(self, integers, var_name="ints",
+                         socket_name="socket_0", 
                          address=("192.168.10.11", 50002)):
         sock_name = self.__get_socket_name(socket_name, address)
         v_name = self._get_var_name(var_name)
         self.add_lines([
-            '\{} = {}'.format(v_name, integers),
+            '\t{} = {}'.format(v_name, integers),
             '\ti = 0',
             '\twhile i < {}:'.format(len(integers)),
             '\t\tsent = socket_send_int({}[i], '.format(v_name) +
@@ -486,8 +487,8 @@ class URScript(object):
             A move joint command is added to the command dictionary.
 
         """
-        line = "\tmovej({}, v={})".format(joint_configuration.values(), velocity)
-        self.add_line(line)
+        line = "\tmovej({}, v={})"
+        self.add_line(line.format(joint_configuration.values(), velocity))
 
     def moves_process(self, frames, velocity=0.05, max_radius=0):
         # multiple moves, can calculate the radius
