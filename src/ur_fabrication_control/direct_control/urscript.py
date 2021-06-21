@@ -37,6 +37,7 @@ class URScript(object):
         self.ur_port = ur_port
         self.script = None
         self.sockets = {}
+        self.var_names = []
 
         # Functionality
     def start(self):
@@ -101,6 +102,18 @@ class URScript(object):
         else:
             self.add_line['\ttextmsg({})'.format(message)]
 
+    def _get_var_name(self, var_name, i=0):
+        if var_name in self.var_names:
+            new_var_name = var_name + str(i)
+            if new_var_name in self.var_names:
+                self._get_var_name(var_name, i+1)
+            else:
+                self.var_names.append(new_var_name)
+                return new_var_name
+        else: 
+            self.var_names.append(var_name)
+            return var_name
+    
     def socket_open(self, ip="192.168.10.11", port=50002, name="socket_0"):
         """Open socket connection
         """
@@ -162,17 +175,18 @@ class URScript(object):
         str_line = '\tsocket_send_line({}, socket_name="{}")'
         self.add_line(str_line.format(line, sock_name))
 
-    def socket_send_ints(self, integers, socket_name="socket_0",
+    def socket_send_ints(self, integers, var_name="ints", socket_name="socket_0",
                          address=("192.168.10.11", 50002)):
         sock_name = self.__get_socket_name(socket_name, address)
+        v_name = self._get_var_name(var_name)
         self.add_lines([
-            '\tints = {}'.format(integers),
+            '\{} = {}'.format(v_name, integers),
             '\ti = 0',
             '\twhile i < {}:'.format(len(integers)),
-            '\t\tsent = socket_send_int(ints[i], ' +
+            '\t\tsent = socket_send_int({}[i], '.format(v_name) +
             'socket_name="{}")'.format(sock_name),
             '\t\tif sent == True:',
-            '\t\t\ttextmsg("msg sent: ", ints[i])',
+            '\t\t\ttextmsg("msg sent: ", {}[i])'.format(v_name),
             '\t\t\ti = i + 1',
             '\t\t\tsent = False',
             '\t\tend',
