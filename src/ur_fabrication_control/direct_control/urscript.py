@@ -106,7 +106,7 @@ class URScript(object):
         if var_name in self.var_names:
             new_var_name = var_name + str(ind)
             if new_var_name in self.var_names:
-                self._get_var_name(var_name, ind+1)
+                return self._get_var_name(var_name, ind+1)
             else:
                 self.var_names.append(new_var_name)
                 return new_var_name
