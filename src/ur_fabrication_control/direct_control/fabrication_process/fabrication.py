@@ -1,11 +1,9 @@
 import sys
 from threading import Thread
+from ..communication import TCPFeedbackServer
 if sys.version_info[0] == 3:
-    sys.path.append("C:/Users/Gido/Documents/workspace/development/ur_fabrication_control/src")
-    from ur_fabrication_control.direct_control.communication import TCPFeedbackServer, FeedbackHandler
     from queue import Queue
 else:
-    from ..communication import TCPFeedbackServer, FeedbackHandler
     from Queue import Queue
 
 
