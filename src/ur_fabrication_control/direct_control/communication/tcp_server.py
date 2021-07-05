@@ -17,6 +17,7 @@ __all__ = [
 # def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 #     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
+
 class FeedbackHandler(ss.StreamRequestHandler):
     def handle(self):
         print("Connected to client at {}".format(self.client_address[0]))
@@ -25,13 +26,17 @@ class FeedbackHandler(ss.StreamRequestHandler):
             if not data:
                 break
             self.server.rcv_msg.append(data)
-            self.wfile.write(("Message from client: {}\n".format(data)).encode())
+            msg = "Message from client: {}\n".format(data)
+            self.wfile.write(msg.encode())
+
 
 class TCPServer(ss.TCPServer):
     allow_reuse_address = True
 
+
 class TCPFeedbackServer(object):
-    def __init__(self, ip="192.168.10.11", port=50002, handler=FeedbackHandler):
+    def __init__(self, ip="192.168.10.11", port=50002,
+                 handler=FeedbackHandler):
         self.ip = ip
         self.port = port
         self.handler = handler
@@ -69,18 +74,21 @@ class TCPFeedbackServer(object):
     def check_exit(self, exit_msg, tol=0.01):
         if exit_msg in self.msgs.values():
             return True
-        elif any(isinstance(msg, list) for msg in self.msgs.values()) and isinstance(exit_msg, list):
+        elif (any(isinstance(msg, list) for msg in self.msgs.values())
+              and isinstance(exit_msg, list)):
             c = []
             for i, msg in enumerate(self.msgs.values()):
-                if isinstance(msg,list) and len(msg) == len(exit_msg):
-                    c.append(all(isclose(a, b, abs_tol=tol) for a,b in zip(msg, exit_msg)))
+                if isinstance(msg, list) and len(msg) == len(exit_msg):
+                    for a, b in zip(msg, exit_msg):
+                        c.append(all(isclose(a, b, abs_tol=tol)))
                 else:
                     c.append(False)
             return any(c)
         else:
             return False
 
-    def listen(self, exit_msg="Closing socket communication", tolerance=0.01, timeout=60):
+    def listen(self, exit_msg="Closing socket communication",
+               tolerance=0.01, timeout=60):
         tCurrent = time.time()
         while not self.check_exit(exit_msg, tolerance):
             if self.server.rcv_msg is []:
@@ -103,12 +111,16 @@ class TCPFeedbackServer(object):
             msg = [eval(x) for x in msg]
         self.msgs[len(self.msgs)] = msg
 
+
 if __name__ == '__main__':
     import socket
-                
-    address = ('localhost', 0) # let the kernel give us a port
-    server = TCPFeedbackServer(ip=address[0], port=address[1], handler=FeedbackHandler)
-    ip, port = server.server.server_address # find out what port we were given
+
+    address = ('localhost', 0)
+    # let the kernel give us a port
+    server = TCPFeedbackServer(ip=address[0], port=address[1],
+                               handler=FeedbackHandler)
+    ip, port = server.server.server_address
+    # find out what port we were given
 
     server.start()
     # Connect to the server
@@ -130,7 +142,6 @@ if __name__ == '__main__':
     response = s.recv(1024).decode('utf8')
     print('Received: "%s"' % response)
 
-
     message = 'Done\n'
     print('Sending : "%s"' % message)
     len_sent = s.send(message.encode())
@@ -139,7 +150,7 @@ if __name__ == '__main__':
     response = s.recv(1024).decode('utf8')
     print('Received: "%s"' % response)
 
-    server.listen(exit_msg=[0.11,0.11,0.11,0.11,0.11,0.11], timeout=2)
+    server.listen(exit_msg=[0.11, 0.11, 0.11, 0.11, 0.11, 0.11], timeout=2)
 
     # Clean up
     s.close()

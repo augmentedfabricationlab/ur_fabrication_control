@@ -15,7 +15,7 @@ class FabricationFeedbackServer(TCPFeedbackServer):
         while True:
             if stop():
                 break
-            if task_exit_msg == None and not q.empty():
+            if task_exit_msg is None and not q.empty():
                 task_exit_msg = q.get()
             elif task_exit_msg in self.msgs.values():
                 q.task_done()
@@ -39,9 +39,11 @@ class Fabrication(object):
         self.server = FabricationFeedbackServer(ip, port)
 
     def add_task(self, task, exit_msg, key=None):
-        if key == None:
+        if key is None:
             key = len(self.tasks)
-        self.tasks[key] = {"state":"waiting", "exit_message":exit_msg, "task":task}
+        self.tasks[key] = {"state": "waiting",
+                           "exit_message": exit_msg,
+                           "task": task}
 
     def tasks_available(self):
         if len(self.tasks):
@@ -56,7 +58,7 @@ class Fabrication(object):
         keys = [key for key in self.tasks.keys()]
         keys.sort()
         for key in keys:
-            if self.tasks[key]["state"]=="waiting":
+            if self.tasks[key]["state"] == "waiting":
                 return key
         else:
             # No next task available
@@ -68,7 +70,7 @@ class Fabrication(object):
     def stop(self):
         self.perform_task(self.stop_task)
         self.close()
-    
+
     def close(self):
         self._join_threads()
         self.server.clear()
@@ -83,10 +85,12 @@ class Fabrication(object):
             del self.listen_thread
 
     def _create_threads(self):
-        self._stop_thread=False
+        self._stop_thread = False
         self.q = Queue()
-        self.task_thread = Thread(target = self.run, args=(lambda : self._stop_thread, self.q))
-        self.listen_thread = Thread(target = self.server.listen, args=(lambda : self._stop_thread, self.q))
+        self.task_thread = Thread(target=self.run,
+                                  args=(lambda: self._stop_thread, self.q))
+        self.listen_thread = Thread(target=self.server.listen,
+                                    args=(lambda: self._stop_thread, self.q))
         self.task_thread.daemon = True
         self.listen_thread.daemon = True
 
@@ -126,7 +130,8 @@ if __name__ == '__main__':
     import socket
     import time
 
-    ip, port = ('localhost', 67) # let the kernel give us a port
+    ip, port = ('localhost', 67)
+    # let the kernel give us a port
 
     class TestFabrication(Fabrication):
         def perform_task(self, task):
@@ -153,14 +158,11 @@ if __name__ == '__main__':
     print(fab.tasks)
     print(fab.server.msgs)
 
-
-    
-
-    # # Send the data
+    # Send the data
     # message = 'Task_2_completed\n'
     # len_sent = s.send(message.encode())
     # print('Sending : "%s"' % message.strip())
-    # # Receive a response
+    # Receive a response
     # response = s.recv(1024).decode('utf8')
     # print('Received: "%s"' % response.strip())
 
