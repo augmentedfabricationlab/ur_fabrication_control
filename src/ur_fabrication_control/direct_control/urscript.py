@@ -176,7 +176,7 @@ class URScript(object):
         self.add_line(str_line.format(line, sock_name))
 
     def socket_send_ints(self, integers, var_name="ints",
-                         socket_name="socket_0", 
+                         socket_name="socket_0",
                          address=("192.168.10.11", 50002)):
         sock_name = self.__get_socket_name(socket_name, address)
         v_name = self._get_var_name(var_name)

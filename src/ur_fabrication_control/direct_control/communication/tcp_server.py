@@ -47,7 +47,7 @@ class TCPFeedbackServer(object):
     def _create_thread(self):
         self.server_thread = threading.Thread(target=self.run)
         self.server_thread.daemon = True
-    
+
     def shutdown(self):
         if hasattr(self, "server_thread"):
             self.server.shutdown()

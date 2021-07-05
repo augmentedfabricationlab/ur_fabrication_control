@@ -1,4 +1,4 @@
-import sys, os
+import sys
 from threading import Thread
 if sys.version_info[0] == 3:
     sys.path.append("C:/Users/Gido/Documents/workspace/development/ur_fabrication_control/src")
@@ -7,6 +7,7 @@ if sys.version_info[0] == 3:
 else:
     from ..communication import TCPFeedbackServer, FeedbackHandler
     from Queue import Queue
+
 
 class FabricationFeedbackServer(TCPFeedbackServer):
     def listen(self, stop, q):
@@ -24,6 +25,7 @@ class FabricationFeedbackServer(TCPFeedbackServer):
             elif len(self.msgs) != len(self.server.rcv_msg):
                 self.add_message(self.server.rcv_msg[len(self.msgs)])
 
+
 class Fabrication(object):
     def __init__(self):
         self.server = None
@@ -31,8 +33,8 @@ class Fabrication(object):
         self.stop_task = None
         self._stop_thread = False
         self._performing_task = False
-        self.current_task = None        
-    
+        self.current_task = None
+
     def set_feedback_server(self, ip, port):
         self.server = FabricationFeedbackServer(ip, port)
 
