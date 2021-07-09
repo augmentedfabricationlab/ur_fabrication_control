@@ -488,7 +488,7 @@ class URScript(object):
 
         """
         line = "\tmovej({}, v={})"
-        self.add_line(line.format(joint_configuration.values(), velocity))
+        self.add_line(line.format(joint_configuration.joint_values, velocity))
 
     def moves_process(self, frames, velocity=0.05, max_radius=0):
         # multiple moves, can calculate the radius
