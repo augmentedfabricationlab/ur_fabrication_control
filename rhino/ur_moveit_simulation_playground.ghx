@@ -48,10 +48,10 @@
             <chunk name="Projection">
               <items count="2">
                 <item name="Target" type_name="gh_drawing_point" type_code="30">
-                  <X>-193</X>
-                  <Y>83</Y>
+                  <X>48</X>
+                  <Y>-210</Y>
                 </item>
-                <item name="Zoom" type_name="gh_single" type_code="5">0.408735961</item>
+                <item name="Zoom" type_name="gh_single" type_code="5">0.903125346</item>
               </items>
             </chunk>
             <chunk name="Views">
@@ -73,8 +73,8 @@
           <chunks count="1">
             <chunk name="Library" index="0">
               <items count="6">
-                <item name="AssemblyFullName" type_name="gh_string" type_code="10">GhPython, Version=7.3.21053.23031, Culture=neutral, PublicKeyToken=null</item>
-                <item name="AssemblyVersion" type_name="gh_string" type_code="10">7.3.21053.23031</item>
+                <item name="AssemblyFullName" type_name="gh_string" type_code="10">GhPython, Version=6.35.21222.17001, Culture=neutral, PublicKeyToken=null</item>
+                <item name="AssemblyVersion" type_name="gh_string" type_code="10">6.35.21222.17001</item>
                 <item name="Author" type_name="gh_string" type_code="10"></item>
                 <item name="Id" type_name="gh_guid" type_code="9">00000000-0000-0000-0000-000000000000</item>
                 <item name="Name" type_name="gh_string" type_code="10"></item>
@@ -685,7 +685,7 @@
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import math
 import Grasshopper
 from compas.robots import Joint
@@ -720,7 +720,6 @@ print(full_configuration)</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">4ef3a12a-56b7-4eaa-bd2d-096c75059557</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -1595,7 +1594,7 @@ print(full_configuration)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_fab.robots import Configuration
 
 if robot:
@@ -1616,7 +1615,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">5460dd26-5b29-46c1-a6f7-a325965d7b6e</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -1806,7 +1804,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">"""Calculate the robot's forward kinematic.
     Inputs:
         robot: :class:`compas_fab.robots.Robot`
@@ -1849,7 +1847,6 @@ if robot and robot.client and full_configuration:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">99febc18-44c6-4580-93b5-fb035e0f6fc2</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -2192,7 +2189,7 @@ configurable joints is assumed.</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">"""Calculates a cartesian motion path (linear in tool space).
     Inputs:
         robot: The robot
@@ -2270,7 +2267,6 @@ trajectory = sc.sticky[response_key]
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">1054696c-daff-43e6-8660-a99a5f80e003</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -2668,7 +2664,7 @@ Press to calculate solution.</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_ghpython import draw_frame
 
 joint_positions = []
@@ -2695,7 +2691,6 @@ if trajectory:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">1dc30ca3-1069-423c-857d-b448d33f5a52</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -3029,7 +3024,7 @@ if trajectory:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">planes = [start_plane, end_plane]
 print planes</item>
                     <item name="Description" type_name="gh_string" type_code="10">GhPython provides a Python script component</item>
@@ -3044,7 +3039,6 @@ print planes</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">32fea064-3aaa-4c44-9d0d-35f2baa43b09</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -3299,7 +3293,7 @@ print planes</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_fab.robots import Configuration
 
 if robot:
@@ -3320,7 +3314,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">58a111f2-4c82-4a9c-8654-1939b30c6a24</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -3790,7 +3783,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">"""Calculates a motion path.
     Inputs:
         robot: The robot
@@ -3862,7 +3855,6 @@ trajectory = sc.sticky[response_key]
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">13ba9129-649e-4b75-b4fd-37761a9411fb</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -4353,7 +4345,7 @@ Add path constraints</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_ghpython import list_to_ghtree
 
 if response:
@@ -4386,7 +4378,6 @@ if response:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">a3c360fb-ab05-4d7e-aaad-54eb91e7ba7a</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -4924,7 +4915,7 @@ if response:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_ghpython import list_to_ghtree
 
 if response:
@@ -4954,7 +4945,6 @@ if response:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">4b1a09a5-e064-4094-93a1-869b079f907f</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -5493,7 +5483,7 @@ if response:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_fab.robots import CollisionMesh
 
 cm = CollisionMesh(compas_mesh, id)
@@ -5514,7 +5504,6 @@ if scene:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">fc32ee08-4b8f-40cc-b909-b73c5c595c12</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -5970,7 +5959,7 @@ join meshes</item>
                             <chunk name="Item" index="0">
                               <items count="2">
                                 <item name="ON_Data" type_name="gh_bytearray" type_code="20">
-                                  <stream length="504">Y2BkYGD4DwQgGgR4mIBEWFBGZl6+c35ubn6ejkJYalFxZn6erbmesZ6RoYEpkDQ2MDbUUXAuzSkpLUq1zUstLSlKzNFRCChNyslM9k6tDMnPTs2zNTU1MrIwTLU0TzY3NTU1NmAFWSIMNlvPPTU/N7WkqFLPN7U4gwUozl4GsYYrsSg5I7Ms1TgllzO/IDUvr7QoqZglJbEkEaSIg4ODCeRCAXUGBhsg7VjJ08fJDGTwg4gaIMH0q56JoYAZ4pvf/5kYRKA+e3Llup/7y8uC+58yCDQzKn3Q3Skd8wcobwFVawFyBRMDOvhgj4sfcU6c1argmQOMn+RVrKnEdtYBJg7jv/179vBmJnkXkJrrTw3dHRSL3CA6GuyR8H4kjCIGiZ4GBoepUItEYTbCIg0Z6DrLvH5kJoXmagm4K9tdnntJhF+zh/kGxofQ28DiqKEAtlsUzoFIwwPrZq8l53VBhkSYJDOQYGZgYjIAsuMeVgkyvAJ6fxvU+yC2LdT7V4BBARMHsWHiII0V2xakI7mgwZ4YtgKQrC/yj0YLEFhgorOxA1A4bT8R0oxTAXosw8TRYx0UaEugcowM2OMKAdBTGX3VZdrMWAwTadi7v/IAiA570OyApPLALhuwZx+ou5yDi0uo9k7+X8/UAONzE2frKBgFo2AUEAIA</stream>
+                                  <stream length="492">Y2BkYGD4DwQgGgR4mIBEeFBGZl6+c35ubn6ejkJYalFxZn6erZmesamekaGRkZGeobmBgaGOgnNpTklpUaptXmppSVFijo5CQGlSTmayd2plSH52ap6tqamRkYVhqqV5srmpqamxASvIFmGw4Xruqfm5qSVFlXq+qcUZLEBx9jKIPVyJRckZmWWpxim5nPkFqXl5pUVJxSwpiSWJIEUcHBxMICcKqDMw2ADpp9U9PZzMQAY/iIgGEky/6pkY/Jkh3vn9n4lBBOq1J1eu+7m/vCy4/ymDQDOj0gfdndIxf4Dy4lC1FiBXMDGggw/2uPgR58RZrQqeOcD4SV7FmkpsZx1g4jD+279nD29mkncBqbn+1NDdQbHIDaKjwR4J70fCKGKQ+GlgcCiBWgTzEQMs1pCBrrPM60dmUmiuloC7st3luZdE+DV7mG9gfAi9DSyOGgqMLxR/BMCsYwYSzAxMTAZAdtzDKkGGV0DfbYP6DsS2hfruCtCnMHEQGyYO0lixbUE6kgUN9sSwFYBkfZF/NJp/YWGFzsYOQMGw/URIM04F6JEIE0ePVFB8LIEFEAP2qEAA9EREX3WZNjMWw0Qa9u6vPACiwx40OyCpPLDLBuzZB+ou5+DiEqq9k//XMzXA+NzE2ToKRsEoGAUA</stream>
                                 </item>
                                 <item name="RefID" type_name="gh_guid" type_code="9">00000000-0000-0000-0000-000000000000</item>
                               </items>
@@ -6028,7 +6017,7 @@ join meshes</item>
                             <chunk name="Item" index="0">
                               <items count="2">
                                 <item name="ON_Data" type_name="gh_bytearray" type_code="20">
-                                  <stream length="1989">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</stream>
+                                  <stream length="1991">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</stream>
                                 </item>
                                 <item name="RefID" type_name="gh_guid" type_code="9">00000000-0000-0000-0000-000000000000</item>
                               </items>
@@ -6386,7 +6375,7 @@ join meshes</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 
 from compas_fab.robots import PlanningScene
@@ -6413,7 +6402,6 @@ scene = st[scene_key]</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">2bc0d650-468c-44d5-ab0c-4315e3b2f3ab</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -6951,7 +6939,7 @@ scene = st[scene_key]</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_fab.robots import CollisionMesh
 from compas_fab.robots import AttachedCollisionMesh
 
@@ -6979,7 +6967,6 @@ if scene:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">95127244-40f6-4620-88ab-f5fecabef25f</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -7467,7 +7454,7 @@ if scene:
                             <chunk name="Item" index="0">
                               <items count="2">
                                 <item name="ON_Data" type_name="gh_bytearray" type_code="20">
-                                  <stream length="504">Y2BkYGD4DwQgGgR4mIBEWFBGZl6+c35ubn6ejkJYalFxZn6erbmesZ6RoYEpkDQ2MDbUUXAuzSkpLUq1zUstLSlKzNFRCChNyslM9k6tDMnPTs2zNTU1MrIwTLU0TzY3NTU1NmAFWSIMNlvPPTU/N7WkqFLPN7U4gwUozl4GsYYrsSg5I7Ms1TgllzO/IDUvr7QoqZglJbEkEaSIg4ODCeRCAXUGBhsg7VjJ08fJDGTwg4gaIMH0q56JoYAZ4pvf/5kYRKA+e3Llup/7y8uC+58yCDQzKn3Q3Skd8wcobwFVawFyBRMDOvhgj4sfcU6c1argmQOMn+RVrKnEdtYBJg7jv/179vBmJnkXkJrrTw3dHRSL3CA6GuyR8H4kjCIGiZ4GBoepUItEYTbCIg0Z6DrLvH5kJoXmagm4K9tdnntJhF+zh/kGxofQ28DiqKEAtlsUzoFIwwPrZq8l53VBhkSYJDOQYGZgYjIAsuMeVgkyvAJ6fxvU+yC2LdT7V4BBARMHsWHiII0V2xakI7mgwZ4YtgKQrC/yj0YLEFhgorOxA1A4bT8R0oxTAXosw8TRYx0UaEugcowM2OMKAdBTGX3VZdrMWAwTadi7v/IAiA570OyApPLALhuwZx+ou5yDi0uo9k7+X8/UAONzE2frKBgFo2AUEAIA</stream>
+                                  <stream length="492">Y2BkYGD4DwQgGgR4mIBEeFBGZl6+c35ubn6ejkJYalFxZn6erZmesamekaGRkZGeobmBgaGOgnNpTklpUaptXmppSVFijo5CQGlSTmayd2plSH52ap6tqamRkYVhqqV5srmpqamxASvIFmGw4Xruqfm5qSVFlXq+qcUZLEBx9jKIPVyJRckZmWWpxim5nPkFqXl5pUVJxSwpiSWJIEUcHBxMICcKqDMw2ADpp9U9PZzMQAY/iIgGEky/6pkY/Jkh3vn9n4lBBOq1J1eu+7m/vCy4/ymDQDOj0gfdndIxf4Dy4lC1FiBXMDGggw/2uPgR58RZrQqeOcD4SV7FmkpsZx1g4jD+279nD29mkncBqbn+1NDdQbHIDaKjwR4J70fCKGKQ+GlgcCiBWgTzEQMs1pCBrrPM60dmUmiuloC7st3luZdE+DV7mG9gfAi9DSyOGgqMLxR/BMCsYwYSzAxMTAZAdtzDKkGGV0DfbYP6DsS2hfruCtCnMHEQGyYO0lixbUE6kgUN9sSwFYBkfZF/NJp/YWGFzsYOQMGw/URIM04F6JEIE0ePVFB8LIEFEAP2qEAA9EREX3WZNjMWw0Qa9u6vPACiwx40OyCpPLDLBuzZB+ou5+DiEqq9k//XMzXA+NzE2ToKRsEoGAUA</stream>
                                 </item>
                                 <item name="RefID" type_name="gh_guid" type_code="9">00000000-0000-0000-0000-000000000000</item>
                               </items>
@@ -7488,7 +7475,7 @@ if scene:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas.datastructures import Mesh
 from compas_rhino.geometry import RhinoMesh
 
@@ -7506,7 +7493,6 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">c389be37-dd3c-4496-bdfa-2548793c6c14</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -7730,7 +7716,7 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">if robot:
     link_names = robot.get_link_names()
     #print link_names
@@ -7746,7 +7732,6 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">a7a0d878-cb3b-411c-b0d7-c21160942d2c</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -8046,7 +8031,7 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">if robot:
     link_names = robot.get_link_names()
     touch_links = [link_names[i] for i in idxs]</item>
@@ -8061,7 +8046,6 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">13d9049f-fbfb-4ae8-a9cc-ecbd3ca3ea3f</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -8337,7 +8321,7 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import math
 from compas.geometry import Frame
 
@@ -8364,7 +8348,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">e8180df7-12d1-486b-8c8d-8427c48e3f0d</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -9008,7 +8991,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_fab.robots import Configuration
 
 if robot:
@@ -9029,7 +9012,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">e11d4a37-780b-4589-a872-544aeceb8265</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -9448,7 +9430,7 @@ if robot:
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>2223</X>
                           <Y>1636</Y>
-                          <W>85</W>
+                          <W>76</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -9465,7 +9447,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import math
 
 joint_positions = [0,-90,90,-90,-90,90]
@@ -9485,7 +9467,6 @@ print joint_positions</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">66ae96e5-a03b-43fe-8dc6-633cf10ec8a6</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -9761,7 +9742,7 @@ print joint_positions</item>
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>1892</X>
                           <Y>862</Y>
-                          <W>280</W>
+                          <W>239</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -9985,7 +9966,7 @@ print joint_positions</item>
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>2096</X>
                           <Y>1670</Y>
-                          <W>280</W>
+                          <W>239</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -10002,7 +9983,7 @@ print joint_positions</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import os
 from scriptcontext import sticky as st
 import compas
@@ -10054,7 +10035,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">e2f2a58d-0a58-4e3a-8aa5-2a1731b53533</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -10428,7 +10408,7 @@ if robot:
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>619</X>
                           <Y>383</Y>
-                          <W>205</W>
+                          <W>176</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -10479,9 +10459,9 @@ if robot:
                     <chunk name="Attributes">
                       <items count="2">
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
-                          <X>135</X>
+                          <X>142</X>
                           <Y>413</Y>
-                          <W>117</W>
+                          <W>105</W>
                           <H>22</H>
                         </item>
                         <item name="Pivot" type_name="gh_drawing_pointf" type_code="31">
@@ -10564,7 +10544,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import Rhino.Geometry as rg
 
 pln = rg.Plane(pt, -rg.Vector3d.ZAxis)</item>
@@ -10580,7 +10560,6 @@ pln = rg.Plane(pt, -rg.Vector3d.ZAxis)</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">4030a73b-34b1-4838-a852-3b75a5e21a03</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -10742,7 +10721,7 @@ pln = rg.Plane(pt, -rg.Vector3d.ZAxis)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import Rhino.Geometry as rg
 
 pln = rg.Plane(pt, -rg.Vector3d.ZAxis)</item>
@@ -10758,7 +10737,6 @@ pln = rg.Plane(pt, -rg.Vector3d.ZAxis)</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">af18df07-7b21-4c2f-b969-45b52442e49a</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -11902,7 +11880,7 @@ pln = rg.Plane(pt, -rg.Vector3d.ZAxis)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_ghpython import draw_frame
 from compas.geometry import Frame, Point, Vector, Transformation
 
@@ -11963,7 +11941,6 @@ print robot.get_link_names()
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">c01a8749-d74e-4ebf-9b77-a7a9aa48d348</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -12158,7 +12135,7 @@ print robot.get_link_names()
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas.geometry import Frame
 from compas.geometry import Transformation, Rotation
 from compas_ghpython import draw_frame
@@ -12187,7 +12164,6 @@ R = Rotation.from_axis_and_angle(base_frame.zaxis, math.radians(-180), point=bas
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">387a2aa8-01ea-4a21-8241-d317202832ef</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -12691,7 +12667,7 @@ R = Rotation.from_axis_and_angle(base_frame.zaxis, math.radians(-180), point=bas
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import os
 from compas.robots import LocalPackageMeshLoader
 
@@ -12721,7 +12697,6 @@ assert os.path.isfile(srdf_filename)</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">db804f97-9b38-4eef-ab17-a33f0a28d26f</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -12973,19 +12948,20 @@ assert os.path.isfile(srdf_filename)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import os
-import ur_fabrication_control
+import getpass
 
-package_path = os.path.dirname(ur_fabrication_control.__file__)
-DATA = os.path.abspath(os.path.join(package_path,"../../data"))
+username = getpass.getuser()
+USER_FOLDER = os.path.abspath(os.path.join("C:/Users/", username))
+DATA = os.path.abspath(os.path.join(USER_FOLDER,"workspace/projects/ur_fabrication_control/data"))
 
-print(package_path)
+print(USER_FOLDER)
 print(DATA)</item>
                     <item name="Description" type_name="gh_string" type_code="10">GhPython provides a Python script component</item>
                     <item name="EditorLocation" type_name="gh_drawing_point" type_code="30">
-                      <X>1210</X>
-                      <Y>2611</Y>
+                      <X>32</X>
+                      <Y>32</Y>
                     </item>
                     <item name="EditorSize" type_name="gh_drawing_size" type_code="32">
                       <W>1302</W>
@@ -12993,7 +12969,6 @@ print(DATA)</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">eb8c2642-762e-4057-92f3-174380fd1b5a</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -13098,7 +13073,7 @@ print(DATA)</item>
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>170</X>
                           <Y>606</Y>
-                          <W>156</W>
+                          <W>135</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -13241,7 +13216,7 @@ print(DATA)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas.geometry import Vector
 from compas.geometry import Point
 from compas.geometry import Transformation
@@ -13301,7 +13276,6 @@ if robot and configuration:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">c18690bf-c9e7-4d8a-92a9-87a386394bbe</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -14496,7 +14470,7 @@ if robot and configuration:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from System.Drawing import Color
 from compas_ghpython.utilities import draw_frame
 
@@ -14532,7 +14506,6 @@ W = 3</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">747073fc-40ce-44e0-82d7-b66461542fa6</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -14998,7 +14971,7 @@ W = 3</item>
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>3168</X>
                           <Y>1103</Y>
-                          <W>213</W>
+                          <W>187</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -15354,7 +15327,7 @@ W = 3</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">if attach:
     robot.attach_tool(tool)
 else:
@@ -15370,7 +15343,6 @@ else:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">c261e06b-96a4-4f9a-8fc9-17f2e2dbae75</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -15536,7 +15508,7 @@ else:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import os, math
 from compas.geometry import Frame, Rotation
 from compas.datastructures import Mesh
@@ -15588,7 +15560,6 @@ compas_mesh = ee_mesh
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">ddf24feb-80c1-4676-b493-960c7ebe0eac</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -15995,7 +15966,7 @@ compas_mesh = ee_mesh
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>37</X>
                           <Y>836</Y>
-                          <W>173</W>
+                          <W>150</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -16642,7 +16613,7 @@ compas_mesh = ee_mesh
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control import is_available
 
@@ -16675,7 +16646,6 @@ print(st[txt_key])</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">0effd070-1925-4e9e-9a9d-c026c78943af</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -16931,7 +16901,7 @@ print(st[txt_key])</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 
 st["server_address"] = server_address
@@ -16959,7 +16929,6 @@ if clear:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">0ec9ae83-4864-4d5a-840f-37be449f2d15</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -17229,9 +17198,9 @@ if clear:
                     <chunk name="Attributes">
                       <items count="2">
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
-                          <X>3199</X>
+                          <X>3211</X>
                           <Y>-322</Y>
-                          <W>226</W>
+                          <W>195</W>
                           <H>22</H>
                         </item>
                         <item name="Pivot" type_name="gh_drawing_pointf" type_code="31">
@@ -17294,9 +17263,9 @@ if clear:
                     <chunk name="Attributes">
                       <items count="2">
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
-                          <X>3290</X>
+                          <X>3305</X>
                           <Y>-302</Y>
-                          <W>179</W>
+                          <W>156</W>
                           <H>22</H>
                         </item>
                         <item name="Pivot" type_name="gh_drawing_pointf" type_code="31">
@@ -17373,9 +17342,9 @@ if clear:
                     <chunk name="Attributes">
                       <items count="2">
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
-                          <X>3230</X>
+                          <X>3236</X>
                           <Y>-282</Y>
-                          <W>197</W>
+                          <W>172</W>
                           <H>22</H>
                         </item>
                         <item name="Pivot" type_name="gh_drawing_pointf" type_code="31">
@@ -17417,9 +17386,9 @@ if clear:
                     <chunk name="Attributes">
                       <items count="2">
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
-                          <X>3321</X>
+                          <X>3330</X>
                           <Y>-262</Y>
-                          <W>150</W>
+                          <W>133</W>
                           <H>22</H>
                         </item>
                         <item name="Pivot" type_name="gh_drawing_pointf" type_code="31">
@@ -17597,7 +17566,7 @@ if clear:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from ur_fabrication_control.direct_control import URScript
 import math
 
@@ -17640,7 +17609,6 @@ print(urscript)
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">a5495790-e0c6-4923-9079-062792d2c623</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -18091,7 +18059,7 @@ print(urscript)
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>3195</X>
                           <Y>105</Y>
-                          <W>203</W>
+                          <W>175</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -18356,7 +18324,7 @@ print(urscript)
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control.common import get_current_pose_cartesian
 
@@ -18410,7 +18378,6 @@ if pose_cartesian:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">ccb7fc28-4c20-4aa6-b5a5-79ebb92fa1db</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -18597,7 +18564,7 @@ if pose_cartesian:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control.common import get_current_pose_joints
 from compas_fab.robots import Configuration
@@ -18646,7 +18613,6 @@ pose_joints = configuration.values</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">b9ef1992-0f91-464f-8999-a06017df8bdb</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -18806,7 +18772,7 @@ pose_joints = configuration.values</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control.common import send_stop
 
@@ -18827,7 +18793,6 @@ if stop:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">b2b74e9e-2bd2-411f-a6f1-dbd70f8bcf6f</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -18966,7 +18931,7 @@ if stop:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 
 guid = str(ghenv.Component.InstanceGuid)
@@ -19007,7 +18972,6 @@ print rec
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">57617349-d1ff-4e61-bd38-04385f1a3a53</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -19268,7 +19232,7 @@ print rec
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import Rhino.Geometry as rg
 import math
 
@@ -19341,7 +19305,6 @@ if len(poses) &gt; 2:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">25eddf98-b52f-42dc-b8d8-3949fc35ca41</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -19595,7 +19558,7 @@ if len(poses) &gt; 2:
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>4225</X>
                           <Y>388</Y>
-                          <W>169</W>
+                          <W>146</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -19718,7 +19681,7 @@ if len(poses) &gt; 2:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from ur_fabrication_control.direct_control import URScript
 
 urscript = URScript()
@@ -19743,7 +19706,6 @@ print(urscript)
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">d27c8689-b818-4ad5-916f-16bea7c82cec</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -19952,7 +19914,7 @@ print(urscript)
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control import send_script
 
@@ -19974,7 +19936,6 @@ if send:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">22dd1c73-78c4-4d4c-b880-57926a474971</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -20345,7 +20306,7 @@ if send:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import Rhino.Geometry as rg
 from compas.geometry import Frame
 from compas.geometry import Transformation, Rotation
@@ -20395,7 +20356,6 @@ print(urscript)
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">2f723baa-fe4a-4533-9a51-b4dbbddfd20e</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -20590,7 +20550,7 @@ print(urscript)
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>3189</X>
                           <Y>314</Y>
-                          <W>203</W>
+                          <W>175</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -20980,7 +20940,7 @@ print(urscript)
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import ghpythonlib.components as ghcomp
 import Rhino.Geometry as rg
 from scriptcontext import sticky as st
@@ -21052,7 +21012,6 @@ if len(poses):
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">540b0038-1951-4904-8531-82a3e0edd34a</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -22227,7 +22186,7 @@ if len(poses):
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from System.Drawing import Color
 from compas_ghpython.utilities import draw_frame
 
@@ -22264,7 +22223,6 @@ W = 3</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">c581c741-5c1b-42a7-91dd-b66a034b1d12</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -22798,7 +22756,7 @@ W = 3</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control import send_script
 
@@ -22820,7 +22778,6 @@ if send:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">f3cacbd5-e534-42ab-8e0d-716000987807</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -23083,7 +23040,7 @@ if send:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control import send_script
 
@@ -23105,7 +23062,6 @@ if send:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">0c0d7ce4-e642-479f-83c7-1dd09edba716</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -23270,7 +23226,7 @@ if send:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_fab.robots import Configuration
 
 values=[-0.737876, -1.64531, 1.740348, -0.367801, -0.37385, -0.110741]
@@ -23287,7 +23243,6 @@ joint_configs = [Configuration.from_revolute_values(values)]
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">db65c40c-908d-4c97-97b8-53ecde4ba4bf</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -23420,7 +23375,7 @@ joint_configs = [Configuration.from_revolute_values(values)]
                               <items count="3">
                                 <item name="EdgeIndex" type_name="gh_int32" type_code="3">-1</item>
                                 <item name="ON_Data" type_name="gh_bytearray" type_code="20">
-                                  <stream length="315">Y2BkYGD4DwQgGgR4mIBEWFBGZl6+c35ubn6ejkJYalFxZn6erbmesZ6RoYEpkDQ2MDbUUXAuzSkpLUq1zUstLSlKzNFRCChNyslM9k6tDMnPTs2zNTU1MrIwTLU0TzY3NTU1NmAFWSIONlvPPTU/N7WkqFLPsSjZubSoLJUFKMdeBrGKK7EoOSOzLNU4JZczvyA1L6+0KKmYJSWxJBGkiIODgwnkSgF1BgYjIH35KjcPJzOQwQ8ibIGWMP2qZ2IwhHrp938mBhGo77T2GZ/fwnlFcP9vBoFmRqUP02TONf4Byv+EygtAqA/2DFgBLnFK5eHiDbNmgsBOewj9Ead6mDqYyNkzIPDGvuhY8GtO2xwbdB0Sui4hvxUlHWD8Bx/mlOlLP7EHhZjsvkzh//VMDTA5bvyeGAUjEAAA</stream>
+                                  <stream length="317">Y2BkYGD4DwQgGgR4mIBEeFBGZl6+c35ubn6ejkJYalFxZn6erZmesamekaGRkZGeobmBgaGOgnNpTklpUaptXmppSVFijo5CQGlSTmayd2plSH52ap6tqamRkYVhqqV5srmpqamxASvIFnGw4Xruqfm5qSVFlXqORcnOpUVlqSxAOfYyiF1ciUXJGZllqcYpuZz5Bal5eaVFScUsKYkliSBFHBwcTCBnCqgzMBgB6VNvuHk4mYEMfhBhC7SE6Vc9E4Mh1E+//zMxiEC9p7XP+PwWziuC+38zCDQzKn2YJnOu8Q9Q/idUXgBCfbBnwApwiVMqDxdvmDUTBHbaQ+iPONXD1MFEzp4BgTf2RceCX3Pa5tig65DQdQn5rSjpAOM/+DCnTF/6iT0oxGT3ZQr/r2dqgMlx4/fEKBiJAAA=</stream>
                                 </item>
                                 <item name="RefID" type_name="gh_guid" type_code="9">00000000-0000-0000-0000-000000000000</item>
                               </items>
@@ -23631,7 +23586,7 @@ joint_configs = [Configuration.from_revolute_values(values)]
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">if robot:
     robot.info()
     main_group_name = robot.main_group_name
@@ -23647,7 +23602,6 @@ joint_configs = [Configuration.from_revolute_values(values)]
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">1ed56fae-f790-4647-82ef-ab16f48c5bd3</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -23950,9 +23904,9 @@ joint_configs = [Configuration.from_revolute_values(values)]
                     <chunk name="Attributes">
                       <items count="2">
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
-                          <X>700</X>
+                          <X>707</X>
                           <Y>669</Y>
-                          <W>117</W>
+                          <W>105</W>
                           <H>22</H>
                         </item>
                         <item name="Pivot" type_name="gh_drawing_pointf" type_code="31">
@@ -23973,7 +23927,7 @@ joint_configs = [Configuration.from_revolute_values(values)]
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import os
 from scriptcontext import sticky as st
 
@@ -24029,7 +23983,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">c197ed96-2ae0-432a-9603-3c74017e608c</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -24322,7 +24275,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">if robot and client:
     robot.client = client</item>
                     <item name="Description" type_name="gh_string" type_code="10">GhPython provides a Python script component</item>
@@ -24336,7 +24289,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">adc89b06-da8d-4235-bedd-6660f1f2ea4c</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -24471,7 +24423,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from compas_ghpython.utilities import update_component
 
@@ -24523,7 +24475,6 @@ if st[running_key]:
                     <item name="IconOverride" type_name="gh_drawing_bitmap" type_code="37">
                       <bitmap length="995">iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOvAAADrwBlbxySQAAA4VJREFUSEvllftTTHEYxvsP/Al+ZqbJ0JxzWsYRMYXKJbmMLkwMWpdxKWrXWRGD0TAY5LKuaastwk6b7LGlFbIG1RRq3cLIbZdptLfHey4txjKsn4x35v1l5zuf5znP9zlno/6PudzaPWSTycEnFFv4BH2tvAt2Wfi6lq4Y9Ujks63amTpjj/3O5B0iRm+8BI2uFpqCGsTrzJi97cL7ZH1lqno0sokvbhCF6jZ0PHsHtvAC2A01YPPNYNeZwK45g7H5ZUgrNvHq8T8fbtMVUXvSibPNPQQ/B3Z9Ndi8ChnOrDoOZvkRxC4/+hcCeqvI6S6BLTivwCX3MvyEDP9jgcLTt4cuPOgQuKIGgTPQ6iwCU1ArMOurBSavSpioN4nM6lNgVhwDoy0Fk3sA5XVmY/D1fCH4PF0Y6MnIUlHhJ/tQk4vbbAdnuAxuoxWs7qKaexXYtWcV9yuNBD8MZtl+sMv2oflWLdA7B3g6E8GHKejvWBFe5LD1blbcFoIX2cAJ9Qp8MBr1UgdzZ3IPynAudx+u3zQDj2cAD6cCnYkY6FztUpHfT3qJjaIRyX0DKJqvrcmrJHgZ5Ggk+DfuM7eW4VX7ZgXePhG4Fw+fMwUq8vvRGOql3Cmauq9wcp9kqMHC3RbklJxHzq5zyNlZiUU7K6AvNaHdeQyBB2lAxyTgzljglgaBFi68wBhDnSDBQ60hgd1mK/pfGBDsywbe0vZlAi/nUd4EfZRMkSSR8wTASfCbHNA8EsGmUeEFtKWN1BqCS32nOqbtsOBld4kCHoT3zgaeSfAUOW+0TVCc31DgaIyBzz4+vIDjXg+vKZSckwDlvnhvPfxvin6Ed0twck55o3U00MIo8KvRQMMwfG5dKqrIH2fBHqvI5kmVLCcBK/zvtgCvM5QaPpkZasrP4AFrNNV0/69fvHVHbXzChjN8fH55TKB3rojn6YBrGvBgCgLtyfC3jhP8LWMEv4MT/Nc4wWdnUr02jpe2//aaoSrm9ybwZLqInlQZHrpM2TntdR5BWzS8ttjIv0WBrmQRXZMVuFzDOMARS1FR9/vsJMDQjohcwNu5xBhsoxdIbgpLeY8CmkbQU2TRXWzH5/px7wec2sj/eNA9a4j3fuZK391sl78xDkGRLvPKcKpiInyN04xeR0bk7v/t8Xg8wkePx0gLaT1uN9wfPoR28Hdal3T2k9sd5hMdFfUF5gP2w3Vpj1QAAAAASUVORK5CYII=</bitmap>
                     </item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">b40e6235-582f-4df7-be75-f6873632754c</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -24862,7 +24813,7 @@ if st[running_key]:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas.datastructures import Mesh
 from compas_rhino.geometry import RhinoMesh
 
@@ -24880,7 +24831,6 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">f63f8a94-0161-4924-b45a-5ae261c44881</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -25018,7 +24968,7 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
                             <chunk name="Item" index="0">
                               <items count="2">
                                 <item name="ON_Data" type_name="gh_bytearray" type_code="20">
-                                  <stream length="769">Y2BkYGD4DwQgGgR4mIBEWFBGZl6+c35ubn6ejkJYalFxZn6erbmesZ6RoYEpkDQ2MDbUUXAuzSkpLUq1zUstLSlKzNFRCChNyslM9k6tDMnPTs2zNTU1MrIwTLU0TzY3NTU1NmAFWSIMNlvPPTU/N7WkqFLPqSi1gAUozl4GsYYrsSg5I7Ms1TgllzO/IDUvr7QoqZglJbEkEaSIg4ODCeRCAXUGBiMgffkqNw8nM5DBDyK+cDMwMP2qZ2J4wQ3xze//TAwiUJ85H8r/oLWYw23ujeWXjpzTMtP4t8bqD1B+A1StEUMDg4MtM4QjAHISyLkg0/YyYJomKbg+LpD7iuD+fwwCzYxKH7ykKsVBprVC5QWYoAwmKEYFH+wxhCDi+9FFMPUyOGARg8vBGIGu2078r2dqgPGHgmcc0OVgtMV8d9ah6hkMT53+ObltqHkGLoYusEg5yRvZM9Zt11hBGckXqhklIzVCFSH78PaV637uLy8L7n8K8eGX2S+VQT70hMoLoLoY3eUwH2L6COZiUI5e9YH1LLYgp8RBOCyGi+MIeoiDkk9uW0ErB6FZDA85dAcdgNINIAd5NEopUdtBOCzGFZWoDmrcsdIdW8ISg9ZUAoxIrvyLxZX30VxZfP3Gd5Arj0LlBfG7Bmf8USgPF29Ak3Agld+4RGY7cgipGN63A4XQSSgfnPWQLMbwKCx/MyOpYkSox0jgTBhqkMsNzPTHBFWLXI4g7MJMHrAyDNk9fq0TakCekoRFO6qnMIADzIGMBNThUeMAczQBcxywFLoHoHQDzCPoAYCujpkB1cPocgxQM9DUoKi76bHnDziQkAtdXI6GMRiRaAKBiqGXWIAjAOGBj5yiWGnkBuw1IyLykAOZjUZuwBLJYHPQxXFENFXc0Pq6kB2USDShfAFYxMAiHxYhsFQLAsXnd/aANBlC+YLIqYYQCPzQ9BjCIlh7IwpLoGXwlND7nukSpgAQfDm4chty0cdNhGtGwSgYBaNgFIyCUTAKRsEoGAWjYBABAA==</stream>
+                                  <stream length="772">Y2BkYGD4DwQgGgR4mIBEeFBGZl6+c35ubn6ejkJYalFxZn6erZmesamekaGRkZGeobmBgaGOgnNpTklpUaptXmppSVFijo5CQGlSTmayd2plSH52ap6tqamRkYVhqqV5srmpqamxASvIFmGw4Xruqfm5qSVFlXpORakFLEBx9jKIPVyJRckZmWWpxim5nPkFqXl5pUVJxSwpiSWJIEUcHBxMICcKqDMwGAHpU2+4eTiZgQx+EPGFm4GB6Vc9E8MLboh3fv9nYhCBes35UP4HrcUcbnNvLL905JyWmca/NVZ/gPIboGqNGBoYHGyZIRwBkJNAzgWZtpcB0zRJwfVxgdxXBPf/YxBoZlT64CVVKQ4yrRUqL8AEZTBBMSr4YI8hBBHfjy6CqZfBAYsYXA7GCHTdduJ/PVMDjD8UPOOALgejLea7sw5Vz2B46vTPyW1DzTNwMXSBRcpJ3siesW67xgrKSL5QzSgZqRGqCNmHt69c93N/eVlw/1OID7/MfqkM8qEnVF4A1cXoLof5ENNHMBeDcvSqD6xnsQU5JQ7CYTFcHEfQQxyUfHLbClo5CM1ieMihO+gAlG4AOcijUUqJ2g7CYTGuqER1UOOOle7YEpYYtKoSYERy5V8srryP5sri6ze+g1x5FCoviN81OOOPQnm4eAOahAOp/MYlMtuRQ0jF8L4dKIROQvngrIdkMYZHYfmbGUkVI0I9RgJnwlCDXG5gpj8mqFrkcgRhF2bygJVhyO7xa51QA/KUJCzaUT2FARxgDmQkoA6PGgeYowmY44Cl0D0ApRtgHkEPAHR1zAyoHkaXY4CagaYGRd1Njz1/wIGEXOjicjSMwYhEEwhUDL3EAhwBCA985BTFSiM3YK8ZEZGHHMhsNHIDlkgGm4MujiOiqeKG1teF7KBEognlC8AiBhb5sAiBpVoQKD6/swekyRDKF0RONYRA4IemxxAWwdobUVgCLYOnhN73TJcwBYDgy8GV25CLPm4iXDMKRsEoGAWjYBSMglEwCkbBKBgFgwkAAA==</stream>
                                 </item>
                                 <item name="RefID" type_name="gh_guid" type_code="9">00000000-0000-0000-0000-000000000000</item>
                               </items>
@@ -25039,7 +24989,7 @@ compas_mesh = RhinoMesh.from_guid(mesh).to_compas()
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_ghpython import draw_frame
 
 joint_positions = []
@@ -25069,7 +25019,6 @@ if trajectory:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">44dbdcbe-e5cb-48a7-8bf0-406b046d0aae</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -25344,7 +25293,7 @@ if trajectory:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from compas_ghpython.utilities import update_component
 
@@ -25396,7 +25345,6 @@ if st[running_key]:
                     <item name="IconOverride" type_name="gh_drawing_bitmap" type_code="37">
                       <bitmap length="995">iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOvAAADrwBlbxySQAAA4VJREFUSEvllftTTHEYxvsP/Al+ZqbJ0JxzWsYRMYXKJbmMLkwMWpdxKWrXWRGD0TAY5LKuaastwk6b7LGlFbIG1RRq3cLIbZdptLfHey4txjKsn4x35v1l5zuf5znP9zlno/6PudzaPWSTycEnFFv4BH2tvAt2Wfi6lq4Y9Ujks63amTpjj/3O5B0iRm+8BI2uFpqCGsTrzJi97cL7ZH1lqno0sokvbhCF6jZ0PHsHtvAC2A01YPPNYNeZwK45g7H5ZUgrNvHq8T8fbtMVUXvSibPNPQQ/B3Z9Ndi8ChnOrDoOZvkRxC4/+hcCeqvI6S6BLTivwCX3MvyEDP9jgcLTt4cuPOgQuKIGgTPQ6iwCU1ArMOurBSavSpioN4nM6lNgVhwDoy0Fk3sA5XVmY/D1fCH4PF0Y6MnIUlHhJ/tQk4vbbAdnuAxuoxWs7qKaexXYtWcV9yuNBD8MZtl+sMv2oflWLdA7B3g6E8GHKejvWBFe5LD1blbcFoIX2cAJ9Qp8MBr1UgdzZ3IPynAudx+u3zQDj2cAD6cCnYkY6FztUpHfT3qJjaIRyX0DKJqvrcmrJHgZ5Ggk+DfuM7eW4VX7ZgXePhG4Fw+fMwUq8vvRGOql3Cmauq9wcp9kqMHC3RbklJxHzq5zyNlZiUU7K6AvNaHdeQyBB2lAxyTgzljglgaBFi68wBhDnSDBQ60hgd1mK/pfGBDsywbe0vZlAi/nUd4EfZRMkSSR8wTASfCbHNA8EsGmUeEFtKWN1BqCS32nOqbtsOBld4kCHoT3zgaeSfAUOW+0TVCc31DgaIyBzz4+vIDjXg+vKZSckwDlvnhvPfxvin6Ed0twck55o3U00MIo8KvRQMMwfG5dKqrIH2fBHqvI5kmVLCcBK/zvtgCvM5QaPpkZasrP4AFrNNV0/69fvHVHbXzChjN8fH55TKB3rojn6YBrGvBgCgLtyfC3jhP8LWMEv4MT/Nc4wWdnUr02jpe2//aaoSrm9ybwZLqInlQZHrpM2TntdR5BWzS8ttjIv0WBrmQRXZMVuFzDOMARS1FR9/vsJMDQjohcwNu5xBhsoxdIbgpLeY8CmkbQU2TRXWzH5/px7wec2sj/eNA9a4j3fuZK391sl78xDkGRLvPKcKpiInyN04xeR0bk7v/t8Xg8wkePx0gLaT1uN9wfPoR28Hdal3T2k9sd5hMdFfUF5gP2w3Vpj1QAAAAASUVORK5CYII=</bitmap>
                     </item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">d12b4eb2-0578-406a-a7a6-ba6a97f112a0</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -26026,7 +25974,7 @@ if st[running_key]:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import scriptcontext as sc
 import logging
 
@@ -26060,7 +26008,6 @@ if robot:
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">9c657d34-2e21-4d41-9834-25ca38bcffee</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -26313,7 +26260,7 @@ if robot:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from compas_rhino.utilities.misc import get_tolerance
 from compas_rhino.utilities.misc import unload_modules
 
@@ -26332,7 +26279,6 @@ unload_modules("roslibpy")</item>
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">afe1a22e-0e2e-4f76-a0b2-d22e0a382b05</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -26438,7 +26384,7 @@ unload_modules("roslibpy")</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="12">
+                  <items count="11">
                     <item name="CodeInput" type_name="gh_string" type_code="10">import sys
 import scriptcontext as sc
 from compas_fab.backends import RosClient
@@ -26472,7 +26418,6 @@ print('ROS connected: {}'.format(ros_client.is_connected if ros_client else 'Fal
                     </item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">7f12e506-5f67-4cb3-8ba1-6c17856b3fd4</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -26760,7 +26705,7 @@ print('ROS connected: {}'.format(ros_client.is_connected if ros_client else 'Fal
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>64</X>
                           <Y>165</Y>
-                          <W>147</W>
+                          <W>128</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -26848,7 +26793,7 @@ print('ROS connected: {}'.format(ros_client.is_connected if ros_client else 'Fal
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>180</X>
                           <Y>631</Y>
-                          <W>141</W>
+                          <W>123</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -26922,7 +26867,7 @@ print('ROS connected: {}'.format(ros_client.is_connected if ros_client else 'Fal
                         <item name="Bounds" type_name="gh_drawing_rectanglef" type_code="35">
                           <X>201</X>
                           <Y>656</Y>
-                          <W>110</W>
+                          <W>97</W>
                           <H>22</H>
                         </item>
                       </items>
@@ -26976,7 +26921,7 @@ print('ROS connected: {}'.format(ros_client.is_connected if ros_client else 'Fal
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from ur_fabrication_control.direct_control import URScript
 
 urscript = URScript()
@@ -27004,7 +26949,6 @@ print(urscript)</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">0bf2cc89-71e4-4259-ba34-a551e0bdd657</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -27158,7 +27102,7 @@ print(urscript)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control import send_script
 
@@ -27180,7 +27124,6 @@ if send:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">3f3eab1e-3dd6-484d-947d-f5182b9da337</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -27452,7 +27395,7 @@ if send:
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from ur_fabrication_control.direct_control import URScript
 
 urscript = URScript()
@@ -27480,7 +27423,6 @@ print(urscript)</item>
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">true</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">ae77e89e-dcf6-43ad-a6e5-53a20f13f59e</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -27666,7 +27608,7 @@ print(urscript)</item>
               </items>
               <chunks count="1">
                 <chunk name="Container">
-                  <items count="13">
+                  <items count="12">
                     <item name="CodeInput" type_name="gh_string" type_code="10">from scriptcontext import sticky as st
 from ur_fabrication_control.direct_control import send_script
 
@@ -27688,7 +27630,6 @@ if send:
                     <item name="Hidden" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideInput" type_name="gh_bool" type_code="1">true</item>
                     <item name="HideOutput" type_name="gh_bool" type_code="1">false</item>
-                    <item name="InputIsPath" type_name="gh_bool" type_code="1">false</item>
                     <item name="InstanceGuid" type_name="gh_guid" type_code="9">713bcfaf-df27-4caf-8de9-5760ed92ffd2</item>
                     <item name="IsAdvancedMode" type_name="gh_bool" type_code="1">false</item>
                     <item name="MarshalOutGuids" type_name="gh_bool" type_code="1">true</item>
@@ -27991,7 +27932,7 @@ if send:
     <chunk name="Thumbnail">
       <items count="1">
         <item name="Thumbnail" type_name="gh_drawing_bitmap" type_code="37">
-          <bitmap length="21569">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</bitmap>
+          <bitmap length="14714">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</bitmap>
         </item>
       </items>
     </chunk>
