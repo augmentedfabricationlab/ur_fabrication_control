@@ -209,11 +209,12 @@ class URScript(object):
                           address=("192.168.10.11", 50002)):
         raise NotImplementedError
 
-    def socket_send_bytes(self, bytes_list, socket_name="socket_0",
+    def socket_send_bytes(self, bytes_list, var_name="float", socket_name="socket_0",
                           address=("192.168.10.11", 50002)):
         sock_name = self.__get_socket_name(socket_name, address)
+        v_name = self._get_var_name(var_name)
         self.add_lines([
-            '\tfloat_bytes = {}'.format(bytes_list),
+            '\t{} = {}'.format(v_name, bytes_list),
             '\ti = 0',
             '\twhile i < {}:'.format(len(bytes_list)),
             '\t\tsent = socket_send_byte(float_bytes[i], ' +
@@ -437,14 +438,34 @@ class URScript(object):
         r = min(max_radius, in_line.length/2, out_line.length/2)
         return r
 
-    def moves_linear(self, frames, velocity=0.05, max_radius=0.1):
-        # Multiple moves, can calculate the radius
+    def _radii_between_frames(self, frames, max_radius):
+        radii = []
         for i, frame in enumerate(frames):
             from_frame = frames[max(0, i-1)]
             to_frame = frames[min(i+1, len(frames)-1)]
             r = self._radius_between_frames(from_frame, frame, to_frame,
                                             max_radius)
-            self.move_linear(frame, velocity, r)
+            radii.append(r)
+        return radii
+
+    def moves_linear(self, frames, velocity=0.05, max_radius=0.1):
+        # Multiple moves, can calculate the radius
+        pose_name = self._get_var_name("poses")
+        poses = [frame.point.data + frame.axis_angle_vector.data for frame in frames]
+
+        radii_name = self._get_var_name("radii")        
+        radii = self._radii_between_frames(frames, max_radius)
+
+        self.add_lines([
+            '\t{} = {}'.format(pose_name, poses),
+            '\t{} = {}'.format(radii_name, radii),
+            '\ti = 0',
+            '\twhile i < {}:'.format(len(poses)),
+            '\t\tmovel(p{}[i], v={}, r={}[i])'.format(pose_name, velocity,
+                                                      radii_name),
+            '\t\ti = i + 1',
+            '\tend'
+        ])
 
     def move_linear(self, frame, velocity=0.05, radius=0):
         """Add a move linear command to the script.
@@ -467,8 +488,17 @@ class URScript(object):
 
     def moves_joint(self, joint_configurations, velocity):
         # multiple joint positions
-        for joint_configuration in joint_configurations:
-            self.move_joint(joint_configuration, velocity)
+        jval_name = self._get_var_name("joint_vals")
+        joint_vals = [j.joint_values for j in joint_configurations]
+        
+        self.add_lines([
+            '\t{} = {}'.format(jval_name, joint_vals),
+            '\ti = 0',
+            '\twhile i < {}:'.format(len(joint_vals)),
+            '\t\tmovej({}[i], v={})'.format(jval_name, velocity),
+            '\t\ti = i + 1',
+            '\tend'
+        ])
 
     def move_joint(self, joint_configuration, velocity):
         """Add a move joint command to the script.
@@ -492,12 +522,22 @@ class URScript(object):
 
     def moves_process(self, frames, velocity=0.05, max_radius=0):
         # multiple moves, can calculate the radius
-        for i, frame in enumerate(frames):
-            from_frame = frames[max(0, i-1)]
-            to_frame = frames[min(i+1, len(frames)-1)]
-            r = self._radius_between_frames(from_frame, frame, to_frame,
-                                            max_radius)
-            self.move_process(frame, velocity, r)
+        pose_name = self._get_var_name("poses")
+        poses = [frame.point.data + frame.axis_angle_vector.data for frame in frames]
+
+        radii_name = self._get_var_name("radii")        
+        radii = self._radii_between_frames(frames, max_radius)
+        
+        self.add_lines([
+            '\t{} = {}'.format(pose_name, poses),
+            '\t{} = {}'.format(radii_name, radii),
+            '\ti = 0',
+            '\twhile i < {}:'.format(len(poses)),
+            '\t\tmovep(p{}[i], v={}, r={}[i])'.format(pose_name, velocity,
+                                                      radii_name),
+            '\t\ti = i + 1',
+            '\tend'
+        ])
 
     def move_process(self, frame, velocity, radius):
         """Add a move process command to the script.
