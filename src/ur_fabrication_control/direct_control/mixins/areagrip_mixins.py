@@ -14,7 +14,6 @@ class AreaGripMixins:
     def areagrip_blowoff(self, sleep=1.0):
         """Let the area gripper blow off.
         """
-        self.add_digital_out(7, True)
         self.add_digital_out(6, True) # Digital output 6 is connected to Valve output 4, connected to the supply on the gripper.
         self.add_digital_out(7, True) # Digital output 7 is connected to Valve output 2, connected to the blow-off on the gripper. (next to silencer)
         self.add_line("\tsleep({})".format(sleep))
