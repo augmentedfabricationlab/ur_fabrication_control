@@ -6,6 +6,11 @@ if sys.version_info[0] == 3:
 else:
     from Queue import Queue
 
+__all__ = [
+    "FabricationFeedbackServer",
+    "Fabrication"
+]
+
 
 class FabricationFeedbackServer(TCPFeedbackServer):
     def listen(self, stop, q):
@@ -26,7 +31,7 @@ class FabricationFeedbackServer(TCPFeedbackServer):
 
 class Fabrication(object):
     def __init__(self):
-        self.server = None
+        self.server = None 
         self.tasks = {}
         self.stop_task = None
         self._stop_thread = False

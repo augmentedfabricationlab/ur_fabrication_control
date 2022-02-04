@@ -278,19 +278,18 @@ class URScript(URSocketComm):
             A move linear command is added to the command dictionary.
 
         """
-        pose = frame.point.data + frame.axis_angle_vector.data
-        return self.add_line("movel(p{}, v={}, r={})".format(pose, velocity,
-                                                             radius))
+        pose = self._frame_to_pose(frame)
+        return self.add_line("movel({}, v={}, r={})".format(pose, velocity,
+                                                            radius))
 
     def moves_linear(self, frames, velocity=0.05, max_radius=0.1):
         # Multiple moves, can calculate the radius
         kwargs_dict = {self._get_var_name("poses"):
-                       [frame.point.data + frame.axis_angle_vector.data
-                        for frame in frames],
+                       self._frames_to_poses(frames),
                        self._get_var_name("radii"):
                        self._radii_between_frames(frames, max_radius),
                        'velocity': velocity}
-        func = "movel(p{0}[i], v={2}, r={1}[i])".format(
+        func = "movel({0}[i], v={2}, r={1}[i])".format(
             *kwargs_dict.keys()[0, 1], kwargs_dict['velocity'])
         return self._while_move_wrapper(func, **kwargs_dict)
 
@@ -338,41 +337,38 @@ class URScript(URSocketComm):
             A move linear command is added to the command dictionary.
 
         """
-        pose = frame.point.data + frame.axis_angle_vector.data
-        return self.add_line("movep(p{}, v={}, r={})".format(pose, velocity,
-                                                             radius))
+        pose = self._frame_to_pose(frame)
+        return self.add_line("movep({}, v={}, r={})".format(pose, velocity,
+                                                            radius))
 
     def moves_process(self, frames, velocity=0.05, max_radius=0):
         # multiple moves, can calculate the radius
         kwargs_dict = {self._get_var_name("poses"):
-                       [frame.point.data + frame.axis_angle_vector.data
-                        for frame in frames],
+                       self._frames_to_poses(frames),
                        self._get_var_name("radii"):
                        self._radii_between_frames(frames, max_radius),
                        'velocity': velocity}
-        func = "movep(p{0}[i], v={2}, r={1}[i])".format(
+        func = "movep({0}[i], v={2}, r={1}[i])".format(
             *kwargs_dict.keys()[0, 1], kwargs_dict['velocity'])
         return self._while_move_wrapper(func, **kwargs_dict)
 
     def move_circular(self, frame_via, frame_to, velocity, radius):
         """
         """
-        pose_via = frame_via.point.data + frame_via.axis_angle_vector.data
-        pose_to = frame_to.point.data + frame_to.axis_angle_vector.data
-        return self.add_line("movec(p{}, p{}, v={}, r={})".format(
+        pose_via = self._frame_to_pose(frame_via)
+        pose_to = self._frame_to_pose(frame_to)
+        return self.add_line("movec({}, {}, v={}, r={})".format(
                                 pose_via, pose_to, velocity, radius))
 
     def moves_circular(self, frames_via, frames_to, velocity, max_radius):
         kwargs_dict = {self._get_var_name("poses_via"):
-                       [frame.point.data + frame.axis_angle_vector.data
-                        for frame in frames_via],
+                       self._frames_to_poses(frames_via),
                        self._get_var_name("poses_to"):
-                       [frame.point.data + frame.axis_angle_vector.data
-                        for frame in frames_to],
+                       self._frames_to_poses(frames_to),
                        self._get_var_name("radii"):
                        self._radii_between_frames(frames_to, max_radius),
                        'velocity': velocity}
-        func = "movec(p{0}[i], p{1}[i], v={3}, r={2}[i])".format(
+        func = "movec({0}[i], {1}[i], v={3}, r={2}[i])".format(
             *kwargs_dict.keys()[0, 1, 2], kwargs_dict['velocity'])
         return self._while_move_wrapper(func, **kwargs_dict)
 
@@ -391,6 +387,15 @@ class URScript(URSocketComm):
         return self.add_line("set_digital_out({}, {})".format(number, value))
 
     # Utilities
+    def _frame_to_pose(self, frame):
+        pose = frame.point.data + frame.axis_angle_vector.data
+        return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
+
+    def _frames_to_poses(self, frames):
+        poses = "[{}"+",{}"*(len(frames)-1)+"]"
+        poses_list = [self._frame_to_pose(frame) for frame in frames]
+        return poses.format(*poses_list)
+
     def _radius_between_frames(self, from_frame, via_frame,
                                to_frame, max_radius, div=2.01):
         in_line = Line(from_frame.point, via_frame.point)
@@ -402,8 +407,12 @@ class URScript(URSocketComm):
         for i, frame in enumerate(frames):
             from_frame = frames[max(0, i-1)]
             to_frame = frames[min(i+1, len(frames)-1)]
+            if type(max_radius) == list:
+                radius = max_radius[i]
+            else:
+                radius = max_radius
             r = self._radius_between_frames(from_frame, frame, to_frame,
-                                            max_radius)
+                                            radius)
             radii.append(r)
         return radii
 

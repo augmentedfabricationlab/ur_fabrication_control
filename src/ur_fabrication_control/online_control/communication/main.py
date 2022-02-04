@@ -4,7 +4,6 @@ Created on 22.11.2016
 @author: rustr
 '''
 from __future__ import print_function
-import time
 import sys
 import os
 
@@ -25,10 +24,10 @@ if len(sys.argv) > 1:
     ur_ip = sys.argv[3]
     print(sys.argv)
 else:
-    #server_address = "192.168.10.12"
+    # server_address = "192.168.10.12"
     server_address = "127.0.0.1"
     server_port = 30003
-    #ur_ip = "192.168.10.11"
+    # ur_ip = "192.168.10.11"
     ur_ip = "127.0.0.1"
 
 
