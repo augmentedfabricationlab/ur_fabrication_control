@@ -1,10 +1,15 @@
-from __future__ import absolute_import
 import os
+import sys
 import socket
 import time
 from .urscript import URScript
 from .communication import TCPFeedbackServer
 from .mixins import AirpickMixins, AreaGripMixins
+from threading import Thread
+if sys.version_info[0] == 3:
+    from queue import Queue
+else:
+    from Queue import Queue
 
 __all__ = [
     'is_available',
@@ -336,9 +341,17 @@ def get_current_pose_cartesian(tcp, server_ip, server_port,
     ur_cmds.generate()
     server = TCPFeedbackServer(ip=server_ip, port=server_port)
     server.start()
+    _stop = False
+    q = Queue()
+    listen_thread = Thread(target=server.listen,
+                           args=(lambda: _stop, 10, q))
+    listen_thread.start()
     ur_cmds.send_script()
-    server.listen(timeout=10)
-    # time.sleep(1)
+    while q.empty() and listen_thread.is_alive():
+        time.sleep(0.001)
+    else:
+        _stop = True
+        listen_thread.join()
     server.shutdown()
     return server.msgs[0]
 
@@ -416,9 +429,9 @@ def _get_current_pose(pose_type, tcp, server_ip, server_port,
 """
 
 if __name__ == "__main__":
-    server_port = 50002
-    server_ip = "192.168.10.11"
-    ur_ip = "192.168.10.20"
+    server_port = 50005
+    server_ip = "192.168.0.250"
+    ur_ip = "192.168.0.210"
     ur_port = 30002
 
     # must be changed to meters for testing!
