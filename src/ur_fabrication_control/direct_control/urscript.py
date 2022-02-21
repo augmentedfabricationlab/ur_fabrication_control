@@ -1,9 +1,8 @@
-from __future__ import absolute_import
 import os
 import socket
 from compas.geometry import Line
-from communication import URSocketComm
-from utilities import islist
+from .communication import URSocketComm
+from .utilities import islist
 
 __all__ = [
     'URScript'
@@ -288,9 +287,10 @@ class URScript(URSocketComm):
                        self._frames_to_poses(frames),
                        self._get_var_name("radii"):
                        self._radii_between_frames(frames, max_radius),
-                       'velocity': velocity}
-        func = "movel({0}[i], v={2}, r={1}[i])".format(
-            *kwargs_dict.keys()[0, 1], kwargs_dict['velocity'])
+                       "velocity": velocity}
+        func = "movel({1}[i], v={0}, r={2}[i])".format(kwargs_dict["velocity"],
+                                                       kwargs_dict.keys()[0],
+                                                       kwargs_dict.keys()[1])
         return self._while_move_wrapper(func, **kwargs_dict)
 
     def move_joint(self, joint_configuration, velocity):
@@ -318,8 +318,8 @@ class URScript(URSocketComm):
         kwargs_dict = {self._get_var_name("joint_values"):
                        [j.joint_values for j in joint_configurations],
                        'velocity': velocity}
-        func = "movej({0}[i], v={1})".format(*kwargs_dict.keys()[0],
-                                             kwargs_dict['velocity'])
+        func = "movej({1}[i], v={0})".format(kwargs_dict['velocity'],
+                                             kwargs_dict.keys()[0])
         return self._while_move_wrapper(func, **kwargs_dict)
 
     def move_process(self, frame, velocity, radius):
@@ -347,9 +347,10 @@ class URScript(URSocketComm):
                        self._frames_to_poses(frames),
                        self._get_var_name("radii"):
                        self._radii_between_frames(frames, max_radius),
-                       'velocity': velocity}
-        func = "movep({0}[i], v={2}, r={1}[i])".format(
-            *kwargs_dict.keys()[0, 1], kwargs_dict['velocity'])
+                       "velocity": velocity}
+        func = "movep({1}[i], v={0}, r={2}[i])".format(kwargs_dict["velocity"],
+                                                       kwargs_dict.keys()[0],
+                                                       kwargs_dict.keys()[1])
         return self._while_move_wrapper(func, **kwargs_dict)
 
     def move_circular(self, frame_via, frame_to, velocity, radius):
@@ -368,8 +369,11 @@ class URScript(URSocketComm):
                        self._get_var_name("radii"):
                        self._radii_between_frames(frames_to, max_radius),
                        'velocity': velocity}
-        func = "movec({0}[i], {1}[i], v={3}, r={2}[i])".format(
-            *kwargs_dict.keys()[0, 1, 2], kwargs_dict['velocity'])
+        func = "movec({1}[i], {2}[i], v={0}, r={3}[i])".format(
+                                                       kwargs_dict["velocity"],
+                                                       kwargs_dict.keys()[0],
+                                                       kwargs_dict.keys()[1],
+                                                       kwargs_dict.keys()[2])
         return self._while_move_wrapper(func, **kwargs_dict)
 
     # IO control
@@ -392,9 +396,8 @@ class URScript(URSocketComm):
         return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
 
     def _frames_to_poses(self, frames):
-        poses = "[{}"+",{}"*(len(frames)-1)+"]"
         poses_list = [self._frame_to_pose(frame) for frame in frames]
-        return poses.format(*poses_list)
+        return poses_list
 
     def _radius_between_frames(self, from_frame, via_frame,
                                to_frame, max_radius, div=2.01):
@@ -419,14 +422,16 @@ class URScript(URSocketComm):
     def _while_move_wrapper(self, func, **kwargs):
         lines = []
         for key, value in kwargs.items():
+            print(type(value))
             if isinstance(value, list):
                 lines.append('{} = {}'.format(key, value))
-        lines.append(['i = 0',
+        lines.extend(['i = 0',
                       'while i < {}:'.format(min(map(len, filter(islist,
                                              kwargs.values())))),
                       '\t'+func,
                       '\ti = i + 1',
                       'end'])
+        print(lines)
         return self.add_lines(lines)
 
     def _get_var_name(self, var_name, ind=0):
@@ -440,3 +445,6 @@ class URScript(URSocketComm):
         else:
             self.var_names.append(var_name)
             return var_name
+
+if __name__ == "__main__":
+    urscript = URScript()

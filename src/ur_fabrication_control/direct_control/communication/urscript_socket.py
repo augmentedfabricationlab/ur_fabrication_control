@@ -73,7 +73,7 @@ class URSocketComm:
                        address, self._get_var_name(var_name): integers}
         func = 'socket_send_int({1}[i], socket_name="{0}")'.format(
             *kwargs_dict.keys())
-        return self._while_socket_wrapper(func, **kwargs_dict)
+        return self._while_socket_wrapper(func, None, **kwargs_dict)
 
     def socket_send_float(self, float_value, socket_name="socket_0",
                           address=("192.168.10.11", 50002)):
@@ -104,7 +104,7 @@ class URSocketComm:
                        address, self._get_var_name(var_name): bytes_list}
         func = 'socket_send_byte({1}[i], socket_name="{0}")'.format(
             *kwargs_dict.keys())
-        return self._while_socket_wrapper(func, **kwargs_dict)
+        return self._while_socket_wrapper(func, None, **kwargs_dict)
 
     # --- Socket read commands ---
     def socket_read_binary_integer(self, var_name="msg_recv_0", number=1,
@@ -141,7 +141,7 @@ class URSocketComm:
         else:
             raise Exception("No open sockets available with name or address!")
 
-    def _while_socket_wrapper(self, func, **kwargs):
+    def _while_socket_wrapper(self, func, *args, **kwargs):
         lines = []
         for key, value in kwargs.items():
             if isinstance(value, list):
