@@ -71,37 +71,20 @@ class TCPFeedbackServer(object):
         except:
             pass
 
-    def check_exit(self, exit_msg, tol=0.01):
-        if exit_msg in self.msgs.values():
-            return True
-        elif (any(isinstance(msg, list) for msg in self.msgs.values())
-              and isinstance(exit_msg, list)):
-            c = []
-            for i, msg in enumerate(self.msgs.values()):
-                if isinstance(msg, list) and len(msg) == len(exit_msg):
-                    for a, b in zip(msg, exit_msg):
-                        c.append(all(isclose(a, b, abs_tol=tol)))
-                else:
-                    c.append(False)
-            return any(c)
-        else:
-            return False
-
-    def listen(self, exit_msg="Closing socket communication",
-               tolerance=0.01, timeout=60):
+    def listen(self, stop, timeout=60, q=None):
         tCurrent = time.time()
-        while not self.check_exit(exit_msg, tolerance):
+        while True:
+            if stop():
+                break
             if self.server.rcv_msg is []:
                 pass
             elif len(self.msgs) != len(self.server.rcv_msg):
                 self.add_message(self.server.rcv_msg[len(self.msgs)])
-            elif time.time() >= tCurrent + timeout:
+                if q is not None:
+                    q.put(self.msgs[len(self.msgs)])
+            if time.time() >= tCurrent + timeout:
                 print("Listening to server timed out")
-                return self.msgs
                 break
-        else:
-            print("Exit message found: ", self.check_exit(exit_msg, tolerance))
-            return self.msgs
 
     def add_message(self, msg):
         print("Adding message: {}".format(msg))
