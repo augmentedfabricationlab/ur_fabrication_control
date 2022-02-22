@@ -40,7 +40,8 @@ class URSocketComm:
         """
         func = 'socket_send_line({}, socket_name="{}")'.format(
             line, self.__get_socket_name(socket_name, address))
-        return self._once_socket_wrapper(func)
+        return self.add_line(func)
+        # return self._once_socket_wrapper(func)
 
     def socket_send_line_string(self, line, socket_name="socket_0",
                                 address=("192.168.10.11", 50002)):
@@ -58,7 +59,8 @@ class URSocketComm:
         """
         func = 'socket_send_line("{}", socket_name="{}")'.format(
             line, self.__get_socket_name(socket_name, address))
-        return self._once_socket_wrapper(func)
+        return self.add_line(func)
+        # return self._once_socket_wrapper(func)
 
     def socket_send_int(self, integer, socket_name="socket_0",
                         address=("192.168.10.11", 50002)):
