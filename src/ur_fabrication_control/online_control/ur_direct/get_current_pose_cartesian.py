@@ -39,9 +39,9 @@ def get_current_pose_cartesian(server_ip, server_port, ur_ip, tool_angle_axis):
     global script
     script = script.replace("{SERVER_ADDRESS}", server_ip)
     script = script.replace("{PORT}", str(server_port))
-    script = script.replace("{TCP}", str([tool_angle_axis[i] if i >= 3 else tool_angle_axis[i]/1000. for i in range(len(tool_angle_axis))]))
+    script = script.replace("{TCP}", str([tool_angle_axis[i] for i in range(len(tool_angle_axis))]))
 
-    print script
+    print (script)
 
     ur_available = is_available(ur_ip)
 
@@ -58,10 +58,10 @@ def get_current_pose_cartesian(server_ip, server_port, ur_ip, tool_angle_axis):
 
 if __name__ == "__main__":
     server_port = 30005
-    server_ip = "192.168.10.11"
-    ur_ip = "192.168.10.10"
-    tool_angle_axis = [0,0,0,0,0,0]
+    server_ip = "192.168.10.41"
+    ur_ip = "192.168.10.20"
+    tool_angle_axis = [0,0,0.168,0,0,0]
 
     pose = get_current_pose_cartesian(server_ip, server_port, ur_ip, tool_angle_axis)
 
-    print "pose", pose
+    print ("pose", pose)
