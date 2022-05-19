@@ -7,6 +7,9 @@ else:
     from Queue import Queue
 
 
+__all__ = ["FabricationFeedbackServer",
+           "Fabrication"]
+
 class FabricationFeedbackServer(TCPFeedbackServer):
     def listen(self, stop, q):
         task_exit_msg = None

@@ -1,35 +1,31 @@
-from fabrication_control import Task
+from fabrication_control.task import Task
 
 
 class URTask(Task):
-    def __init__(self):
-        self.is_completed = False
-        self.is_running = False
-        self._stop_flag = True
+    def __init__(self, server, urscript, req_msg, key=None):
+        super(URTask, self).__init__(key)
         self.req_msg = None
-
-    def set_server(self, server):
         self.server = server
-
-    def set_urscript(self, urscript):
         self.urscript = urscript
-
-    def set_req_msg(self, req_msg):
         self.req_msg = req_msg
+        self.sent = False
 
-    def wait_for_msg(self):
-        while self.req_msg not in self.server.msgs.values():
-            if self._stop_flag():
+    def check_req_msg(self):
+        return self.req_msg in self.server.msgs.values()
+
+    def run(self, stop_thread):
+        if not self.sent:
+            self.urscript.send_script()
+            self.log("URScript sent...")
+            self.sent = True
+        while not self.check_req_msg():    
+            if stop_thread():
+                self.log("Forced to stop...")
+                print("breaking loop")
                 break
+            else:
+                pass
         else:
-            return True
-
-    def run(self, _stop_flag):
-        self._stop_flag = _stop_flag
-        self.urscript.send_script()
-        if self.wait_for_msg():
             self.is_completed = True
             return True
-        if self._stop_flag():
-            print("Task forced to stop")
-            raise
+
