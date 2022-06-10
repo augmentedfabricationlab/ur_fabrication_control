@@ -98,9 +98,9 @@ class URScript(object):
 
     def textmessage(self, message, string=False):
         if string:
-            self.add_line['\ttextmsg("{}")'.format(message)]
+            self.add_line('\ttextmsg("{}")'.format(message))
         else:
-            self.add_line['\ttextmsg({})'.format(message)]
+            self.add_line('\ttextmsg({})'.format(message))
 
     def _get_var_name(self, var_name, ind=0):
         if var_name in self.var_names:
@@ -543,4 +543,4 @@ class URScript(object):
         value : boolean
 
         """
-        self.add_line("\tset_digital_out({}, {})".format(number, value))
+        return self.add_line("set_digital_out({}, {})".format(number, value))
