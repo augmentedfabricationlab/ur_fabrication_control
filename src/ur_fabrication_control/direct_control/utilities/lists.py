@@ -7,7 +7,8 @@ Created on 15.10.2017
 __all__ = [
     'flatten_list',
     'divide_list_by_number',
-    'isclose'
+    'isclose',
+    'islist'
 ]
 
 
@@ -22,3 +23,7 @@ def divide_list_by_number(array, number):
 
 def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+
+def islist(item):
+    return isinstance(item, list)

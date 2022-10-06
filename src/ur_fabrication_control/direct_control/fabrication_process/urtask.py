@@ -1,4 +1,4 @@
-from fabrication_control.task import Task
+from fabrication_manager.task import Task
 from ur_fabrication_control.direct_control.common import send_stop
 
 class URTask(Task):

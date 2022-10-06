@@ -39,6 +39,7 @@ def inverse_kinematics(frame, ur_params, q6_des=0.0):
         qsols = inverse_ros(T, ur_params, q6_des)
         for i in range(len(qsols)):
             qsols[i][0] -= math.pi
+            qsols[i][5] -= math.pi
         return qsols
     except ZeroDivisionError:
         return []
