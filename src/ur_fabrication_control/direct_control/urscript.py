@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import os
 import socket
 from compas.geometry import Line
+from ur_fabrication_control.direct_control.utilities import islist
 # from .mixins.airpick_mixins import AirpickMixins
 
 __all__ = [
