@@ -2,9 +2,8 @@ import os
 import sys
 import socket
 import time
-from .urscript import URScript
-from .communication import TCPFeedbackServer
-from .mixins import AirpickMixins, AreaGripMixins
+from ur_fabrication_control.direct_control.urscript import URScript
+from ur_fabrication_control.direct_control.communication import TCPFeedbackServer
 from threading import Thread
 if sys.version_info[0] == 3:
     from queue import Queue
@@ -322,26 +321,21 @@ def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send
     ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
     ur_cmds.set_tcp(tcp)
-    ur_cmds.socket_open(server_ip, server_port, "Feedbackserver")
+    ur_cmds.set_socket(server_ip, server_port, "Feedbackserver")
+    ur_cmds.socket_open("Feedbackserver")
     ur_cmds.get_current_pose_cartesian(socket_name="Feedbackserver", send=send)
     ur_cmds.socket_close(name="Feedbackserver")
     ur_cmds.end()
     ur_cmds.generate()
-    server = TCPFeedbackServer(ip=server_ip, port=server_port)
-    server.start()
-    _stop = False
-    q = Queue()
-    listen_thread = Thread(target=server.listen,
-                           args=(lambda: _stop, 10, q))
-    listen_thread.start()
-    ur_cmds.send_script()
-    while q.empty() and listen_thread.is_alive():
-        time.sleep(0.001)
-    else:
-        _stop = True
-        listen_thread.join()
-    server.shutdown()
-    return server.msgs[0]
+    print(ur_cmds.script)
+    with TCPFeedbackServer(ip=server_ip, port=server_port) as server:
+        server.start()
+        ur_cmds.send_script()
+        ms = 0
+        while len(server.msgs)==0 or ms<100:
+            time.sleep(0.001)
+            ms += 1
+    return server.msgs.get(0, "Timed out")
 
     # return _get_current_pose("cartesian", tcp, server_ip, server_port, ur_ip, ur_port, send)
 
@@ -379,13 +373,14 @@ def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):
     ur_cmds.socket_close(name="Feedbackserver")
     ur_cmds.end()
     ur_cmds.generate()
-    server = TCPFeedbackServer(ip=server_ip, port=server_port)
-    server.start()
-    ur_cmds.send_script()
-    server.listen(timeout=30)
-    time.sleep(1)
-    server.shutdown()
-    return server.msgs[0]
+    with TCPFeedbackServer(ip=server_ip, port=server_port) as server:
+        server.start()
+        ur_cmds.send_script()
+        ms = 0
+        while len(server.msgs)==0 or ms<100:
+            time.sleep(0.001)
+            ms += 1
+    return server.msgs.get(0, "Timed out")
 
     #return _get_current_pose("joints", tcp, server_ip, server_port, ur_ip, ur_port, send)
 
