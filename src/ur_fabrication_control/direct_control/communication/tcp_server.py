@@ -5,16 +5,12 @@ if sys.version_info[0] == 2:
     import SocketServer as ss
 elif sys.version_info[0] == 3:
     import socketserver as ss
-# from ur_fabrication_control.direct_control.utilities import isclose
 ss.TCPServer.allow_reuse_address = True
 
 __all__ = [
     'FeedbackHandler',
     'TCPFeedbackServer'
 ]
-
-# def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
-#     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
 
 class FeedbackHandler(ss.StreamRequestHandler):
@@ -53,10 +49,12 @@ class TCPFeedbackServer(object):
         self._stop_flag = True
 
     def __enter__(cls):
+        cls.start()
         return cls
-    
+
     def __exit__(cls, typ, val, tb):
-        pass
+        cls.shutdown()
+        print("shut down server")
 
     def clear(self):
         self.server.rcv_msg = []
@@ -66,7 +64,7 @@ class TCPFeedbackServer(object):
         self.server_thread = threading.Thread(target=self.run)
         self.server_thread.daemon = True
 
-    def _create_process_thread(self):
+    def _create_process_thread(self, timeout=None):
         self.process_thread = threading.Thread(target=self.process_messages,
                                                args=(lambda: self._stop_flag,))
         self.process_thread.daemon = True
@@ -81,14 +79,14 @@ class TCPFeedbackServer(object):
             self.process_thread.join()
             del self.process_thread
 
-    def start(self, process=True):
+    def start(self, timeout=None, process=True):
         self.shutdown()
         self._stop_flag = False
         self._create_thread()
         self.server_thread.start()
         print("Server started in thread...")
         if process:
-            self._create_process_thread()
+            self._create_process_thread(timeout)
             self.process_thread.start()
             print("Processing messages...")
 
@@ -98,11 +96,9 @@ class TCPFeedbackServer(object):
         except:
             pass
 
-    def process_messages(self, _stop_flag, amount=-1, timeout=None):
+    def process_messages(self, _stop_flag, timeout=None):
         tCurrent = time.time()
-        while True:
-            if _stop_flag():
-                break
+        while not _stop_flag():
             if self.server.rcv_msg is []:
                 pass
             elif len(self.msgs) != len(self.server.rcv_msg):
@@ -111,8 +107,6 @@ class TCPFeedbackServer(object):
                 if time.time() >= tCurrent + timeout:
                     print("Listening to server timed out")
                     break
-            if len(self.msgs) >= amount and amount>0:
-                break
 
     def add_message(self, msg):
         print("Adding message: {}".format(msg))

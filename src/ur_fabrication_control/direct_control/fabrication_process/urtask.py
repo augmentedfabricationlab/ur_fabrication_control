@@ -1,14 +1,48 @@
 from fabrication_manager.task import Task
+from ur_fabrication_control.direct_control import URScript
 from ur_fabrication_control.direct_control.common import send_stop
 
 class URTask(Task):
-    def __init__(self, server, urscript, req_msg, key=None):
-        super(URTask, self).__init__(key)
-        self.req_msg = None
-        self.server = server
-        self.urscript = urscript
-        self.req_msg = req_msg
+    def __init__(self, robot, robot_address, key=None):
+        super(URTask, self).__init__(key)        
+        self.robot = robot
+        self.robot_address = robot_address
+        self.req_msg = "Task_{key}_complete"
         self.sent = False
+        self.server = None
+
+    @classmethod
+    def from_nodes(cls, robot, robot_address, nodes, key=None):
+        urtask = cls(robot, robot_address, key)
+        urtask.create_urscript_from_nodes(nodes)
+        return urtask
+
+    def create_urscript_from_nodes(self, nodes):
+        self.urscript = URScript(*self.robot_address)
+        self.urscript.start()
+        tool = self.robot.attached_tool
+        self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
+        self.urscript.add_line("textmsg(\">> TASK{self.key}.\")")
+        
+        # Find a way to replace the socket open command with recent server ip an port
+        self.urscript.socket_open(self.server.ip, self.server.port, self.server.name)
+
+        # currently assuming frames are in RCS
+        for i, node in enumerate(nodes):
+            if node.type == "linear":
+                self.urscript.move_linear(node.frame, node.robot_vel, node.radius)
+            elif node.type == "process":
+                self.urscript.move_process(node.frame, node.robot_vel, node.radius)
+            elif node.type == "joints":
+                self.urscript.move_joint(node.joint_configuration, node.robot_vel)
+            node_msg = {"TASK":self.key, "NODE":i}
+            self.urscript.socket_send_line_string(str(node_msg), self.server.name)
+        
+        self.urscript.socket_send_line_string(self.req_msg, self.server.name)
+        self.urscript.socket_close()
+
+        self.urscript.end()
+        self.urscript.generate()        
 
     def check_req_msg(self):
         return self.req_msg in self.server.msgs.values()

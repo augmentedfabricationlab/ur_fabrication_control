@@ -1,16 +1,14 @@
-from __future__ import absolute_import
 import os
 import socket
 from compas.geometry import Line
-from ur_fabrication_control.direct_control.utilities import islist
-# from .mixins.airpick_mixins import AirpickMixins
+from ur_fabrication_control.direct_control.communication import URSocketComm
 
 __all__ = [
     'URScript'
 ]
 
 
-class URScript(object):
+class URScript(URSocketComm):
     """Class to build a script of commands for the UR Robot system.
 
     Parameters
@@ -33,15 +31,23 @@ class URScript(object):
 
     """
     def __init__(self, ur_ip=None, ur_port=None):
-        self.commands_dict = {}
+        self.header = {}
+        self.globals = {}
+        self.commands = {}
+        self.footer = {}
+        self.dictionaries = {
+            "header": self.header,      # format {line_nr: URSCRIPT code}
+            "globals": self.globals,    # format {variable_name: URSCRIPT code}
+            "commands": self.commands,  # format {line_nr: URSCRIPT code}
+            "footer": self.footer       # format {line_nr: URSCRIPT code}
+        }
         self.ur_ip = ur_ip
         self.ur_port = ur_port
         self.script = None
         self.sockets = {}
-        self.var_names = []
 
         # Functionality
-    def start(self):
+    def start(self, name="program", dictionary="header"):
         """Build the start of the script.
 
         Parameters
@@ -54,11 +60,10 @@ class URScript(object):
             The start line is added to the command dictionary.
 
         """
-        self.add_lines(["def program():",
-                        "\ttextmsg(\">> Entering program.\")",
-                        "\t# open line for airpick commands"])
+        lines = ["def {}():".format(name), "\ttextmsg(\">> Entering {}.\")".format(name)]
+        return self.add_lines(lines, to_dict=dictionary, indent=0)
 
-    def end(self):
+    def end(self, name="program", dictionary="footer"):
         """Build the end of the script.
 
         Parameters
@@ -72,14 +77,16 @@ class URScript(object):
 
         """
         if self.sockets != {}:
-            for socket_name in self.sockets.keys():
-                sock_msg = "Socket with name: {} and address {} was not closed"
-                print(sock_msg.format(socket_name, self.sockets[socket_name]))
-                self.socket_close(socket_name)
-                print("Socket has been closed at program end")
-        self.add_lines(["\ttextmsg(\"<< Exiting program.\")",
-                        "end",
-                        "program()\n\n\n"])
+            for socket_name, data in self.sockets.items():
+                if data.get("is_open"):
+                    ip, port = [data.get(i) for i in ["ip", "port"]]
+                    print("Socket: {} at {}:{} was not closed".format(socket_name, ip, port))
+                    self.socket_close(socket_name)
+                    print("Socket has been closed at program end")
+        lines = ["\ttextmsg(\"<< Exiting {}.\")".format(name), "end"]
+        if dictionary == "footer":
+            lines.append("{}()\n\n\n".format(name))
+        self.add_lines(lines, to_dict=dictionary, indent=0)
 
     def generate(self):
         """Translate the script from a dictionary to a long string.
@@ -94,188 +101,16 @@ class URScript(object):
             A long string generated from the command dictionary.
 
         """
-        self.script = '\n'.join(self.commands_dict.values())
+        script_header = '\n'.join(self.header.values())
+        script_globals = '\n'.join(self.globals.values())
+        script_commands = '\n'.join(self.commands.values())
+        script_footer = '\n'.join(self.footer.values())
+        self.script = '\n'.join([script_header, script_globals,
+                                 script_commands, script_footer])
         return self.script
 
-    def textmessage(self, message, string=False):
-        if string:
-            self.add_line('\ttextmsg("{}")'.format(message))
-        else:
-            self.add_line('\ttextmsg({})'.format(message))
-
-    def _get_var_name(self, var_name, ind=0):
-        if var_name in self.var_names:
-            new_var_name = var_name + str(ind)
-            if new_var_name in self.var_names:
-                return self._get_var_name(var_name, ind+1)
-            else:
-                self.var_names.append(new_var_name)
-                return new_var_name
-        else:
-            self.var_names.append(var_name)
-            return var_name
-
-    def socket_open(self, ip="192.168.10.11", port=50002, name="socket_0"):
-        """Open socket connection
-        """
-        self.add_lines(['\ttextmsg("Opening socket connection...")',
-                       '\tsocket_open("{}", {}, "{}")'.format(ip, port, name)])
-        self.sockets[name] = (ip, port)
-
-    def socket_close(self, name="socket_0"):
-        """Close socket connection
-        """
-        self.add_lines(['\ttextmsg("Closing socket connection' +
-                        ' with {}...")'.format(name),
-                        '\tsocket_close(socket_name=' +
-                        '"{}")'.format(self.__get_socket_name(name))])
-        del self.sockets[name]
-
-    def __get_socket_name(self, name, address=None):
-        if name in self.sockets.keys():
-            return name
-        elif (address != ("192.168.10.11", 50002)
-              and (address in self.sockets.values())):
-            return self.sockets.keys()[self.sockets.values().index(address)]
-        else:
-            raise Exception("No open sockets available with name or address!")
-
-    def socket_send_line_string(self, line, socket_name="socket_0",
-                                address=("192.168.10.11", 50002)):
-        """Send a single line to the socket.
-
-        Parameters
-        ----------
-        line : string
-            A single line to send to the socket.
-
-        Returns
-        -------
-        None
-
-        """
-        sock_name = self.__get_socket_name(socket_name, address)
-        str_line = '\tsocket_send_line("{}", socket_name="{}")'
-        self.add_line(str_line.format(line, sock_name))
-
-    def socket_send_line(self, line, socket_name="socket_0",
-                         address=("192.168.10.11", 50002)):
-        """Send a single line to the socket.
-
-        Parameters
-        ----------
-        line : string
-            A single line to send to the socket.
-
-        Returns
-        -------
-        None
-
-        """
-        sock_name = self.__get_socket_name(socket_name, address)
-        str_line = '\tsocket_send_line({}, socket_name="{}")'
-        self.add_line(str_line.format(line, sock_name))
-
-    def socket_send_ints(self, integers, var_name="ints",
-                         socket_name="socket_0",
-                         address=("192.168.10.11", 50002)):
-        sock_name = self.__get_socket_name(socket_name, address)
-        v_name = self._get_var_name(var_name)
-        self.add_lines([
-            '\t{} = {}'.format(v_name, integers),
-            '\ti = 0',
-            '\twhile i < {}:'.format(len(integers)),
-            '\t\tsent = socket_send_int({}[i], '.format(v_name) +
-            'socket_name="{}")'.format(sock_name),
-            '\t\tif sent == True:',
-            '\t\t\ttextmsg("msg sent: ", {}[i])'.format(v_name),
-            '\t\t\ti = i + 1',
-            '\t\t\tsent = False',
-            '\t\tend',
-            '\tend'
-        ])
-
-    def socket_send_int(self, integer, socket_name="socket_0",
-                        address=("192.168.10.11", 50002)):
-        sock_name = self.__get_socket_name(socket_name, address)
-        self.add_lines([
-            '\tsent = False',
-            '\twhile sent == False:',
-            '\t\tsent = socket_send_int' +
-            '({}, socket_name="{}")'.format(integer, sock_name),
-            '\tend'
-        ])
-
-    def socket_send_float(self, float_value, socket_name="socket_0",
-                          address=("192.168.10.11", 50002)):
-        raise NotImplementedError
-
-    def socket_send_bytes(self, bytes_list, socket_name="socket_0",
-                          address=("192.168.10.11", 50002)):
-        sock_name = self.__get_socket_name(socket_name, address)
-        self.add_lines([
-            '\tfloat_bytes = {}'.format(bytes_list),
-            '\ti = 0',
-            '\twhile i < {}:'.format(len(bytes_list)),
-            '\t\tsent = socket_send_byte(float_bytes[i], ' +
-            'socket_name="{}")'.format(sock_name),
-            '\t\tif sent == True:',
-            '\t\t\ttextmsg("msg (byte) sent: ", float_bytes[i])',
-            '\t\t\ti = i + 1',
-            '\t\t\tsent = False',
-            '\t\tend',
-            '\tend'
-        ])
-
-    def socket_send_byte(self, byte, socket_name="socket_0",
-                         address=("192.168.10.11", 50002)):
-        """Send a single line to the socket.
-
-        Parameters
-        ----------
-        byte : bytes
-            Byte to send to the socket.
-
-        Returns
-        -------
-        None
-
-        """
-        sock_name = self.__get_socket_name(socket_name, address)
-        self.add_lines([
-            '\tsent = False',
-            '\twhile sent == False:',
-            '\t\tsent = socket_send_byte' +
-            '({}, socket_name="{}")'.format(byte, sock_name),
-            '\tend'
-        ])
-
-    def socket_read_binary_integer(self, var_name="msg_recv_0", number=1,
-                                   socket_name="socket_0",
-                                   address=("192.168.10.11", 50002),
-                                   timeout=2):
-        sock_name = self.__get_socket_name(socket_name, address)
-        self.add_lines([
-            '\t{} = '.format(var_name) +
-            'socket_read_binary_integer({}, '.format(number) +
-            'socket_name={}, timeout={})'.format(sock_name, timeout),
-            '\ttextmsg({})'.format(var_name)
-        ])
-
-    def socket_read_string(self, var_name="msg_recv_0", prefix="", suffix="",
-                           int_escape=False, socket_name="socket_0",
-                           address=("192.168.10.11", 50002), timeout=2):
-        sock_name = self.__get_socket_name(socket_name, address)
-        self.add_lines([
-            '\t{} = socket_read_string'.format(var_name) +
-            '(socket_name="{}", prefix="{}", '.format(sock_name, prefix) +
-            'suffix="{}", interpret_escape={}'.format(suffix, int_escape) +
-            ', timeout={})'.format(timeout),
-            '\ttextmsg({})'.format(var_name)
-        ])
-
     # Dictionary building
-    def add_line(self, line, i=None):
+    def add_line(self, line, to_dict="commands", key=None, indent=1):
         """Add a single line to the script.
 
         Parameters
@@ -289,13 +124,19 @@ class URScript(object):
             A single line added to the command dictionary.
 
         """
-        if i is None:
-            i = len(self.commands_dict)
-        else:
-            pass
-        self.commands_dict[i] = line
+        _dict = self.dictionaries.get(to_dict)
+        if key is None:
+            if len(_dict)!=0:
+                key = max(_dict.keys())+1
+            else:
+                key = 0
+        if key in _dict:
+            value = _dict.get(key)
+            print("Replaced {} with {}".format(value, line))
+        _dict[key] = "\t"*indent+line
+        return line
 
-    def add_lines(self, lines):
+    def add_lines(self, lines, to_dict="commands", keys=None, indent=1):
         """Add multiple lines to the script.
 
         Parameters
@@ -309,8 +150,17 @@ class URScript(object):
             Multiple lines added to the command dictionary.
 
         """
-        i = len(self.commands_dict)
-        [self.add_line(line, i+ind) for (ind, line) in enumerate(lines)]
+        _dict = self.dictionaries.get(to_dict)
+        if keys is None:
+            if len(_dict)!=0:
+                start_key = max(_dict.keys())+1
+            else:
+                start_key = 0
+            alt_keys = list(range(start_key, start_key+len(lines)))
+        keys = alt_keys if keys is None else keys
+        for (key, line) in zip(keys, lines):
+            self.add_line(line, to_dict, key, indent)
+        return lines
 
     # Feedback functionality
     def get_current_pose_cartesian(self, socket_name="socket_0",
@@ -358,10 +208,11 @@ class URScript(object):
             "cartesian": "get_forward_kin()",
             "joints": "get_actual_joint_positions()"
         }
-        self.add_lines(["\tcurrent_pose = {}".format(pose_type[get_type]),
-                        "\ttextmsg(current_pose)"])
+        func = pose_type.get(get_type)
+        self.add_lines(["current_pose = {}".format(func), "textmsg(current_pose)"])
         if send:
-            self.socket_send_line('current_pose\n', socket_name, address)
+            self.socket_send_line('current_pose', socket_name, address)
+        return func
 
     # Connectivity
     def is_available(self):
@@ -400,15 +251,13 @@ class URScript(object):
         try:
             s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
         except socket.timeout:
-            addr_msg = "UR with ip {} not available on port {}"
-            print(addr_msg.format(self.ur_ip, self.ur_port))
+            print("UR at {} not available on port {}".format(self.ur_ip, self.ur_port))
             raise ConnectionError
         finally:
             enc_script = self.script.encode('utf-8')
             # encoding allows use of python 3.7
             s.send(enc_script)
-            sent_msg = "Script sent to {} on port {}"
-            print(sent_msg.format(self.ur_ip, self.ur_port))
+            print("Script sent to {} on port {}".format(self.ur_ip, self.ur_port))
             s.close()
 
     # Geometric effects
@@ -429,23 +278,7 @@ class URScript(object):
         """
         # tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
-        self.add_line("\tset_tcp(p{})".format(tcp))
-
-    def _radius_between_frames(self, from_frame, via_frame,
-                               to_frame, max_radius):
-        in_line = Line(from_frame.point, via_frame.point)
-        out_line = Line(via_frame.point, to_frame.point)
-        r = min(max_radius, in_line.length/2, out_line.length/2)
-        return r
-
-    def moves_linear(self, frames, velocity=0.05, max_radius=0.1):
-        # Multiple moves, can calculate the radius
-        for i, frame in enumerate(frames):
-            from_frame = frames[max(0, i-1)]
-            to_frame = frames[min(i+1, len(frames)-1)]
-            r = self._radius_between_frames(from_frame, frame, to_frame,
-                                            max_radius)
-            self.move_linear(frame, velocity, r)
+        return self.add_line("set_tcp(p{})".format(tcp))
 
     def move_linear(self, frame, velocity=0.05, radius=0):
         """Add a move linear command to the script.
@@ -462,14 +295,8 @@ class URScript(object):
             A move linear command is added to the command dictionary.
 
         """
-        pose = frame.point.data + frame.axis_angle_vector.data
-        line = "\tmovel(p{}, v={}, r={})".format(pose, velocity, radius)
-        self.add_line(line)
-
-    def moves_joint(self, joint_configurations, velocity):
-        # multiple joint positions
-        for joint_configuration in joint_configurations:
-            self.move_joint(joint_configuration, velocity)
+        pose = self._frame_to_pose(frame)
+        return self.add_line("movel({}, v={}, r={})".format(pose, velocity, radius))
 
     def move_joint(self, joint_configuration, velocity):
         """Add a move joint command to the script.
@@ -488,17 +315,8 @@ class URScript(object):
             A move joint command is added to the command dictionary.
 
         """
-        line = "\tmovej({}, v={})"
-        self.add_line(line.format(joint_configuration.joint_values, velocity))
-
-    def moves_process(self, frames, velocity=0.05, max_radius=0):
-        # multiple moves, can calculate the radius
-        for i, frame in enumerate(frames):
-            from_frame = frames[max(0, i-1)]
-            to_frame = frames[min(i+1, len(frames)-1)]
-            r = self._radius_between_frames(from_frame, frame, to_frame,
-                                            max_radius)
-            self.move_process(frame, velocity, r)
+        joint_values = joint_configuration.joint_values
+        return self.add_line("movej({}, v={})".format(joint_values, velocity))
 
     def move_process(self, frame, velocity, radius):
         """Add a move process command to the script.
@@ -515,23 +333,8 @@ class URScript(object):
             A move linear command is added to the command dictionary.
 
         """
-        pose = frame.point.data + frame.axis_angle_vector.data
-        line = "\tmovep(p{}, v={}, r={})".format(pose, velocity, radius)
-        self.add_line(line)
-
-    def moves_circular(self, frames_via, frames_to, velocity, max_radius):
-        for i, (frame_via, frame_to) in enumerate(zip(frames_via, frames_to)):
-            r = self._radius_between_frames(frames_to[max(0, i-1)], frame_via,
-                                            frame_to, max_radius)
-            self.move_circular(frame_via, frame_to, velocity, r)
-
-    def move_circular(self, frame_via, frame_to, velocity, radius):
-        """
-        """
-        pose_via = frame_via.point.data + frame_via.axis_angle_vector.data
-        pose_to = frame_to.point.data + frame_to.axis_angle_vector.data
-        line = "\tmovec(p{}, p{}, v={}, r={})"
-        self.add_line(line.format(pose_via, pose_to, velocity, radius))
+        pose = self._frame_to_pose(frame)
+        return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius))
 
     def add_digital_out(self, number, value):
         """Assign a boolean value to a digital output.
@@ -544,4 +347,57 @@ class URScript(object):
         value : boolean
 
         """
-        return self.add_line("set_digital_out({}, {})".format(number, value))
+        return self.add_line("set_digital_out({}, {})".format(number,value))
+
+    # Setting variables
+    def set_variable(self, variable_name, value):
+        self.add_line("{} = {}".format(variable_name,value), dict="globals", key=variable_name)
+
+    def textmessage(self, message, string=False):
+        if string:
+            self.add_line('textmsg("{}")'.format(message))
+        else:
+            self.add_line('textmsg({})'.format(message))
+
+    # Utilities
+    def _frame_to_pose(self, frame):
+        pose = frame.point.data + frame.axis_angle_vector.data
+        return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
+
+    def _frames_to_poses(self, frames):
+        return NotImplementedError
+        poses_list = [self._frame_to_pose(frame) for frame in frames]
+        poses_list = ', '.join(poses_list)
+        return '[' + poses_list + ']'
+
+    def _radius_between_frames(self, from_frame, via_frame,
+                               to_frame, max_radius, div=2.01):
+        in_line = Line(from_frame.point, via_frame.point)
+        out_line = Line(via_frame.point, to_frame.point)
+        return min(max_radius, in_line.length/div, out_line.length/div)
+
+
+if __name__ == "__main__":
+    from compas.geometry import Frame
+    server_port = 50005
+    server_ip = "192.168.56.105"
+    ur_ip = "192.168.56.102"
+    ur_port = 30002
+    #must be changed to meters for testing!
+    tcp = [0.0, 0, 0.1, 0.0, 0.0, 0.0]
+
+    urscript = URScript(ur_ip="192.168.56.102", ur_port=30002)
+    frames = [Frame.worldXY() for i in range(5)]
+    # print(urscript._frames_to_poses(frames))
+    urscript.start()
+    urscript.set_tcp(tcp)
+    urscript.set_socket(server_ip, server_port, "Feedbackserver")
+    urscript.socket_open("Feedbackserver")
+    urscript.get_current_pose_cartesian(socket_name="Feedbackserver", send=True)
+    urscript.move_linear(frames[0])
+    urscript.get_current_pose_cartesian(socket_name="Feedbackserver", send=True)
+    urscript.socket_close(name="Feedbackserver")
+    urscript.end()
+    urscript.generate()
+    print(urscript.script)
+    # urscript.send_script()
