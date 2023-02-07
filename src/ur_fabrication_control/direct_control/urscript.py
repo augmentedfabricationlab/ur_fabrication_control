@@ -279,6 +279,21 @@ class URScript(URSocketComm):
         # tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
         return self.add_line("set_tcp(p{})".format(tcp))
+    
+    def set_payload(self, payload):
+        """Set the mass of the tool and elements attached to the tool.
+
+        Parameters
+        ----------
+        payload : float
+            Mass of the payload in kg.
+            1.140
+
+        Returns
+        -------
+        None
+        """
+        self.add_line("set_payload({})".format(str(payload)))
 
     def move_linear(self, frame, velocity=0.05, radius=0):
         """Add a move linear command to the script.
