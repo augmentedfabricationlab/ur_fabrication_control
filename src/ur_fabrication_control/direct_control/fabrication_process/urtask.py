@@ -42,7 +42,7 @@ class URTask(Task):
         self.urscript.socket_close()
 
         self.urscript.end()
-        self.urscript.generate()        
+        self.urscript.generate()
 
     def check_req_msg(self):
         return self.req_msg in self.server.msgs.values()
