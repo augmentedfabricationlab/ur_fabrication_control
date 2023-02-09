@@ -397,6 +397,9 @@ class URScript(URSocketComm):
             Robot is in the force mode in z axis.
         """
         self.force_mode([0, 0, 1, 0, 0, 0], [0.0, 0.0, max_force, 0.0, 0.0, 0.0], [0.01, 0.01, max_speed, 0.01, 0.01, 0.01])
+    
+    def end_force_mode(self):
+        self.add_line("end_force_mode()")
         
     def stop_by_force(self, max_force):
         """Stop the robot when the max force is reached.

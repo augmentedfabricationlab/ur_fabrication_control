@@ -368,7 +368,8 @@ def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):
     """
     ur_cmds = URScript(ur_ip=ur_ip, ur_port=ur_port)
     ur_cmds.start()
-    ur_cmds.socket_open(ip=server_ip, port=server_port, name="Feedbackserver")
+    ur_cmds.set_socket(server_ip, server_port, "Feedbackserver")
+    ur_cmds.socket_open("Feedbackserver")
     ur_cmds.get_current_pose_joints(send)
     ur_cmds.socket_close(name="Feedbackserver")
     ur_cmds.end()
