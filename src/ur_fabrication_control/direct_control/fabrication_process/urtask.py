@@ -2,14 +2,24 @@ from fabrication_manager.task import Task
 from ur_fabrication_control.direct_control import URScript
 from ur_fabrication_control.direct_control.common import send_stop
 
+__all__ = [
+    "URTask"
+]
+
 class URTask(Task):
     def __init__(self, robot, robot_address, key=None):
-        super(URTask, self).__init__(key)        
+        super(URTask, self).__init__(key)
         self.robot = robot
         self.robot_address = robot_address
         self.req_msg = "Task_{key}_complete"
         self.sent = False
         self.server = None
+
+    @classmethod
+    def from_urscript(cls, robot, robot_address, urscript, key=None):
+        urtask = cls(robot, robot_address, key)
+        urtask.urscript = urscript
+        return urtask
 
     @classmethod
     def from_nodes(cls, robot, robot_address, nodes, key=None):
