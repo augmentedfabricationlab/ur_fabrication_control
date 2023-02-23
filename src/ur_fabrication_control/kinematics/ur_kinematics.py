@@ -44,10 +44,10 @@ def inverse_kinematics(frame, ur_params, q6_des=0.0):
             for j, q in enumerate(qsol):
                 if q > math.pi:
                     q -= 2*math.pi
-                    print("rotated -2pi")
+                    #print("rotated -2pi")
                 if q < -math.pi:
                     q += 2*math.pi
-                    print("rotated +2pi")
+                    #print("rotated +2pi")
                 qsol[j]=q
             qsols[i]= qsol
         return qsols
