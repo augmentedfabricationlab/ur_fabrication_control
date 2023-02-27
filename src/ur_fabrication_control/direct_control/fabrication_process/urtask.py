@@ -11,7 +11,7 @@ class URTask(Task):
         super(URTask, self).__init__(key)
         self.robot = robot
         self.robot_address = robot_address
-        self.req_msg = "Task_{key}_complete"
+        self.req_msg = "Task_{}_complete".format(key)
         self.sent = False
         self.server = None
 
@@ -32,7 +32,7 @@ class URTask(Task):
         self.urscript.start()
         tool = self.robot.attached_tool
         self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
-        self.urscript.add_line("textmsg(\">> TASK{self.key}.\")")
+        self.urscript.add_line("textmsg(\">> TASK{}.\")".format(self.key))
         
         # Find a way to replace the socket open command with recent server ip an port
         self.urscript.socket_open(self.server.ip, self.server.port, self.server.name)
@@ -55,6 +55,8 @@ class URTask(Task):
         self.urscript.generate()
 
     def check_req_msg(self):
+        self.log("req_msg" + self.req_msg)
+        self.log("values" + str(self.server.msgs.values()))
         return self.req_msg in self.server.msgs.values()
 
     def run(self, stop_thread):
@@ -62,7 +64,7 @@ class URTask(Task):
             self.urscript.send_script()
             self.log("URScript sent...")
             self.sent = True
-        while not self.check_req_msg():    
+        while not self.check_req_msg():
             if stop_thread():
                 self.log("Forced to stop...")
                 send_stop(self.urscript.ur_ip, self.urscript.ur_port)
