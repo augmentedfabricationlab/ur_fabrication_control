@@ -32,10 +32,11 @@ class URTask(Task):
         self.urscript.start()
         tool = self.robot.attached_tool
         self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
-        self.urscript.add_line("textmsg(\">> TASK{}.\")".format(self.key))
+        self.urscript.add_line("textmsg('>> TASK{}.')".format(self.key))
         
         # Find a way to replace the socket open command with recent server ip an port
-        self.urscript.socket_open(self.server.ip, self.server.port, self.server.name)
+        self.urscript.set_socket(self.server.ip, self.server.port, self.server.name)
+        self.urscript.socket_open(self.server.name)
 
         # currently assuming frames are in RCS
         for i, node in enumerate(nodes):
@@ -49,14 +50,12 @@ class URTask(Task):
             self.urscript.socket_send_line_string(str(node_msg), self.server.name)
         
         self.urscript.socket_send_line_string(self.req_msg, self.server.name)
-        self.urscript.socket_close()
+        self.urscript.socket_close(self.server.name)
 
         self.urscript.end()
         self.urscript.generate()
 
     def check_req_msg(self):
-        self.log("req_msg" + self.req_msg)
-        self.log("values" + str(self.server.msgs.values()))
         return self.req_msg in self.server.msgs.values()
 
     def run(self, stop_thread):
