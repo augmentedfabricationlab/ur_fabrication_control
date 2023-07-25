@@ -279,7 +279,7 @@ class URScript(URSocketComm):
         # tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
         return self.add_line("set_tcp(p{})".format(tcp))
-    
+
     def set_payload(self, payload):
         """Set the mass of the tool and elements attached to the tool.
 
@@ -312,7 +312,7 @@ class URScript(URSocketComm):
         pose = self._frame_to_pose(frame)
         return self.add_line("movel({}, v={}, r={})".format(pose, velocity, radius))
 
-    def move_joint(self, joint_configuration, velocity):
+    def move_joint(self, joint_configuration, velocity, radius=0.0):
         """Add a move joint command to the script.
 
         Parameters
@@ -330,7 +330,7 @@ class URScript(URSocketComm):
 
         """
         joint_values = joint_configuration.joint_values
-        return self.add_line("movej({}, v={})".format(joint_values, velocity))
+        return self.add_line("movej({}, v={}, r={})".format(joint_values, velocity, radius))
 
     def move_process(self, frame, velocity, radius):
         """Add a move process command to the script.
@@ -349,20 +349,20 @@ class URScript(URSocketComm):
         """
         pose = self._frame_to_pose(frame)
         return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius))
-    
+
     def get_force(self):
         """Get the tcp force value.
         """
         func = "force()"
         self.add_lines(["force_value = {}".format(func), "textmsg(force_value)"])
         return func
-    
+
     def force_mode(self, selection_vector, force_limits, speed_limits):
         """Get the robot in the force mode.
 
         Parameters
         ----------
-        selection vector : sequence of 0s and 1s. 
+        selection vector : sequence of 0s and 1s.
             List of the compliant axes of x, y, z, dx, dy, dz.
             [0, 0, 1, 0, 0, 0]
         force limits : sequence of floats
@@ -378,7 +378,7 @@ class URScript(URSocketComm):
             Robot is in the force mode.
         """
         self.add_line("force_mode(tool_pose(), {}, {}, 2, {})".format(str(selection_vector), str(force_limits), str(speed_limits)))
-        
+
     def force_mode_in_z(self, max_force, max_speed):
         """Get the robot in the force mode only in z axis.
 
@@ -397,10 +397,10 @@ class URScript(URSocketComm):
             Robot is in the force mode in z axis.
         """
         self.force_mode([0, 0, 1, 0, 0, 0], [0.0, 0.0, max_force, 0.0, 0.0, 0.0], [0.01, 0.01, max_speed, 0.01, 0.01, 0.01])
-    
+
     def end_force_mode(self):
         self.add_line("end_force_mode()")
-        
+
     def stop_by_force(self, max_force):
         """Stop the robot when the max force is reached.
 
@@ -416,7 +416,7 @@ class URScript(URSocketComm):
             Robot stopped when max force is reached.
         """
         self.add_lines(["while force()<{}:".format(str(max_force)), "\tsleep(0.01)", "end"])
-        
+
     def add_digital_out(self, number, value):
         """Assign a boolean value to a digital output.
 
@@ -460,7 +460,7 @@ class URScript(URSocketComm):
 
 if __name__ == "__main__":
     from compas.geometry import Frame
-    
+
     server_port = 50005
     server_ip = "192.168.56.105"
     ur_ip = "192.168.56.102"
