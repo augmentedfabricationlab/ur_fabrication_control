@@ -6,7 +6,8 @@ actionlib.ActionClient
 actionlib.Goal
 actionlib.Message
 
-prefix = "robot_arm_" 
+joint_prefix = "robot_arm_" 
+topic_prefix = "/robot/arm/"
 
 JOINT_NAMES = [
     "shoulder_pan_joint",
@@ -16,7 +17,7 @@ JOINT_NAMES = [
     "wrist_2_joint",
     "wrist_3_joint",
 ]
-JOINT_NAMES = [prefix+jn for jn in JOINT_NAMES]
+JOINT_NAMES = [joint_prefix+jn for jn in JOINT_NAMES]
 
 JOINT_TRAJECTORY_CONTROLLERS = [
     "scaled_pos_joint_traj_controller",
@@ -25,14 +26,18 @@ JOINT_TRAJECTORY_CONTROLLERS = [
     "vel_joint_traj_controller",
     "forward_joint_traj_controller",
 ]
+JOINT_TRAJECTORY_CONTROLLERS = [topic_prefix+jtc for jtc in JOINT_TRAJECTORY_CONTROLLERS]
 
 CARTESIAN_TRAJECTORY_CONTROLLERS = [
     "pose_based_cartesian_traj_controller",
     "joint_based_cartesian_traj_controller",
     "forward_cartesian_traj_controller",
 ]
+CARTESIAN_TRAJECTORY_CONTROLLERS = [topic_prefix+ctc for ctc in CARTESIAN_TRAJECTORY_CONTROLLERS]
+
 
 CONFLICTING_CONTROLLERS = ["joint_group_vel_controller", "twist_controller"]
+CONFLICTING_CONTROLLERS = [topic_prefix+cc for cc in CONFLICTING_CONTROLLERS]
 
 class URROSControl():
     def __init__(self, ros_client):
