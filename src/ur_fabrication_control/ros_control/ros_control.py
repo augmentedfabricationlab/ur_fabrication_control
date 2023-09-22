@@ -1,10 +1,10 @@
 from roslibpy import actionlib
-from roslibpy import Service, ServiceRequest, ServiceResponse
+from roslibpy import Service
 
-
-actionlib.ActionClient
-actionlib.Goal
-actionlib.Message
+from.builtin_interfaces import Duration
+from .trajectory_msgs import JointTrajectory, JointTrajectoryPoint
+from .control_msgs import FollowJointTrajectoryGoal
+from .controller_manager_msgs import SwitchControllerRequest, ListControllersRequest, LoadControllerRequest
 
 joint_prefix = "robot_arm_" 
 topic_prefix = "/robot/arm/"
@@ -58,7 +58,7 @@ class URROSControl():
         self.cartesian_trajectory_controller = CARTESIAN_TRAJECTORY_CONTROLLERS[0]
         
 
-    def send_joint_trajectory(self, joint_configurations):
+    def send_joint_trajectory_test(self):
         self.switch_controller(self.joint_trajectory_controller)
         trajectory_client = actionlib.ActionClient(self.ros_client,
                                                    "{}/follow_joint_trajectory".format(self.joint_trajectory_controller),
@@ -67,8 +67,49 @@ class URROSControl():
         goal = FollowJointTrajectoryGoal(trajectory_client)
         goal.goal_message.trajectory.joint_names = JOINT_NAMES
 
+        position_list = [[0, -1.57, -1.57, 0, 0, 0]]
+        position_list.append([0.2, -1.57, -1.57, 0, 0, 0])
+        position_list.append([0.5, -1.57, -1.2, 0, 0, 0])
+        duration_list = [3.0, 7.0, 10.0]
 
+        for position, duration in zip(position_list, duration_list):
+            point = JointTrajectoryPoint()
+            point.position = position
+            point.time_from_start = Duration(duration)
+            goal.goal_message.trajectory.points.append(point)
+        
+        # trajectory_client.add_goal(goal) # does not seem nessecary?
+        goal.send()
+        result = goal.wait(10)
+        trajectory_client.dispose()
+        print(result)
     
+    def send_joint_trajectory(self, joint_trajectory):
+        self.switch_controller(self.joint_trajectory_controller)
+        trajectory_client = actionlib.ActionClient(self.ros_client,
+                                                   "{}/follow_joint_trajectory".format(self.joint_trajectory_controller),
+                                                   "control_msgs/FollowJointTrajectoryAction")
+        
+        goal = FollowJointTrajectoryGoal(trajectory_client)
+        goal.goal_message.trajectory.joint_names = JOINT_NAMES
+
+        position_list = [[0, -1.57, -1.57, 0, 0, 0]]
+        position_list.append([0.2, -1.57, -1.57, 0, 0, 0])
+        position_list.append([0.5, -1.57, -1.2, 0, 0, 0])
+        duration_list = [3.0, 7.0, 10.0]
+
+        for position, duration in zip(position_list, duration_list):
+            point = JointTrajectoryPoint()
+            point.position = position
+            point.time_from_start = Duration(duration)
+            goal.goal_message.trajectory.points.append(point)
+        
+        # trajectory_client.add_goal(goal) # does not seem nessecary?
+        goal.send()
+        result = goal.wait(10)
+        trajectory_client.dispose()
+        print(result)
+
     def switch_controller(self, target_controller):
         other_controllers = (
             JOINT_TRAJECTORY_CONTROLLERS
@@ -93,55 +134,3 @@ class URROSControl():
         srv.start_controllers = [target_controller]
         srv.strictness = SwitchControllerRequest.BEST_EFFORT
         self.switch_srv(srv)
-
-
-class SwitchControllerRequest(ServiceRequest):
-    def __init__(self, values=None):
-        super().__init__(values)
-        self.update({
-            'start_controllers' : [],
-            'stop_controllers' : [],
-            'strictness' : 1,
-            'BEST_EFFORT' : 1,
-            'STRICT' : 2,
-            'start_asap' : False,
-            'timeout' : 5.0
-        })
-
-class LoadControllerRequest(ServiceRequest):
-    def __init__(self, name, values=None):
-        super().__init__(values)
-        self.update({
-            'name' : name
-        })
-
-class ListControllersRequest(ServiceRequest):
-    def __init__(self, controller, values=None):
-        super().__init__(values)
-        self.update({
-            'controller' : controller
-        })
-
-class FollowJointTrajectoryGoal(actionlib.Goal):
-    def __init__(self, action_client):
-        goal_message = {
-            'trajectory' : None,
-            'path_tolerance' : [],
-            'goal_tolerance' : [],
-            'goal_time_tolerance' : None,
-            'error_code' : None,
-            'SUCCESSFUL' : 0,
-            'INVALID_GOAL' : -1,
-            'INVALID_JOINTS' : -2,
-            'OLD_HEADER_TIMESTAMP' : -3,
-            'PATH_TOLERANCE_VIOLATED' : -4,
-            'GOAL_TOLERANCE_VIOLATED' : -5,
-            'error_string' : None
-        }
-        super().__init__(action_client, goal_message)
-
-class JointTrajectory():
-    pass
-
-class JointTolerance():
-    pass
