@@ -332,7 +332,7 @@ class URScript(URSocketComm):
         joint_values = joint_configuration.joint_values
         return self.add_line("movej({}, v={}, r={})".format(joint_values, velocity, radius))
 
-    def move_process(self, frame, velocity, radius):
+    def move_process(self, configuration=None, frame=None, velocity=0.05, radius=0.0):
         """Add a move process command to the script.
 
         Parameters
@@ -347,7 +347,10 @@ class URScript(URSocketComm):
             A move linear command is added to the command dictionary.
 
         """
-        pose = self._frame_to_pose(frame)
+        if configuration is None:
+            pose = self._frame_to_pose(frame)
+        elif frame is None:
+            pose = configuration.joint_values
         return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius))
 
     def get_force(self):
