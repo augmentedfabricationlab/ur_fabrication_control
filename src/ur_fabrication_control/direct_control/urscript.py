@@ -280,7 +280,7 @@ class URScript(URSocketComm):
         tcp = [tcp[i] for i in range(len(tcp))]
         return self.add_line("set_tcp(p{})".format(tcp))
 
-    def set_payload(self, payload):
+    def set_payload(self, payload, CoG=None):
         """Set the mass of the tool and elements attached to the tool.
 
         Parameters
@@ -288,12 +288,18 @@ class URScript(URSocketComm):
         payload : float
             Mass of the payload in kg.
             1.140
+        CoG : list of floats
+            Center of mass.
+            List of three positions [ Cx, Cy, Cz ] in meters (m).
 
         Returns
         -------
         None
         """
-        self.add_line("set_payload({})".format(str(payload)))
+        if CoG is not None:
+            self.add_line("set_payload({}, {})".format(str(payload), str(CoG)))
+        else:
+            self.add_line("set_payload({})".format(str(payload)))
 
     def move_linear(self, frame, velocity=0.05, radius=0):
         """Add a move linear command to the script.
@@ -401,6 +407,44 @@ class URScript(URSocketComm):
         """
         self.force_mode([0, 0, 1, 0, 0, 0], [0.0, 0.0, max_force, 0.0, 0.0, 0.0], [0.01, 0.01, max_speed, 0.01, 0.01, 0.01])
 
+    def force_mode_in_y(self, max_force, max_speed):
+        """Get the robot in the force mode only in y axis.
+
+        Parameters
+        ----------
+        max force : float
+            Force limit in N (Newton) for the y axis.
+            10.0
+        max speed : float
+            Speed limit in m/s for the y axis.
+            0.025
+
+        Returns
+        -------
+        None
+            Robot is in the force mode in y axis.
+        """
+        self.force_mode([0, 1, 0, 0, 0, 0], [0.0, max_force, 0.0, 0.0, 0.0, 0.0], [0.01, max_speed, 0.01, 0.01, 0.01, 0.01])
+    
+    def force_mode_in_x(self, max_force, max_speed):
+        """Get the robot in the force mode only in x axis.
+
+        Parameters
+        ----------
+        max force : float
+            Force limit in N (Newton) for the x axis.
+            10.0
+        max speed : float
+            Speed limit in m/s for the x axis.
+            0.025
+
+        Returns
+        -------
+        None
+            Robot is in the force mode in x axis.
+        """
+        self.force_mode([1, 0, 0, 0, 0, 0], [max_force, 0.0, 0.0, 0.0, 0.0, 0.0], [max_speed, 0.01, 0.01, 0.01, 0.01, 0.01])
+
     def end_force_mode(self):
         self.add_line("end_force_mode()")
 
@@ -419,6 +463,42 @@ class URScript(URSocketComm):
             Robot stopped when max force is reached.
         """
         self.add_lines(["while force()<{}:".format(str(max_force)), "\tsleep(0.01)", "end"])
+
+    def stop_by_distance(self, max_distance, timeout = 10.0):
+        """Stop the robot when the max force is reached.
+
+        Parameters
+        ----------
+        max distance : float
+            In meters.
+            10.0
+        timeout : float
+            In seconds.
+
+        Returns
+        -------
+        None
+            Robot stopped when max distance is reached.
+        """
+        self.add_lines(["start_pose = get_actual_tcp_pose()", "start_time = 0.00"])
+        self.add_lines(["while pose_dist(start_pose, get_actual_tcp_pose()) < {} and start_time < {}:".format(str(max_distance), str(timeout)), "\tstart_time = start_time + 0.01", "\tsleep(0.01)", "end"])
+    
+    def stop_by_distance_t(self, max_distance):
+        """Stop the robot when the max force is reached.
+
+        Parameters
+        ----------
+        max distance : float
+            In meters.
+            10.0
+
+        Returns
+        -------
+        None
+            Robot stopped when max distance is reached.
+        """
+        self.add_line("start_pose = get_actual_tcp_pose()")
+        self.add_lines(["while pose_dist(start_pose, get_actual_tcp_pose())<{}:".format(str(max_distance)), "\ttextmsg(pose_dist(start_pose, get_actual_tcp_pose()))","\tsleep(0.01)", "end"])
 
     def add_digital_out(self, number, value):
         """Assign a boolean value to a digital output.
