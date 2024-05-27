@@ -4,7 +4,7 @@ import math
 
 from ur_online_control import get_data
 
-from compas_fab.robots import Configuration
+from compas_robots import Configuration
 from .ur import UR
 
 

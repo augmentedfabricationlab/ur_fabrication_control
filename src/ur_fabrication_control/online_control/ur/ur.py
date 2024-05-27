@@ -14,7 +14,7 @@ from compas.geometry import Transformation
 
 from ...kinematics import forward_kinematics
 from ...kinematics import inverse_kinematics
-from compas_fab.robots import Configuration
+from compas_robots import Configuration
 from .tool import Tool
 
 class UR(object):
