@@ -5,6 +5,7 @@ if sys.version_info[0] == 2:
     import SocketServer as ss
 elif sys.version_info[0] == 3:
     import socketserver as ss
+import socket
 ss.TCPServer.allow_reuse_address = True
 
 __all__ = [

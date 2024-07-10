@@ -36,12 +36,14 @@ class URTask(Task):
         self.urscript = URScript(*self.robot_address)
         self.urscript.start()
         
-        ## Set tool
-        tool = self.robot.attached_tool
-        self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
-        self.urscript.add_line("textmsg('>> TASK{}.')".format(self.key))
+        if self.robot:
+            ## Set tool
+            tool = self.robot.attached_tool
+            self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
+        self.urscript.textmessage(">> TASK{}".format(self.key), string=True)
         
         ## Establish communication
+        # self.urscript.set_socket(*self.server.server.server_address, self.server.name)
         self.urscript.set_socket(self.server.ip, self.server.port, self.server.name)
         self.urscript.socket_open(self.server.name)
         ## Send script received msg
@@ -123,3 +125,19 @@ class URTask(Task):
         else:
             self.is_completed = True
             return True
+
+if __name__ == "__main__":
+    from ur_fabrication_control.direct_control.communication import TCPFeedbackServer
+    class URTask0(URTask):
+        def create_urscript(self):
+            self.urscript.textmessage("Running Task", string=True)
+    
+    with TCPFeedbackServer("192.168.0.42", 50015) as server:
+        urtask = URTask0(None, ("192.168.0.210", 30002), key=0)
+        urtask.server = server
+        urtask._create_urscript()
+        # print(urtask.urscript.script)
+        urtask.run(lambda:False)
+        print(server.msgs)
+        time.sleep(2)
+    print(urtask.log_messages)
