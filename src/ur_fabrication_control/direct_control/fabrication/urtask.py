@@ -40,19 +40,21 @@ class URTask(Task):
             ## Set tool
             tool = self.robot.attached_tool
             self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
-        self.urscript.textmessage(">> TASK{}".format(self.key), string=True)
+        self.urscript.textmessage(">> TASK {}".format(self.key), string=True)
         
         ## Establish communication
         # self.urscript.set_socket(*self.server.server.server_address, self.server.name)
-        self.urscript.set_socket(self.server.ip, self.server.port, self.server.name)
-        self.urscript.socket_open(self.server.name)
-        ## Send script received msg
-        self.urscript.socket_send_line_string(self.rec_msg, self.server.name)
+        if self.server:
+            self.urscript.set_socket(self.server.ip, self.server.port, self.server.name)
+            self.urscript.socket_open(self.server.name)
+            ## Send script received msg
+            self.urscript.socket_send_line_string(self.rec_msg, self.server.name)
 
     def urscript_fabrication_footer(self):
-        ## Send script finished msg
-        self.urscript.socket_send_line_string(self.req_msg, self.server.name)
-        self.urscript.socket_close(self.server.name)
+        if self.server:
+            ## Send script finished msg
+            self.urscript.socket_send_line_string(self.req_msg, self.server.name)
+            self.urscript.socket_close(self.server.name)
 
         ## Add footer and generate script
         self.urscript.end()
@@ -68,7 +70,8 @@ class URTask(Task):
             elif node.type == "joints":
                 self.urscript.move_joint(node.joint_configuration, node.robot_vel)
             node_msg = {"TASK":self.key, "NODE":i}
-            self.urscript.socket_send_line_string(str(node_msg), self.server.name)
+            if self.server:
+                self.urscript.socket_send_line_string(str(node_msg), self.server.name)
 
     def create_urscript(self):
         self.create_urscript_from_nodes(self.nodes)
@@ -123,8 +126,11 @@ class URTask(Task):
                 self.is_completed = False
                 break
         else:
-            self.is_completed = True
-            return True
+            if self.received:
+                self.is_completed = True
+                return True
+            else:
+                return False
 
 if __name__ == "__main__":
     from ur_fabrication_control.direct_control.communication import TCPFeedbackServer
