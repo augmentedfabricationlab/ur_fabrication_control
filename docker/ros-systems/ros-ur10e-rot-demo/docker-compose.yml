@@ -44,10 +44,10 @@ services:
     environment:
       - ROS_HOSTNAME=ur-demo
       - ROS_MASTER_URI=http://ros-master:11311
-      - DISPLAY=gui:0.0
+    #  - DISPLAY=gui:0.0
     depends_on:
       - ros-master
-      - gui
+    #  - gui
     command:
       - roslaunch
       - --wait

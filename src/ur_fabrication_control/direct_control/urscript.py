@@ -525,7 +525,7 @@ class URScript(URSocketComm):
 
     # Utilities
     def _frame_to_pose(self, frame):
-        pose = frame.point.data + frame.axis_angle_vector.data
+        pose = frame.point.__data__ + frame.axis_angle_vector.__data__
         return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
 
     def _frames_to_poses(self, frames):
