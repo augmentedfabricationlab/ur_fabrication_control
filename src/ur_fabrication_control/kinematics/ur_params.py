@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-
+#https://www.universal-robots.com/articles/ur/application-installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/
 ur_params = {
     "ur3": [0.1519, -0.24365, -0.21325, 0.11235, 0.08535, 0.0819],
     "ur5": [0.089159, -0.425, -0.39225, 0.10915, 0.09465, 0.0823],
