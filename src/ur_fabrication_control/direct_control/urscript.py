@@ -359,6 +359,12 @@ class URScript(URSocketComm):
             pose = configuration.joint_values
         return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius))
 
+    def move_tool_by_distance(self, x_distance=0.0, y_distance=0.0, z_distance=0.0, velocity=0.01, radius=0, indent=1):
+        self.add_line("current_pose = get_actual_tcp_pose()", indent=indent)
+        self.add_line("target_pose = pose_trans(current_pose, p[{}, {}, {}, 0, 0, 0])".format(x_distance, y_distance, z_distance), indent=indent)
+        return self.add_line("movel(target_pose, v={}, r={})".format(velocity, radius), indent=indent)
+
+
     def rotate_joint_by_angle(self, joint_index=0, angle=0.0, velocity=0.1, radius=0.0):
         """Rotate a joint by angle.
 
@@ -390,7 +396,7 @@ class URScript(URSocketComm):
         self.add_lines(["force_value = {}".format(func), "textmsg(force_value)"])
         return func
 
-    def force_mode(self, selection_vector, force_limits, speed_limits):
+    def force_mode(self, selection_vector, force_limits, speed_limits, indent=1):
         """Get the robot in the force mode.
 
         Parameters
@@ -410,9 +416,9 @@ class URScript(URSocketComm):
         None
             Robot is in the force mode.
         """
-        self.add_line("force_mode(tool_pose(), {}, {}, 2, {})".format(str(selection_vector), str(force_limits), str(speed_limits)))
+        self.add_line("force_mode(tool_pose(), {}, {}, 2, {})".format(str(selection_vector), str(force_limits), str(speed_limits)), indent=indent)
 
-    def move_force_mode(self, force_x=0.0, speed_x=0.01, force_y=0.0, speed_y=0.01, force_z=0.0, speed_z=0.01):
+    def move_force_mode(self, force_x=0.0, speed_x=0.01, force_y=0.0, speed_y=0.01, force_z=0.0, speed_z=0.01, indent=1):
         """Get the robot in the force mode.
 
         Parameters
@@ -441,9 +447,9 @@ class URScript(URSocketComm):
             z = 1
         else:
             z = 0
-        self.force_mode([x, y, z, 0, 0, 0], [force_x, force_y, force_z, 0.0, 0.0, 0.0], [speed_x, speed_y, speed_z, 0.01, 0.01, 0.01])
+        self.force_mode([x, y, z, 0, 0, 0], [force_x, force_y, force_z, 0.0, 0.0, 0.0], [speed_x, speed_y, speed_z, 0.01, 0.01, 0.01], indent=indent)
 
-    def rotate_force_mode(self, axis="x", force=0.0, speed=0.01):
+    def rotate_force_mode(self, axis="x", force=0.0, speed=0.01, indent=1):
         """Get the robot in the force mode only in z axis.
 
         Parameters
@@ -464,16 +470,16 @@ class URScript(URSocketComm):
         """
 
         if axis == "x":
-            self.force_mode([0, 0, 0, 1, 0, 0], [0.0, 0.0, 0.0, force, 0.0, 0.0], [0.01, 0.01, 0.01, speed, 0.01, 0.01])
+            self.force_mode([0, 0, 0, 1, 0, 0], [0.0, 0.0, 0.0, force, 0.0, 0.0], [0.01, 0.01, 0.01, speed, 0.01, 0.01], indent=indent)
         if axis == "y":
-            self.force_mode([0, 0, 0, 0, 1, 0], [0.0, 0.0, 0.0, 0.0, force, 0.0], [0.01, 0.01, 0.01, 0.01, speed, 0.01])
+            self.force_mode([0, 0, 0, 0, 1, 0], [0.0, 0.0, 0.0, 0.0, force, 0.0], [0.01, 0.01, 0.01, 0.01, speed, 0.01], indent=indent)
         if axis == "z":
-            self.force_mode([0, 0, 0, 0, 0, 1], [0.0, 0.0, 0.0, 0.0, 0.0, force], [0.01, 0.01, 0.01, 0.01, 0.01, speed])
+            self.force_mode([0, 0, 0, 0, 0, 1], [0.0, 0.0, 0.0, 0.0, 0.0, force], [0.01, 0.01, 0.01, 0.01, 0.01, speed], indent=indent)
 
-    def end_force_mode(self):
-        self.add_line("end_force_mode()")
+    def end_force_mode(self, indent=1):
+        self.add_line("end_force_mode()", indent=indent)
 
-    def stop_by_force(self, max_force, log_force=False):
+    def stop_by_force(self, max_force, log_force=False, indent=1):
         """Stop the robot when the max force is reached.
 
         Parameters
@@ -487,16 +493,16 @@ class URScript(URSocketComm):
         None
             Robot stopped when max force is reached.
         """
-        self.add_line("while force() < {}:".format(str(max_force)))
+        self.add_line("while force() < {}:".format(str(max_force)), indent=indent)
         
         if log_force:
-            self.add_line("\ttextmsg(force())")
+            self.add_line("\ttextmsg(force())", indent=indent)
         
-        self.add_lines(["\tsleep(0.01)", "end"])
-        self.add_line("\tsleep({})".format(1.0))
-        self.end_force_mode()
+        self.add_lines(["\tsleep(0.01)", "end"], indent=indent)
+        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.end_force_mode(indent=indent)
 
-    def stop_by_distance(self, max_distance, timeout=None, log_distance=False, log_force=False):
+    def stop_by_distance(self, max_distance, timeout=None, log_distance=False, log_force=False, indent=1):
         """Stop the robot when the max force is reached.
 
         Parameters
@@ -512,23 +518,23 @@ class URScript(URSocketComm):
         None
             Robot stopped when max distance is reached.
         """
-        self.add_line("\tsleep({})".format(1.0))
-        self.add_lines(["start_pose = get_actual_tcp_pose()", "start_time = 0.00"])
+        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_lines(["start_pose = get_actual_tcp_pose()", "start_time = 0.00"], indent=indent)
 
         if timeout != None:
-            self.add_line("while pose_dist(start_pose, get_actual_tcp_pose()) < {} and start_time < {}:".format(str(max_distance), str(timeout)))
+            self.add_line("while pose_dist(start_pose, get_actual_tcp_pose()) < {} and start_time < {}:".format(str(max_distance), str(timeout)), indent=indent)
         else:
-            self.add_line("while pose_dist(start_pose, get_actual_tcp_pose()) < {}:".format(str(max_distance)))
+            self.add_line("while pose_dist(start_pose, get_actual_tcp_pose()) < {}:".format(str(max_distance)), indent=indent)
         
         if log_distance:
-            self.add_line("\ttextmsg(pose_dist(start_pose, get_actual_tcp_pose()))")
+            self.add_line("\ttextmsg(pose_dist(start_pose, get_actual_tcp_pose()))", indent=indent)
 
         if log_force:
-            self.add_line("\ttextmsg(force())")
+            self.add_line("\ttextmsg(force())", indent=indent)
 
-        self.add_lines(["\tstart_time = start_time + 0.01", "\tsleep(0.01)", "end"])
-        self.add_line("end_force_mode()")
-        self.add_line("\tsleep({})".format(2.0))
+        self.add_lines(["\tstart_time = start_time + 0.01", "\tsleep(0.01)", "end"], indent=indent)
+        self.add_line("end_force_mode()", indent=indent)
+        self.add_line("\tsleep({})".format(2.0), indent=indent)
 
     def stop_by_distance_t(self, max_distance):
         """Stop the robot when the max force is reached.
@@ -550,7 +556,7 @@ class URScript(URSocketComm):
         self.add_line("end_force_mode()")
         self.add_line("\tsleep({})".format(2.0))
 
-    def stop_by_rotation(self, axis="x", max_rotation=0.0, log_rotation=False, log_force=False):
+    def stop_by_rotation(self, axis="x", max_rotation=0.0, log_rotation=False, log_force=False, indent=1):
         """Stop the robot when the max force is reached.
 
         Parameters
@@ -567,19 +573,19 @@ class URScript(URSocketComm):
         """
         axis_index = {"x": 3, "y": 4, "z": 5}.get(axis)
 
-        self.add_line("\tsleep({})".format(1.0))
-        self.add_line("start_pose = get_actual_tcp_pose()")
-        self.add_line("while norm(pose_sub(start_pose, get_actual_tcp_pose())[{}]) < {}:".format(str(axis_index), str(max_rotation)))
+        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_line("start_pose = get_actual_tcp_pose()", indent=indent)
+        self.add_line("while norm(pose_sub(start_pose, get_actual_tcp_pose())[{}]) < {}:".format(str(axis_index), str(max_rotation)), indent=indent)
 
         if log_rotation:
-            self.add_line("\ttextmsg(pose_sub(start_pose, get_actual_tcp_pose()))")
+            self.add_line("\ttextmsg(pose_sub(start_pose, get_actual_tcp_pose()))", indent=indent)
 
         if log_force:
-            self.add_line("\ttextmsg(force())")
+            self.add_line("\ttextmsg(force())", indent=indent)
         
-        self.add_lines(["\tsleep(0.01)", "end"])
-        self.add_line("end_force_mode()")
-        self.add_line("\tsleep({})".format(2.0))
+        self.add_lines(["\tsleep(0.01)", "end"], indent=indent)
+        self.add_line("end_force_mode()", indent=indent)
+        self.add_line("\tsleep({})".format(2.0), indent=indent)
 
 
     def add_digital_out(self, number, value):
