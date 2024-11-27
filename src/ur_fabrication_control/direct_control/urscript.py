@@ -1,5 +1,6 @@
 import os
 import socket
+import math
 from compas.geometry import Line
 from ur_fabrication_control.direct_control.communication import URSocketComm
 
@@ -301,7 +302,7 @@ class URScript(URSocketComm):
         else:
             self.add_line("set_payload({})".format(str(payload)))
 
-    def move_linear(self, frame, velocity=0.05, radius=0):
+    def move_linear(self, frame, velocity=0.05, radius=0, indent=1):
         """Add a move linear command to the script.
 
         Parameters
@@ -316,7 +317,7 @@ class URScript(URSocketComm):
             A move linear command is added to the command dictionary.
         """
         pose = self._frame_to_pose(frame)
-        return self.add_line("movel({}, v={}, r={})".format(pose, velocity, radius))
+        return self.add_line("movel({}, v={}, r={})".format(pose, velocity, radius), indent=indent)
 
     def move_joint(self, joint_configuration, velocity, radius=0.0):
         """Add a move joint command to the script.
@@ -363,7 +364,6 @@ class URScript(URSocketComm):
         self.add_line("current_pose = get_actual_tcp_pose()", indent=indent)
         self.add_line("target_pose = pose_trans(current_pose, p[{}, {}, {}, 0, 0, 0])".format(x_distance, y_distance, z_distance), indent=indent)
         return self.add_line("movel(target_pose, v={}, r={})".format(velocity, radius), indent=indent)
-
 
     def rotate_joint_by_angle(self, joint_index=0, angle=0.0, velocity=0.1, radius=0.0):
         """Rotate a joint by angle.
@@ -536,6 +536,28 @@ class URScript(URSocketComm):
         self.add_line("end_force_mode()", indent=indent)
         self.add_line("\tsleep({})".format(2.0), indent=indent)
 
+    def stop_by_distance_and_force(self, max_distance, max_force, log_distance=False, log_force=False, indent=1):
+        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_lines(["start_pose = get_actual_tcp_pose()"], indent=indent)
+        self.add_lines(["last_force = 0", "last_distance = 0"], indent=indent)
+
+        self.add_line("while last_distance < {} and last_force < {}:".format(str(max_distance), str(abs(max_force))), indent=indent)
+        self.add_line("sleep(0.01)", indent=indent+1)
+
+        self.add_lines(["last_force = force()", "last_distance = pose_dist(start_pose, get_actual_tcp_pose())"], indent=indent+1)
+
+        if log_distance:
+            self.add_line("textmsg(last_distance)", indent=indent+1)
+
+        if log_force:
+            self.add_line("textmsg(last_force)", indent=indent+1)
+
+        self.add_lines(["\tif last_force > {}:".format(str(abs(max_force))), "\t\tforce_end = True", "\telse:", "\t\tforce_end = False", "\tend"], indent=indent)
+        self.add_line("end", indent=indent)
+
+        self.add_lines(["if force_end == True:", '\ttextmsg("Forced to stop.")', "\tsleep({})".format(1.0), "\tend_force_mode()"], indent=indent)
+        self.add_lines(["else:", "\tend_force_mode()", "\tsleep({})".format(2.0), "end"], indent=indent)
+
     def stop_by_distance_t(self, max_distance):
         """Stop the robot when the max force is reached.
 
@@ -588,7 +610,7 @@ class URScript(URSocketComm):
         self.add_line("\tsleep({})".format(2.0), indent=indent)
 
 
-    def add_digital_out(self, number, value):
+    def add_digital_out(self, number, value, indent=1):
         """Assign a boolean value to a digital output.
 
         Parameters
@@ -599,7 +621,7 @@ class URScript(URSocketComm):
         value : boolean
 
         """
-        return self.add_line("set_digital_out({}, {})".format(number,value))
+        return self.add_line("set_digital_out({}, {})".format(number,value), indent=indent)
 
     # Setting variables
     def set_variable(self, variable_name, value):
