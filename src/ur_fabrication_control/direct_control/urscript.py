@@ -262,7 +262,7 @@ class URScript(URSocketComm):
             s.close()
 
     # Geometric effects
-    def set_tcp(self, tcp):
+    def set_tcp(self, tcp, indent=1):
         """Set the tcp (tool center point) in the script.
 
         Parameters
@@ -279,9 +279,9 @@ class URScript(URSocketComm):
         """
         # tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
-        return self.add_line("set_tcp(p{})".format(tcp))
+        return self.add_line("set_tcp(p{})".format(tcp), indent=indent)
 
-    def set_payload(self, payload, CoG=None):
+    def set_payload(self, payload, CoG=None, indent=1):
         """Set the mass of the tool and elements attached to the tool.
 
         Parameters
@@ -298,9 +298,9 @@ class URScript(URSocketComm):
         None
         """
         if CoG is not None:
-            self.add_line("set_payload({}, {})".format(str(payload), str(CoG)))
+            self.add_line("set_payload({}, {})".format(str(payload), str(CoG)), indent=indent)
         else:
-            self.add_line("set_payload({})".format(str(payload)))
+            self.add_line("set_payload({})".format(str(payload)), indent=indent)
 
     def move_linear(self, frame, velocity=0.05, radius=0, indent=1):
         """Add a move linear command to the script.
@@ -319,7 +319,7 @@ class URScript(URSocketComm):
         pose = self._frame_to_pose(frame)
         return self.add_line("movel({}, v={}, r={})".format(pose, velocity, radius), indent=indent)
 
-    def move_joint(self, joint_configuration, velocity, radius=0.0):
+    def move_joint(self, joint_configuration, velocity, radius=0.0, indent=1):
         """Add a move joint command to the script.
 
         Parameters
@@ -337,9 +337,9 @@ class URScript(URSocketComm):
 
         """
         joint_values = joint_configuration.joint_values
-        return self.add_line("movej({}, v={}, r={})".format(joint_values, velocity, radius))
+        return self.add_line("movej({}, v={}, r={})".format(joint_values, velocity, radius), indent=indent)
 
-    def move_process(self, configuration=None, frame=None, velocity=0.05, radius=0.0):
+    def move_process(self, configuration=None, frame=None, velocity=0.05, radius=0.0, indent=1):
         """Add a move process command to the script.
 
         Parameters
@@ -358,14 +358,14 @@ class URScript(URSocketComm):
             pose = self._frame_to_pose(frame)
         elif frame is None:
             pose = configuration.joint_values
-        return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius))
+        return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius), indent=indent)
 
     def move_tool_by_distance(self, x_distance=0.0, y_distance=0.0, z_distance=0.0, velocity=0.01, radius=0, indent=1):
         self.add_line("current_pose = get_actual_tcp_pose()", indent=indent)
         self.add_line("target_pose = pose_trans(current_pose, p[{}, {}, {}, 0, 0, 0])".format(x_distance, y_distance, z_distance), indent=indent)
         return self.add_line("movel(target_pose, v={}, r={})".format(velocity, radius), indent=indent)
 
-    def rotate_joint_by_angle(self, joint_index=0, angle=0.0, velocity=0.1, radius=0.0):
+    def rotate_joint_by_angle(self, joint_index=0, angle=0.0, velocity=0.1, radius=0.0, indent=1):
         """Rotate a joint by angle.
 
         Parameters
@@ -385,15 +385,15 @@ class URScript(URSocketComm):
         if joint_index not in range(6):
             raise ValueError("Joint index must be an integer in the range 0 to 5.")
         
-        self.add_line("joint_values = get_actual_joint_positions()")
-        self.add_line("joint_values[{}] = joint_values[{}] + {}".format(joint_index, joint_index, angle))
-        return self.add_line("movej(joint_values, v={}, r={})".format(velocity, radius))
+        self.add_line("joint_values = get_actual_joint_positions()", indent=indent)
+        self.add_line("joint_values[{}] = joint_values[{}] + {}".format(joint_index, joint_index, angle), indent=indent)
+        return self.add_line("movej(joint_values, v={}, r={})".format(velocity, radius), indent=indent)
 
-    def get_force(self):
+    def get_force(self, indent=1):
         """Get the tcp force value.
         """
         func = "force()"
-        self.add_lines(["force_value = {}".format(func), "textmsg(force_value)"])
+        self.add_lines(["force_value = {}".format(func), "textmsg(force_value)"], indent=indent)
         return func
 
     def force_mode(self, selection_vector, force_limits, speed_limits, indent=1):
@@ -418,7 +418,10 @@ class URScript(URSocketComm):
         """
         self.add_line("force_mode(tool_pose(), {}, {}, 2, {})".format(str(selection_vector), str(force_limits), str(speed_limits)), indent=indent)
 
-    def move_force_mode(self, force_x=0.0, speed_x=0.01, force_y=0.0, speed_y=0.01, force_z=0.0, speed_z=0.01, indent=1):
+    def move_force_mode(self, 
+                        force_x=0.0, speed_x=0.01, orientation_tolerance_x=0.03,
+                        force_y=0.0, speed_y=0.01, orientation_tolerance_y=0.03,
+                        force_z=0.0, speed_z=0.01, orientation_tolerance_z=0.03, indent=1):
         """Get the robot in the force mode.
 
         Parameters
@@ -447,7 +450,9 @@ class URScript(URSocketComm):
             z = 1
         else:
             z = 0
-        self.force_mode([x, y, z, 0, 0, 0], [force_x, force_y, force_z, 0.0, 0.0, 0.0], [speed_x, speed_y, speed_z, 0.03, 0.03, 0.03], indent=indent)
+        self.force_mode([x, y, z, 0, 0, 0], 
+                        [force_x, force_y, force_z, 0.0, 0.0, 0.0], 
+                        [speed_x, speed_y, speed_z, orientation_tolerance_x, orientation_tolerance_y, orientation_tolerance_z], indent=indent)
 
     def rotate_force_mode(self, axis="x", force=0.0, speed=0.01, indent=1):
         """Get the robot in the force mode only in z axis.
@@ -558,26 +563,6 @@ class URScript(URSocketComm):
         self.add_lines(["if force_end == True:", '\ttextmsg("Forced to stop.")', "\tsleep({})".format(1.0), "\tend_force_mode()"], indent=indent)
         self.add_lines(["else:", "\tend_force_mode()", "\tsleep({})".format(2.0), "end"], indent=indent)
 
-    def stop_by_distance_t(self, max_distance):
-        """Stop the robot when the max force is reached.
-
-        Parameters
-        ----------
-        max distance : float
-            In meters.
-            10.0
-
-        Returns
-        -------
-        None
-            Robot stopped when max distance is reached.
-        """
-        self.add_line("\tsleep({})".format(1.0))
-        self.add_line("start_pose = get_actual_tcp_pose()")
-        self.add_lines(["while pose_dist(start_pose, get_actual_tcp_pose()) < {}:".format(str(max_distance)), "\ttextmsg(pose_dist(start_pose, get_actual_tcp_pose()))","\tsleep(0.01)", "end"])
-        self.add_line("end_force_mode()")
-        self.add_line("\tsleep({})".format(2.0))
-
     def stop_by_rotation(self, axis="x", max_rotation=0.0, log_rotation=False, log_force=False, indent=1):
         """Stop the robot when the max force is reached.
 
@@ -624,8 +609,8 @@ class URScript(URSocketComm):
         return self.add_line("set_digital_out({}, {})".format(number,value), indent=indent)
 
     # Setting variables
-    def set_variable(self, variable_name, value):
-        self.add_line("{} = {}".format(variable_name,value), dict="globals", key=variable_name)
+    def set_variable(self, variable_name, value, indent=1):
+        self.add_line("{} = {}".format(variable_name,value), dict="globals", key=variable_name, indent=indent)
 
     def textmessage(self, message, string=False, indent=1):
         if string:
