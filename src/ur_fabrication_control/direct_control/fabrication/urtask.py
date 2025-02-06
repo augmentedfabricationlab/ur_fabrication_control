@@ -117,6 +117,9 @@ class URTask(Task):
         while self.is_running and self.received:
             if self.check_msg(self.req_msg):
                 self.log("Finished")
+                end_time = time.time()
+                task_duration = end_time - self.start_time
+                self.log("UR Task duration: {} s".format(task_duration))
                 self.is_running = False
             if stop_thread():
                 self.log("Forced to stop...")

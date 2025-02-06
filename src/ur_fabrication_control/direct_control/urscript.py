@@ -447,7 +447,7 @@ class URScript(URSocketComm):
             z = 1
         else:
             z = 0
-        self.force_mode([x, y, z, 0, 0, 0], [force_x, force_y, force_z, 0.0, 0.0, 0.0], [speed_x, speed_y, speed_z, 0.01, 0.01, 0.01], indent=indent)
+        self.force_mode([x, y, z, 0, 0, 0], [force_x, force_y, force_z, 0.0, 0.0, 0.0], [speed_x, speed_y, speed_z, 0.03, 0.03, 0.03], indent=indent)
 
     def rotate_force_mode(self, axis="x", force=0.0, speed=0.01, indent=1):
         """Get the robot in the force mode only in z axis.
@@ -627,11 +627,11 @@ class URScript(URSocketComm):
     def set_variable(self, variable_name, value):
         self.add_line("{} = {}".format(variable_name,value), dict="globals", key=variable_name)
 
-    def textmessage(self, message, string=False):
+    def textmessage(self, message, string=False, indent=1):
         if string:
-            self.add_line('textmsg("{}")'.format(message))
+            self.add_line('textmsg("{}")'.format(message), indent=indent)
         else:
-            self.add_line('textmsg({})'.format(message))
+            self.add_line('textmsg({})'.format(message), indent=indent)
 
     # Utilities
     def _frame_to_pose(self, frame):
