@@ -48,6 +48,7 @@ class URScript(URSocketComm):
         self.sockets = {}
 
         # Functionality
+    
     def start(self, name="program", dictionary="header"):
         """Build the start of the script.
 
@@ -650,6 +651,10 @@ class URScript(URSocketComm):
         out_line = Line(via_frame.point, to_frame.point)
         return min(max_radius, in_line.length/div, out_line.length/div)
 
+    def write_to_file(self, filename):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(self.script)
 
 if __name__ == "__main__":
     from compas.geometry import Frame
