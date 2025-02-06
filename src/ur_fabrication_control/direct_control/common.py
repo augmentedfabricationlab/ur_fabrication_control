@@ -328,7 +328,6 @@ def get_current_pose_cartesian(tcp, server_ip, server_port, ur_ip, ur_port, send
     ur_cmds.socket_close(name="Feedbackserver")
     ur_cmds.end()
     ur_cmds.generate()
-    print(ur_cmds.script)
     with TCPFeedbackServer(ip=server_ip, port=server_port) as server:
         ur_cmds.send_script()
         ms = 0
@@ -370,7 +369,7 @@ def get_current_pose_joints(server_ip, server_port, ur_ip, ur_port, send=False):
     ur_cmds.start()
     ur_cmds.set_socket(server_ip, server_port, "Feedbackserver")
     ur_cmds.socket_open("Feedbackserver")
-    ur_cmds.get_current_pose_joints(send)
+    ur_cmds.get_current_pose_joints(socket_name="Feedbackserver", send=send)
     ur_cmds.socket_close(name="Feedbackserver")
     ur_cmds.end()
     ur_cmds.generate()
