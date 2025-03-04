@@ -620,6 +620,9 @@ class URScript(URSocketComm):
             self.add_line('textmsg({})'.format(message), indent=indent)
 
     # Utilities
+    def add_sleep(self, time, indent=1):
+        self.add_line("sleep({})".format(time), indent=indent)
+
     def _frame_to_pose(self, frame):
         pose = frame.point.__data__ + frame.axis_angle_vector.__data__
         return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
