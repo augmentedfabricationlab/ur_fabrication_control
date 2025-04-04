@@ -10,9 +10,9 @@ class URSocketComm:
     def set_socket(self, ip="192.168.10.11", port=50002, name="socket_0"):
         socket = {"{}".format(name): {"ip": ip, "port": port, "is_open": False}}
         self.sockets.update(socket)
-        socket_variables = {"{}_name".format(name): '{} = "{}"'.format(name, name),
-                            "{}_ip".format(name): '{}_ip = "{}"'.format(name, ip),
-                            "{}_port".format(name): "{}_port = {}".format(name, port)}
+        socket_variables = {f"{name}_name": f'{name} = "{name}"',
+                            f"{name}_ip": f'{name}_ip = "{ip}"',
+                            f"{name}_port": f"{name}_port = {port}"}
         self.add_lines(socket_variables.values(), to_dict="globals",
                        keys=socket_variables.keys())
 
@@ -23,14 +23,14 @@ class URSocketComm:
         """Open socket connection
         """
         self.add_lines(['textmsg("Opening socket connection...")',
-                       'socket_open({}_ip, {}_port, {})'.format(name, name, name)])
+                       f'socket_open({name}_ip, {name}_port, {name})'])
         self.sockets.get(name).update({"is_open": True})
 
     def socket_close(self, name="socket_0"):
         """Close socket connection
         """
-        self.add_lines(['textmsg("Closing socket connection with {}...")'.format(name),
-                        'socket_close(socket_name={})'.format(name)])
+        self.add_lines([f'textmsg("Closing socket connection with {name}...")',
+                        f'socket_close(socket_name={name})'])
         self.sockets.get(name).update({"is_open": False})
 
     # --- Socket send commands ---
@@ -49,7 +49,7 @@ class URSocketComm:
 
         """
         name = self.__get_socket_name(socket_name, address)
-        func = 'socket_send_line({}, socket_name={})'.format(line, name)
+        func = f'socket_send_line({line}, socket_name={name})'
         return self.add_line(func)
         # return self._once_socket_wrapper(func)
 
@@ -68,14 +68,14 @@ class URSocketComm:
 
         """
         name = self.__get_socket_name(socket_name, address)
-        func = 'socket_send_line("{}", socket_name={})'.format(line, name)
+        func = f'socket_send_line("{line}", socket_name={name})'
         return self.add_line(func)
         # return self._once_socket_wrapper(func)
 
     def socket_send_int(self, integer, socket_name="socket_0",
                         address=("192.168.10.11", 50002)):
         name = self.__get_socket_name(socket_name, address)
-        func = 'socket_send_int({}, socket_name={})'.format(integer, name)
+        func = f'socket_send_int({integer}, socket_name={name})'
         return self.add_line(func)
 
     def socket_send_ints(self, integers, var_name="ints",
@@ -105,8 +105,8 @@ class URSocketComm:
         None
 
         """
-        func = 'socket_send_byte({}, socket_name="{}")'.format(
-            byte, self.__get_socket_name(socket_name, address))
+        name = self.__get_socket_name(socket_name, address)
+        func = f'socket_send_byte({byte}, socket_name="{name}")'
         return self._once_socket_wrapper(func)
 
     def socket_send_bytes(self, bytes_list, var_name="bytes",

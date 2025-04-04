@@ -60,7 +60,7 @@ class URTask(Task):
             ## Set tool
             tool = self.robot.attached_tool
             self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
-        self.urscript.textmessage(">> TASK {}".format(self.key), string=True)
+        self.urscript.textmessage(f">> TASK {self.key}", string=True)
         
         ## Establish communication
         # self.urscript.set_socket(*self.server.server.server_address, self.server.name)
@@ -69,7 +69,7 @@ class URTask(Task):
             self.urscript.socket_open(self.server_name)
             ## Send script received msg
             self.urscript.socket_send_line_string(self.rec_msg, self.server_name)
-        results.put("URTask {}: Fabrication header created".format(self.key))
+        results.put(f"URTask {self.key}: Fabrication header created")
 
     def urscript_fabrication_footer(self, results):
         if self.send_feedback:
@@ -80,7 +80,7 @@ class URTask(Task):
         ## Add footer and generate script
         self.urscript.end()
         self.urscript.generate()   
-        results.put("URTask {}: Fabrication footer created".format(self.key))
+        results.put(f"URTask {self.key}: Fabrication footer created")
 
     def create_urscript_from_nodes(self, results):
         # currently assuming frames are in RCS
@@ -94,13 +94,13 @@ class URTask(Task):
             node_msg = {"TASK":self.key, "NODE":i}
             if self.send_feedback:
                 self.urscript.socket_send_line_string(str(node_msg), self.server_name)
-        results.put("URTask {}: URScript created from nodes".format(self.key))
+        results.put(f"URTask {self.key}: URScript created from nodes")
 
     def create_urscript(self, results):
         if self.nodes:
             self.create_urscript_from_nodes(results)
         else:
-            results.put("URTask {}: Using preconfigured URScript".format(self.key))
+            results.put(f"URTask {self.key}: Using preconfigured URScript")
 
     def _create_urscript(self, results):
         self.urscript_fabrication_header(results)
@@ -108,63 +108,77 @@ class URTask(Task):
         self.urscript_fabrication_footer(results)
 
     def work_func(self, results, interrupt_event):
+        # pass
         asyncio.run(self._work_func(results, interrupt_event))
 
     async def _work_func(self, results, interrupt_event, attempts=2):
         self.start_time = time.time()
         ## Create the urscript
         self._create_urscript(results)
-
         ## Send script with timeout and attempts clauses
-        async with AsyncTCPClient(host='192.168.52.1', port=8888, confirmation_msg=self.rec_msg, completed_msg=self.req_msg) as client:
-            timeout = time.time() + 10
-            while not self.received:
-                if not self.sent:
-                    attempts -= 1
-                    self.urscript.send_script()
-                    results.put("URTask {}: URScript sent... attempts left {}".format(self.key, attempts))
-                    results.put("client_confirmation: {} client_completed: {}".format(client.confirmation_received, client.completed_received))
-                    self.sent = True
-                    self.is_running = True
-                if client and client.confirmation_received.is_set() and not self.received:
-                    self.received = True
-                    results.put("URTask {}: Received confirmation from UR".format(self.key))
-                if not self.received and time.time() > timeout:
-                    if attempts > 0:
-                        self.sent = False
-                        timeout = time.time() + 10
-                    else:
-                        results.put("URTask {}: FAULT - No attempts left, UR unreachable".format(self.key))
-                        interrupt_event.set()
-                        break
-                if interrupt_event.is_set():
-                    results.put("URTask {}: Forced to stop during send phase".format(self.key))
-                    self.sent = False
-                    self.is_running = False
-                    self.is_completed = False
-                    return
-                await asyncio.sleep(0.1)
+        try:
+            host, port = self.server_address
+            async with AsyncTCPClient(host=host, port=port, confirmation_msg=self.rec_msg, completed_msg=self.req_msg) as client:
+                timeout = time.time() + 10
 
-            ## Check if the script is finished or aborted
-            while self.is_running and self.received:
-                if client and client.completed_received.is_set():
-                    results.put("URTask {}: Finished execution".format(self.key))
-                    duration = time.time() - self.start_time
-                    results.put("URTask {}: Duration {} s".format(self.key, duration))
-                    self.is_running = False
-                if interrupt_event.is_set():
-                    results.put("URTask {}: Forced to stop during execution".format(self.key))
-                    send_stop(self.urscript.ur_ip, self.urscript.ur_port)
-                    self.sent = False
-                    self.is_running = False
-                    self.is_completed = False
-                    return
-                await asyncio.sleep(0.1)
-            if self.received:
-                self.is_completed = True
-                results.put("URTask {}: Completed successfully".format(self.key))
-            else:
-                results.put("URTask {}: Failed to complete".format(self.key))
+                while True:          
+                    if not self.received:
+                        if not self.sent:
+                            attempts -= 1
+                            self.urscript.send_script()
+                            results.put(f"URTask {self.key}: URScript sent... attempts left {attempts}")
+                            self.sent = True
+                            self.is_running = True
+
+                        if client and client.confirmation_received.is_set():
+                            self.received = True
+                            duration = time.time() - self.start_time
+                            results.put(f"URTask {self.key}: Received confirmation from UR in {duration}s")
+
+                        if not self.received and time.time() > timeout:
+                            if attempts > 0:
+                                self.sent = False
+                                timeout = time.time() + 10
+                            else:
+                                results.put(f"URTask {self.key}: FAULT - No attempts left, UR unreachable")
+                                interrupt_event.set()
+                                break
+
+                    ## Check if the script is finished or aborted
+                    elif self.is_running and self.received:
+                        if client and client.completed_received.is_set():
+                            duration = time.time() - self.start_time
+                            results.put(f"URTask {self.key}: Finished execution in {duration}s")
+                            self.is_running = False
+                            self.is_completed = True
+                            break
+
+
+                    if interrupt_event.is_set():
+                        results.put(f"URTask {self.key}: Forced to stop")
+                        if self.received:
+                            send_stop(self.urscript.ur_ip, self.urscript.ur_port)
+                        self.sent = False
+                        self.is_running = False
+                        self.is_completed = False
+                        return
+                    
+                    await asyncio.sleep(0.01)
+
+                if self.is_completed:
+                    results.put(f"URTask {self.key}: Completed successfully")
+                else:
+                    results.put(f"URTask {self.key}: Failed to complete")
+        
+        except ConnectionRefusedError:
+            results.put("URTask {}: Connection refused".format(self.key))
+            interrupt_event.set()
+            self.is_running = False
+            self.is_completed = False
+        except Exception as e:
+            results.put(f"URTask {self.key}: Error: {str(e)}")
+            self.is_running = False
+            self.is_completed = False
 
 # Create a subclass to override script creation, if needed.
 class URTask0(URTask):
@@ -173,6 +187,7 @@ class URTask0(URTask):
         self.urscript.add_sleep(1)
         results.put("URTask0: Custom script created")
 
+import random 
 if __name__ == "__main__":
     from multiprocessing import Queue, Event
     

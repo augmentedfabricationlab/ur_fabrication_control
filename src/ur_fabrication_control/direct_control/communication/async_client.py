@@ -33,15 +33,16 @@ class AsyncTCPClient:
                     print("[Client] Server closed the connection.")
                     break
                 message = data.decode().strip()
-                print("[Client] Received:", message)
+                print(f"[Client] Received: {message}")
                 # Update confirmation if the expected text is found.
-                if self.confirmation_msg in message:
+                if self.confirmation_msg in message and not self.confirmation_received.is_set():
                     self.confirmation_received.set()
                     print("[Client] Confirmation flag updated.")
                 # Update completed flag if the expected text is found.
-                if self.completed_msg in message:
+                if self.completed_msg in message and not self.completed_received.is_set():
                     self.completed_received.set()
                     print("[Client] Completed flag updated.")
+
         except asyncio.CancelledError:
             # The task was cancelled (likely during disconnect).
             pass

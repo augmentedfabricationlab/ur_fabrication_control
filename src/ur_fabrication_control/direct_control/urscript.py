@@ -62,7 +62,7 @@ class URScript(URSocketComm):
             The start line is added to the command dictionary.
 
         """
-        lines = ["def {}():".format(name), "\ttextmsg(\">> Entering {}.\")".format(name)]
+        lines = [f"def {name}():", f"\ttextmsg(\">> Entering {name}.\")"]
         return self.add_lines(lines, to_dict=dictionary, indent=0)
 
     def end(self, name="program", dictionary="footer"):
@@ -82,12 +82,12 @@ class URScript(URSocketComm):
             for socket_name, data in self.sockets.items():
                 if data.get("is_open"):
                     ip, port = [data.get(i) for i in ["ip", "port"]]
-                    print("Socket: {} at {}:{} was not closed".format(socket_name, ip, port))
+                    print(f"Socket: {socket_name} at {ip}:{port} was not closed")
                     self.socket_close(socket_name)
                     print("Socket has been closed at program end")
-        lines = ["\ttextmsg(\"<< Exiting {}.\")".format(name), "end"]
+        lines = [f"\ttextmsg(\"<< Exiting {name}.\")", "end"]
         if dictionary == "footer":
-            lines.append("{}()\n\n\n".format(name))
+            lines.append(f"{name}()\n\n\n")
         self.add_lines(lines, to_dict=dictionary, indent=0)
 
     def generate(self):
@@ -134,7 +134,7 @@ class URScript(URSocketComm):
                 key = 0
         if key in _dict:
             value = _dict.get(key)
-            print("Replaced {} with {}".format(value, line))
+            print(f"Replaced {value} with {line}")
         _dict[key] = "\t"*indent+line
         return line
 
@@ -211,7 +211,7 @@ class URScript(URSocketComm):
             "joints": "get_actual_joint_positions()"
         }
         func = pose_type.get(get_type)
-        self.add_lines(["current_pose = {}".format(func), "textmsg(current_pose)"])
+        self.add_lines([f"current_pose = {func}", "textmsg(current_pose)"])
         if send:
             self.socket_send_line('current_pose', socket_name, address)
         return func
@@ -231,7 +231,7 @@ class URScript(URSocketComm):
             "False" if unavailable.
 
         """
-        system_call = "ping -r 1 -n 1 {}".format(self.ur_ip)
+        system_call = f"ping -r 1 -n 1 {self.ur_ip}"
         response = os.system(system_call)
         if response == 0:
             return True
@@ -250,17 +250,18 @@ class URScript(URSocketComm):
         None
 
         """
-        try:
-            s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
-        except socket.timeout:
-            print("UR at {} not available on port {}".format(self.ur_ip, self.ur_port))
-            raise ConnectionError
-        finally:
-            enc_script = self.script.encode('utf-8')
-            # encoding allows use of python 3.7
-            s.send(enc_script)
-            print("Script sent to {} on port {}".format(self.ur_ip, self.ur_port))
-            s.close()
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.connect((self.ur_ip, self.ur_port))
+            except socket.timeout:
+                print(f"UR at {self.ur_ip} not available on port {self.ur_port}")
+                raise ConnectionError
+            finally:
+                enc_script = self.script.encode('utf-8')
+                # encoding allows use of python 3.7
+                s.send(enc_script)
+                print(f"Script sent to {self.ur_ip} on port {self.ur_port}")
+                s.close()
 
     # Geometric effects
     def set_tcp(self, tcp, indent=1):
@@ -280,7 +281,7 @@ class URScript(URSocketComm):
         """
         # tcp = [tcp[i]/1000 if i < 3 else tcp[i] for i in range(len(tcp))]
         tcp = [tcp[i] for i in range(len(tcp))]
-        return self.add_line("set_tcp(p{})".format(tcp), indent=indent)
+        return self.add_line(f"set_tcp(p{tcp})", indent=indent)
 
     def set_payload(self, payload, CoG=None, indent=1):
         """Set the mass of the tool and elements attached to the tool.
@@ -299,9 +300,9 @@ class URScript(URSocketComm):
         None
         """
         if CoG is not None:
-            self.add_line("set_payload({}, {})".format(str(payload), str(CoG)), indent=indent)
+            self.add_line(f"set_payload({payload}, {CoG})", indent=indent)
         else:
-            self.add_line("set_payload({})".format(str(payload)), indent=indent)
+            self.add_line(f"set_payload({payload})", indent=indent)
 
     def move_linear(self, frame, velocity=0.05, radius=0, indent=1):
         """Add a move linear command to the script.
@@ -318,7 +319,7 @@ class URScript(URSocketComm):
             A move linear command is added to the command dictionary.
         """
         pose = self._frame_to_pose(frame)
-        return self.add_line("movel({}, v={}, r={})".format(pose, velocity, radius), indent=indent)
+        return self.add_line(f"movel({pose}, v={velocity}, r={radius})", indent=indent)
 
     def move_joint(self, joint_configuration, velocity, radius=0.0, indent=1):
         """Add a move joint command to the script.
@@ -338,7 +339,7 @@ class URScript(URSocketComm):
 
         """
         joint_values = joint_configuration.joint_values
-        return self.add_line("movej({}, v={}, r={})".format(joint_values, velocity, radius), indent=indent)
+        return self.add_line(f"movej({joint_values}, v={velocity}, r={radius})", indent=indent)
 
     def move_process(self, configuration=None, frame=None, velocity=0.05, radius=0.0, indent=1):
         """Add a move process command to the script.
@@ -359,12 +360,12 @@ class URScript(URSocketComm):
             pose = self._frame_to_pose(frame)
         elif frame is None:
             pose = configuration.joint_values
-        return self.add_line("movep({}, v={}, r={})".format(pose,velocity,radius), indent=indent)
+        return self.add_line(f"movep({pose}, v={velocity}, r={radius})", indent=indent)
 
     def move_tool_by_distance(self, x_distance=0.0, y_distance=0.0, z_distance=0.0, velocity=0.01, radius=0, indent=1):
         self.add_line("current_pose = get_actual_tcp_pose()", indent=indent)
-        self.add_line("target_pose = pose_trans(current_pose, p[{}, {}, {}, 0, 0, 0])".format(x_distance, y_distance, z_distance), indent=indent)
-        return self.add_line("movel(target_pose, v={}, r={})".format(velocity, radius), indent=indent)
+        self.add_line(f"target_pose = pose_trans(current_pose, p[{x_distance}, {y_distance}, {z_distance}, 0, 0, 0])", indent=indent)
+        return self.add_line(f"movel(target_pose, v={velocity}, r={radius})", indent=indent)
 
     def rotate_joint_by_angle(self, joint_index=0, angle=0.0, velocity=0.1, radius=0.0, indent=1):
         """Rotate a joint by angle.
@@ -387,14 +388,14 @@ class URScript(URSocketComm):
             raise ValueError("Joint index must be an integer in the range 0 to 5.")
         
         self.add_line("joint_values = get_actual_joint_positions()", indent=indent)
-        self.add_line("joint_values[{}] = joint_values[{}] + {}".format(joint_index, joint_index, angle), indent=indent)
-        return self.add_line("movej(joint_values, v={}, r={})".format(velocity, radius), indent=indent)
+        self.add_line(f"joint_values[{joint_index}] = joint_values[{joint_index}] + {angle}", indent=indent)
+        return self.add_line(f"movej(joint_values, v={velocity}, r={radius})", indent=indent)
 
     def get_force(self, indent=1):
         """Get the tcp force value.
         """
         func = "force()"
-        self.add_lines(["force_value = {}".format(func), "textmsg(force_value)"], indent=indent)
+        self.add_lines([f"force_value = {func}", "textmsg(force_value)"], indent=indent)
         return func
 
     def force_mode(self, selection_vector, force_limits, speed_limits, indent=1):
@@ -417,7 +418,7 @@ class URScript(URSocketComm):
         None
             Robot is in the force mode.
         """
-        self.add_line("force_mode(tool_pose(), {}, {}, 2, {})".format(str(selection_vector), str(force_limits), str(speed_limits)), indent=indent)
+        self.add_line(f"force_mode(tool_pose(), {selection_vector}, {force_limits}, 2, {speed_limits})", indent=indent)
 
     def move_force_mode(self, 
                         force_x=0.0, speed_x=0.01, orientation_tolerance_x=0.03,
@@ -499,13 +500,13 @@ class URScript(URSocketComm):
         None
             Robot stopped when max force is reached.
         """
-        self.add_line("while force() < {}:".format(str(max_force)), indent=indent)
+        self.add_line(f"while force() < {max_force}:", indent=indent)
         
         if log_force:
             self.add_line("\ttextmsg(force())", indent=indent)
         
         self.add_lines(["\tsleep(0.01)", "end"], indent=indent)
-        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_line(f"\tsleep({1.0})", indent=indent)
         self.end_force_mode(indent=indent)
 
     def stop_by_distance(self, max_distance, timeout=None, log_distance=False, log_force=False, indent=1):
@@ -524,13 +525,13 @@ class URScript(URSocketComm):
         None
             Robot stopped when max distance is reached.
         """
-        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_line(f"\tsleep({1.0})", indent=indent)
         self.add_lines(["start_pose = get_actual_tcp_pose()", "start_time = 0.00"], indent=indent)
 
         if timeout != None:
-            self.add_line("while pose_dist(start_pose, get_actual_tcp_pose()) < {} and start_time < {}:".format(str(max_distance), str(timeout)), indent=indent)
+            self.add_line(f"while pose_dist(start_pose, get_actual_tcp_pose()) < {max_distance} and start_time < {timeout}:", indent=indent)
         else:
-            self.add_line("while pose_dist(start_pose, get_actual_tcp_pose()) < {}:".format(str(max_distance)), indent=indent)
+            self.add_line(f"while pose_dist(start_pose, get_actual_tcp_pose()) < {max_distance}:", indent=indent)
         
         if log_distance:
             self.add_line("\ttextmsg(pose_dist(start_pose, get_actual_tcp_pose()))", indent=indent)
@@ -540,14 +541,14 @@ class URScript(URSocketComm):
 
         self.add_lines(["\tstart_time = start_time + 0.01", "\tsleep(0.01)", "end"], indent=indent)
         self.add_line("end_force_mode()", indent=indent)
-        self.add_line("\tsleep({})".format(2.0), indent=indent)
+        self.add_line(f"\tsleep({2.0})", indent=indent)
 
     def stop_by_distance_and_force(self, max_distance, max_force, log_distance=False, log_force=False, indent=1):
-        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_line(f"\tsleep({1.0})", indent=indent)
         self.add_lines(["start_pose = get_actual_tcp_pose()"], indent=indent)
         self.add_lines(["last_force = 0", "last_distance = 0"], indent=indent)
 
-        self.add_line("while last_distance < {} and last_force < {}:".format(str(max_distance), str(abs(max_force))), indent=indent)
+        self.add_line(f"while last_distance < {max_distance} and last_force < {abs(max_force)}:", indent=indent)
         self.add_line("sleep(0.01)", indent=indent+1)
 
         self.add_lines(["last_force = force()", "last_distance = pose_dist(start_pose, get_actual_tcp_pose())"], indent=indent+1)
@@ -558,11 +559,11 @@ class URScript(URSocketComm):
         if log_force:
             self.add_line("textmsg(last_force)", indent=indent+1)
 
-        self.add_lines(["\tif last_force > {}:".format(str(abs(max_force))), "\t\tforce_end = True", "\telse:", "\t\tforce_end = False", "\tend"], indent=indent)
+        self.add_lines([f"\tif last_force > {abs(max_force)}:", "\t\tforce_end = True", "\telse:", "\t\tforce_end = False", "\tend"], indent=indent)
         self.add_line("end", indent=indent)
 
-        self.add_lines(["if force_end == True:", '\ttextmsg("Forced to stop.")', "\tsleep({})".format(1.0), "\tend_force_mode()"], indent=indent)
-        self.add_lines(["else:", "\tend_force_mode()", "\tsleep({})".format(2.0), "end"], indent=indent)
+        self.add_lines(["if force_end == True:", '\ttextmsg("Forced to stop.")', f"\tsleep({1.0})", "\tend_force_mode()"], indent=indent)
+        self.add_lines(["else:", "\tend_force_mode()", f"\tsleep({2.0})", "end"], indent=indent)
 
     def stop_by_rotation(self, axis="x", max_rotation=0.0, log_rotation=False, log_force=False, indent=1):
         """Stop the robot when the max force is reached.
@@ -581,9 +582,9 @@ class URScript(URSocketComm):
         """
         axis_index = {"x": 3, "y": 4, "z": 5}.get(axis)
 
-        self.add_line("\tsleep({})".format(1.0), indent=indent)
+        self.add_line(f"\tsleep({1.0})", indent=indent)
         self.add_line("start_pose = get_actual_tcp_pose()", indent=indent)
-        self.add_line("while norm(pose_sub(start_pose, get_actual_tcp_pose())[{}]) < {}:".format(str(axis_index), str(max_rotation)), indent=indent)
+        self.add_line(f"while norm(pose_sub(start_pose, get_actual_tcp_pose())[{axis_index}]) < {max_rotation}:", indent=indent)
 
         if log_rotation:
             self.add_line("\ttextmsg(pose_sub(start_pose, get_actual_tcp_pose()))", indent=indent)
@@ -593,7 +594,7 @@ class URScript(URSocketComm):
         
         self.add_lines(["\tsleep(0.01)", "end"], indent=indent)
         self.add_line("end_force_mode()", indent=indent)
-        self.add_line("\tsleep({})".format(2.0), indent=indent)
+        self.add_line(f"\tsleep({2.0})", indent=indent)
 
 
     def add_digital_out(self, number, value, indent=1):
@@ -607,25 +608,25 @@ class URScript(URSocketComm):
         value : boolean
 
         """
-        return self.add_line("set_digital_out({}, {})".format(number,value), indent=indent)
+        return self.add_line(f"set_digital_out({number}, {value})", indent=indent)
 
     # Setting variables
     def set_variable(self, variable_name, value, indent=1):
-        self.add_line("{} = {}".format(variable_name,value), dict="globals", key=variable_name, indent=indent)
+        self.add_line(f"{variable_name} = {value}", dict="globals", key=variable_name, indent=indent)
 
     def textmessage(self, message, string=False, indent=1):
         if string:
-            self.add_line('textmsg("{}")'.format(message), indent=indent)
+            self.add_line(f'textmsg("{message}")', indent=indent)
         else:
-            self.add_line('textmsg({})'.format(message), indent=indent)
+            self.add_line(f'textmsg({message})', indent=indent)
 
     # Utilities
     def add_sleep(self, time, indent=1):
-        self.add_line("sleep({})".format(time), indent=indent)
+        self.add_line(f"sleep({time})", indent=indent)
 
     def _frame_to_pose(self, frame):
         pose = frame.point.__data__ + frame.axis_angle_vector.__data__
-        return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
+        return f"p[{", ".join(pose)}]"
 
     def _frames_to_poses(self, frames):
         return NotImplementedError
