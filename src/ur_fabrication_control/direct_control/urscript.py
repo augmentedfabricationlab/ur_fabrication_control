@@ -626,7 +626,7 @@ class URScript(URSocketComm):
 
     def _frame_to_pose(self, frame):
         pose = frame.point.__data__ + frame.axis_angle_vector.__data__
-        return f"p[{", ".join(pose)}]"
+        return f"p[{', '.join(pose)}]"
 
     def _frames_to_poses(self, frames):
         return NotImplementedError
