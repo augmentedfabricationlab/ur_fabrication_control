@@ -621,6 +621,7 @@ class URScript(URSocketComm):
 
     # Utilities
     def _frame_to_pose(self, frame):
+        '''Convert a compas Frame to a URScript pose (i.e. translation and orientation).'''
         pose = frame.point.__data__ + frame.axis_angle_vector.__data__
         return "p[{}, {}, {}, {}, {}, {}]".format(*pose)
 
