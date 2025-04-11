@@ -262,6 +262,19 @@ class URScript(URSocketComm):
                 s.send(enc_script)
                 print(f"Script sent to {self.ur_ip} on port {self.ur_port}")
                 s.close()
+    
+
+        # try:
+        #     s = socket.create_connection((self.ur_ip, self.ur_port), timeout=2)
+        # except socket.timeout:
+        #     print("UR at {} not available on port {}".format(self.ur_ip, self.ur_port))
+        #     raise ConnectionError
+        # finally:
+        #     enc_script = self.script.encode('utf-8')
+        #     # encoding allows use of python 3.7
+        #     s.send(enc_script)
+        #     print("Script sent to {} on port {}".format(self.ur_ip, self.ur_port))
+        #     s.close()
 
     # Geometric effects
     def set_tcp(self, tcp, indent=1):
@@ -626,7 +639,8 @@ class URScript(URSocketComm):
 
     def _frame_to_pose(self, frame):
         pose = frame.point.__data__ + frame.axis_angle_vector.__data__
-        return f"p[{', '.join(pose)}]"
+        pose_string = [str(n) for n in pose]
+        return f"p[{', '.join(pose_string)}]"
 
     def _frames_to_poses(self, frames):
         return NotImplementedError

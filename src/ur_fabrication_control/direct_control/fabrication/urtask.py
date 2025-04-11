@@ -21,9 +21,10 @@ __all__ = [
 ]
 
 class URTask(Task):
-    def __init__(self, robot, robot_address, key=None, send_feedback=True, parallelizable=False):
+    def __init__(self, robot_frame, robot_tcp, robot_address, key=None, send_feedback=True, parallelizable=False):
         super(URTask, self).__init__(key=key, parallelizable=parallelizable)
-        self.robot = robot
+        self.robot_frame = robot_frame
+        self.robot_tcp = robot_tcp
         self.robot_address = robot_address
 
         self.rec_msg = "Task_{}_received".format(key)
@@ -40,14 +41,14 @@ class URTask(Task):
         self.start_time = None
 
     @classmethod
-    def from_urscript(cls, robot, robot_address, urscript, key=None):
-        urtask = cls(robot, robot_address, key)
+    def from_urscript(cls, robot_frame, robot_tcp, robot_address, urscript, key=None):
+        urtask = cls(robot_frame, robot_tcp, robot_address, key)
         urtask.urscript = urscript
         return urtask
 
     @classmethod
-    def from_nodes(cls, robot, robot_address, nodes, key=None):
-        urtask = cls(robot, robot_address, key)
+    def from_nodes(cls, robot_frame, robot_tcp, robot_address, nodes, key=None):
+        urtask = cls(robot_frame, robot_tcp, robot_address, key)
         urtask.nodes = nodes
         return urtask
 
@@ -56,10 +57,10 @@ class URTask(Task):
         self.urscript = URScript(*self.robot_address)
         self.urscript.start()
         
-        if self.robot and self.robot.attached_tool:
+        if self.robot_tcp:
             ## Set tool
-            tool = self.robot.attached_tool
-            self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
+            tcp = list(self.robot_tcp.point) + list(self.robot_tcp.axis_angle_vector)
+            self.urscript.set_tcp(tcp)
         self.urscript.textmessage(f">> TASK {self.key}", string=True)
         
         ## Establish communication
@@ -187,7 +188,15 @@ class URTask0(URTask):
         self.urscript.add_sleep(1)
         results.put("URTask0: Custom script created")
 
-import random 
+# import random 
+class TestURTask(URTask):
+    def create_urscript(self, results):
+        self.urscript.textmessage("Running Task", string=True)
+        waittime = 1
+        self.urscript.add_sleep(waittime)
+        results.put("URTask: Waited {}s".format(waittime))
+        results.put("URTask: Custom script created")
+
 if __name__ == "__main__":
     from multiprocessing import Queue, Event
     
