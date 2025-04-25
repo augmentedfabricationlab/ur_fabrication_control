@@ -3,9 +3,9 @@ if __name__ == "__main__":
     src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../fabrication_manager/src'))
     print(src_path)
     sys.path.insert(0, src_path)
-    src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
-    print(src_path)
-    sys.path.insert(0, src_path)
+    # src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
+    # print(src_path)
+    # sys.path.insert(0, src_path)
 
 from fabrication_manager.task import Task
 from ur_fabrication_control.direct_control.communication.async_client import AsyncTCPClient
@@ -120,23 +120,28 @@ class URTask(Task):
         try:
             host, port = self.server_address
             async with AsyncTCPClient(host=host, port=port, confirmation_msg=self.rec_msg, completed_msg=self.req_msg) as client:
+                ## Future implementation replace time.time() with asyncio.timeout
                 timeout = time.time() + 10
+                duration = time.time() - self.start_time
+                results.put(f"URTask {self.key}: Created client connection with server in {duration}s")
 
                 while True:          
                     if not self.received:
                         if not self.sent:
                             attempts -= 1
                             self.urscript.send_script()
-                            results.put(f"URTask {self.key}: URScript sent... attempts left {attempts}")
+                            duration = time.time() - self.start_time
+                            results.put(f"URTask {self.key}: URScript sent after {duration}s ... attempts left {attempts}")
                             self.sent = True
                             self.is_running = True
 
-                        if client and client.confirmation_received.is_set():
+                        elif client and client.confirmation_received.is_set():
                             self.received = True
                             duration = time.time() - self.start_time
                             results.put(f"URTask {self.key}: Received confirmation from UR in {duration}s")
 
-                        if not self.received and time.time() > timeout:
+                        elif not self.received and time.time() > timeout:
+                            results.put(f"URTask {self.key}: Timeout waiting for confirmation from UR")
                             if attempts > 0:
                                 self.sent = False
                                 timeout = time.time() + 10
@@ -198,12 +203,21 @@ class TestURTask(URTask):
         results.put("URTask: Custom script created")
 
 if __name__ == "__main__":
+    # import sys, os
+    # src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../fabrication_manager/src'))
+    # print(src_path)
+    # sys.path.insert(0, src_path)
+    # src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
+    # print(src_path)
+    # sys.path.insert(0, src_path)
+
     from multiprocessing import Queue, Event
-    
+    import multiprocessing
+    multiprocessing.set_executable(r"C:\Users\gido\.rhinocode\py39-rh8\python.exe")
     logs = []
-    urtask = URTask0(None, ("192.168.52.128", 30002), key=0)
+    urtask = URTask0(None, None, ("192.168.0.210", 30002), key=0)
     urtask.send_feedback = True
-    urtask.server_address = ("192.168.52.1", 8888)
+    urtask.server_address = ("192.168.0.42", 8888)
     # urtask.server = server
     # For testing, print messages as they are produced.
     results = Queue()

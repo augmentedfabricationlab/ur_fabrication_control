@@ -251,6 +251,7 @@ class URScript(URSocketComm):
 
         """
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.1)
             try:
                 s.connect((self.ur_ip, self.ur_port))
             except socket.timeout:
@@ -661,28 +662,26 @@ class URScript(URSocketComm):
 
 if __name__ == "__main__":
     from compas.geometry import Frame
-
-    server_port = 50005
-    server_ip = "192.168.56.105"
-    ur_ip = "192.168.56.102"
+    import time
+    # server_port = 50005
+    # server_ip = "192.168.56.105"
+    # ur_ip = "192.168.56.102"
+    ur_ip = "192.168.0.210"
     ur_port = 30002
     # must be changed to meters for testing!
-    tcp = [0.0, 0, 0.1, 0.0, 0.0, 0.0]
-    urscript = URScript(ur_ip="192.168.0.210", ur_port=30002)
-    frames = [Frame.worldXY() for i in range(5)]
-    print(urscript._frames_to_poses(frames))
+    # tcp = [0.0, 0, 0.1, 0.0, 0.0, 0.0]
+    urscript = URScript(ur_ip, ur_port)
+    # frames = [Frame.worldXY() for i in range(5)]
+    # print(urscript._frames_to_poses(frames))
     urscript.start()
-    urscript.set_tcp(tcp)
-    urscript.set_socket(server_ip, server_port, "Feedbackserver")
-    urscript.socket_open("Feedbackserver")
-    # urscript.get_force()
-    # urscript.force_mode_in_z(10.0, 0.025)
-    # urscript.stop_by_force(10.0)
-    urscript.get_current_pose_cartesian(socket_name="Feedbackserver", send=True)
-    urscript.move_linear(frames[0])
-    urscript.get_current_pose_cartesian(socket_name="Feedbackserver", send=True)
-    urscript.socket_close(name="Feedbackserver")
+    # urscript.set_tcp(tcp)
+    # urscript.set_socket(server_ip, server_port, "Feedbackserver")
+    # urscript.socket_open("Feedbackserver")
+    urscript.textmessage("This is a test message")
+    # urscript.socket_close(name="Feedbackserver")
     urscript.end()
     urscript.generate()
     print(urscript.script)
+    start_time = time.time()
     urscript.send_script()
+    print("Script sent in: ", time.time()-start_time)
