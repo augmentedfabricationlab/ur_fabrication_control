@@ -87,6 +87,7 @@ class URTask(Task):
     def run(self, stop_thread, attempts=2):
         ## Create the urscript
         self._create_urscript()
+        self.start_time = time.time()
 
         ## Send script with timeout and attempts clauses
         timeout = time.time() + 10
