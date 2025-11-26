@@ -10,9 +10,15 @@ from os.path import abspath, basename, dirname, join, splitext
 from setuptools import find_packages, setup
 
 # NOTE: Write dependencies (i.e. http://python-packaging.readthedocs.io/en/latest/dependencies.html)
-requirements = []
+requirements = [
+    'compas>=2.4.1',
+    'compas_robots>=0.4.0',
+    'compas_fab>=1.0.2',
+    'numpy>=1.15',
+    'scipy>=1.0',
+]
 # NOTE: Write a list of keywords (i.e. ['ros', 'ros-bridge', 'robotics', 'websockets'])
-keywords_list = []
+keywords_list = ['robotics', 'fabrication', 'ur', 'universal-robots', 'robot-control', 'compas']
 
 here = abspath(dirname(__file__))
 
@@ -65,6 +71,19 @@ setup(
     ],
     keywords=keywords_list,
     install_requires=requirements,
-    extras_require={},
+    extras_require={
+        'dev': [
+            'sphinx>=1.5',
+            'invoke>=0.14',
+            'bumpversion>=0.5',
+            'check-manifest>=0.36',
+            'flake8',
+            'autopep8',
+            'pylint',
+            'pytest',
+            'isort',
+            'twine',
+        ],
+    },
     entry_points={},
 )

@@ -17,6 +17,46 @@
 
 <sup>(1): Windows 10 Home does not support running Docker.</sup>
 
+## Installation
+
+### From Source
+
+Clone the repository and install:
+
+```bash
+git clone https://github.com/augmentedfabricationlab/ur_fabrication_control.git
+cd ur_fabrication_control
+pip install -e .
+```
+
+To install from a specific branch:
+
+```bash
+git clone -b <branch-name> https://github.com/augmentedfabricationlab/ur_fabrication_control.git
+cd ur_fabrication_control
+pip install -e .
+```
+
+Or if you've already cloned the repository:
+
+```bash
+cd ur_fabrication_control
+git checkout <branch-name>
+git pull
+pip install -e .
+```
+
+### Dependencies
+
+This package requires the following main dependencies:
+* ``compas>=2.4.1`` - Computational framework for collaboration and research in architecture, engineering, and digital fabrication
+* ``compas_robots>=0.4.0`` - COMPAS package for robot modeling
+* ``compas_fab>=1.0.2`` - Robotic fabrication package for the COMPAS Framework
+* ``numpy>=1.15`` - Numerical computing library
+* ``scipy>=1.0`` - Scientific computing library
+
+All dependencies will be automatically installed when you pip install this package.
+
 ## Visualizing Robot Model
 
 * Open the files [rhino/ur_robot_model.3dm](rhino/ur_robot_model.3dm) and [rhino/ur_robot_model.ghx](rhino/ur_robot_model.ghx).
