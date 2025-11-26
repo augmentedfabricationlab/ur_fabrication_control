@@ -90,7 +90,7 @@ Dependencies
 
 This package requires the following main dependencies:
 
-* ``compas>=2.4.1`` - Computational framework for collaboration and research in architecture, engineering, and digital fabrication
+* ``compas>=2.1.0`` - Computational framework for collaboration and research in architecture, engineering, and digital fabrication
 * ``compas_robots>=0.4.0`` - COMPAS package for robot modeling
 * ``compas_fab>=1.0.2`` - Robotic fabrication package for the COMPAS Framework
 * ``numpy>=1.15`` - Numerical computing library

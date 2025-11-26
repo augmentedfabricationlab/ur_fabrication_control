@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 
 # NOTE: Write dependencies (i.e. http://python-packaging.readthedocs.io/en/latest/dependencies.html)
 requirements = [
-    'compas>=2.4.1',
+    'compas>=2.1.0',
     'compas_robots>=0.4.0',
     'compas_fab>=1.0.2',
     'numpy>=1.15',
