@@ -12,8 +12,8 @@ class URTask(Task):
         super(URTask, self).__init__(key)
         self.robot = robot
         self.robot_address = robot_address
-        self.rec_msg = "Task_{}_received".format(key)
-        self.req_msg = "Task_{}_complete".format(key)
+        self.rec_msg = None
+        self.req_msg = None
         self.sent = False
         self.received = False
         self.server = None
@@ -40,8 +40,7 @@ class URTask(Task):
             ## Set tool
             tool = self.robot.attached_tool
             self.urscript.set_tcp(list(tool.frame.point)+list(tool.frame.axis_angle_vector))
-        self.urscript.textmessage(">> TASK {}".format(self.key), string=True)
-        
+        self.urscript.textmessage(">> Starting TASK {}.".format(self.key), string=True)
         ## Establish communication
         # self.urscript.set_socket(*self.server.server.server_address, self.server.name)
         if self.server:
@@ -51,6 +50,7 @@ class URTask(Task):
             self.urscript.socket_send_line_string(self.rec_msg, self.server.name)
 
     def urscript_fabrication_footer(self):
+        self.urscript.textmessage(">> Ending TASK {}.".format(self.key), string=True)
         if self.server:
             ## Send script finished msg
             self.urscript.socket_send_line_string(self.req_msg, self.server.name)
@@ -85,6 +85,11 @@ class URTask(Task):
         return msg in self.server.msgs.values()
 
     def run(self, stop_thread, attempts=2):
+        if self.rec_msg is None:
+            self.rec_msg = "Task_{}_received".format(self.key)
+        if self.req_msg is None:
+            self.req_msg = "Task_{}_complete".format(self.key)
+        
         ## Create the urscript
         self._create_urscript()
         self.start_time = time.time()
