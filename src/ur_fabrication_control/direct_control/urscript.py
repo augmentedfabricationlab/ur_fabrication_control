@@ -1,6 +1,5 @@
 import os
 import socket
-import math
 from compas.geometry import Line
 from ur_fabrication_control.direct_control.communication import URSocketComm
 
@@ -456,7 +455,7 @@ class URScript(URSocketComm):
                         [speed_x, speed_y, speed_z, orientation_tolerance_x, orientation_tolerance_y, orientation_tolerance_z], indent=indent)
 
     def rotate_force_mode(self, axis="x", force=0.0, speed=0.01, indent=1):
-        """Get the robot in the force mode only in z axis.
+        """Get the robot in the force mode.
 
         Parameters
         ----------
@@ -477,9 +476,9 @@ class URScript(URSocketComm):
 
         if axis == "x":
             self.force_mode([0, 0, 0, 1, 0, 0], [0.0, 0.0, 0.0, force, 0.0, 0.0], [0.01, 0.01, 0.01, speed, 0.01, 0.01], indent=indent)
-        if axis == "y":
+        elif axis == "y":
             self.force_mode([0, 0, 0, 0, 1, 0], [0.0, 0.0, 0.0, 0.0, force, 0.0], [0.01, 0.01, 0.01, 0.01, speed, 0.01], indent=indent)
-        if axis == "z":
+        elif axis == "z":
             self.force_mode([0, 0, 0, 0, 0, 1], [0.0, 0.0, 0.0, 0.0, 0.0, force], [0.01, 0.01, 0.01, 0.01, 0.01, speed], indent=indent)
 
     def end_force_mode(self, indent=1):
@@ -611,7 +610,7 @@ class URScript(URSocketComm):
 
     # Setting variables
     def set_variable(self, variable_name, value, indent=1):
-        self.add_line("{} = {}".format(variable_name,value), dict="globals", key=variable_name, indent=indent)
+        self.add_line("{} = {}".format(variable_name,value), to_dict="globals", key=variable_name, indent=indent)
 
     def textmessage(self, message, string=False, indent=1):
         if string:
