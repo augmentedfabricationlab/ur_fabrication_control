@@ -70,7 +70,33 @@ Requirements
 Installation
 ------------
 
-.. Write installation instructions here
+**ur_fabrication_control** can be installed from source or using pip (when published to PyPI).
+
+
+From Source
+~~~~~~~~~~~
+
+Clone the repository and install:
+
+::
+
+    git clone https://github.com/augmentedfabricationlab/ur_fabrication_control.git
+    cd ur_fabrication_control
+    pip install -e .
+
+
+Dependencies
+~~~~~~~~~~~~
+
+This package requires the following main dependencies:
+
+* ``compas>=2.1.0`` - Computational framework for collaboration and research in architecture, engineering, and digital fabrication
+* ``compas_robots>=0.4.0`` - COMPAS package for robot modeling
+* ``compas_fab>=1.0.2`` - Robotic fabrication package for the COMPAS Framework
+* ``numpy>=1.15`` - Numerical computing library
+* ``scipy>=1.0`` - Scientific computing library
+
+All dependencies will be automatically installed when you pip install this package.
 
 
 Contributing

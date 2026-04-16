@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 from ur_fabrication_control.direct_control.urscript import URScript
 
-import os
-
 class ExtruderMixins:
     def extruder_on(self, sleep=1.0, indent=1):
         """Turn on the extruder.
