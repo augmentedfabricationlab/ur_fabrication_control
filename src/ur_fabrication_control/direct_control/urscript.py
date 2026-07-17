@@ -607,6 +607,22 @@ class URScript(URSocketComm):
 
         """
         return self.add_line("set_digital_out({}, {})".format(number,value), indent=indent)
+    
+    def add_analog_out(self, number, value, indent=1):
+        """Assign a value to an analog output.
+
+        Parameters
+        ----------
+        number : integer
+            Analog output number.
+
+        value : float
+            Analog output value (typically in the range supported by the controller).
+        """
+        return self.add_line(
+            "set_analog_out({}, {})".format(number, value),
+            indent=indent
+        )
 
     # Setting variables
     def set_variable(self, variable_name, value, indent=1):
